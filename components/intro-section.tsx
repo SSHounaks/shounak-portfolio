@@ -6,7 +6,7 @@ export function IntroSection() {
   return (
     <TerminalCard title="executive_summary.exe" icon="terminal" className="md:col-span-8">
       <div className="flex flex-col h-full relative overflow-hidden group p-8 justify-center min-h-[300px]">
-        <svg viewBox="0 0 500 250" className="absolute -bottom-4 -right-6 w-[85%] max-w-[550px] opacity-[0.13] group-hover:opacity-[0.50] pointer-events-none transition-opacity duration-500"
+        <svg viewBox="0 0 500 250" className="hidden lg:block absolute -bottom-4 -right-6 w-[85%] max-w-[550px] opacity-[0.13] group-hover:opacity-[0.50] pointer-events-none transition-opacity duration-500"
           style={{ filter: 'saturate(0.5)' }}>
           <line x1="140" y1="102" x2="180" y2="102" stroke="#ef4444" strokeWidth="1.5" />
           <line x1="320" y1="102" x2="360" y2="102" stroke="#34d399" strokeWidth="1.5" />

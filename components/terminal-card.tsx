@@ -34,19 +34,43 @@ export function TerminalCard({
       const sectionRect = section.getBoundingClientRect();
       const headerRect = header.getBoundingClientRect();
 
-      // Update card spotlight to follow cursor
       const mouseX = ((e.clientX - sectionRect.left) / sectionRect.width) * 100;
       const mouseY = ((e.clientY - sectionRect.top) / sectionRect.height) * 100;
       section.style.setProperty('--mouse-x', `${mouseX}%`);
       section.style.setProperty('--mouse-y', `${mouseY}%`);
 
-      // Update header mouse position for border shine effect
       const headerMouseX = e.clientX - headerRect.left;
       header.style.setProperty('--header-mouse-x', `${headerMouseX}px`);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    let started = false;
+    function start() {
+      if (started) return;
+      started = true;
+      window.addEventListener('mousemove', handleMouseMove);
+    }
+    function stop() {
+      started = false;
+      window.removeEventListener('mousemove', handleMouseMove);
+    }
+
+    start();
+
+    const onPageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) start();
+    };
+    window.addEventListener('pageshow', onPageShow);
+
+    const onVisibilityChange = () => {
+      if (document.hidden) stop(); else start();
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      stop();
+      window.removeEventListener('pageshow', onPageShow);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
   }, []);
 
   return (

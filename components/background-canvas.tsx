@@ -15,20 +15,17 @@ export function BackgroundCanvas() {
     let mouseX = 0;
     let mouseY = 0;
     let animId: number;
+    let started = false;
 
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
 
-    window.addEventListener('resize', resize);
-    resize();
-
     const onMouseMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
     };
-    document.addEventListener('mousemove', onMouseMove);
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -62,12 +59,38 @@ export function BackgroundCanvas() {
       animId = requestAnimationFrame(draw);
     }
 
-    animId = requestAnimationFrame(draw);
+    function start() {
+      if (started) return;
+      started = true;
+      window.addEventListener('resize', resize);
+      document.addEventListener('mousemove', onMouseMove);
+      resize();
+      animId = requestAnimationFrame(draw);
+    }
 
-    return () => {
+    function stop() {
+      started = false;
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
       document.removeEventListener('mousemove', onMouseMove);
+    }
+
+    start();
+
+    const onPageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) start();
+    };
+    window.addEventListener('pageshow', onPageShow);
+
+    const onVisibilityChange = () => {
+      if (document.hidden) stop(); else start();
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      stop();
+      window.removeEventListener('pageshow', onPageShow);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
     };
   }, []);
 

@@ -5,7 +5,7 @@ import { ReactNode, useEffect, useRef } from 'react';
 export function PageTransition({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  const doFadeIn = () => {
     const el = ref.current;
     if (!el) return;
     el.style.opacity = '0';
@@ -15,6 +15,15 @@ export function PageTransition({ children }: { children: ReactNode }) {
       el.style.opacity = '1';
       el.style.transform = 'translateY(0)';
     });
+  };
+
+  useEffect(() => {
+    doFadeIn();
+    const onPageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) doFadeIn();
+    };
+    window.addEventListener('pageshow', onPageShow);
+    return () => window.removeEventListener('pageshow', onPageShow);
   }, []);
 
   return <div ref={ref}>{children}</div>;
