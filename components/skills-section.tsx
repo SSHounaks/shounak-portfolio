@@ -10,27 +10,34 @@ interface Skill {
 }
 
 const skills: Skill[] = [
-  { name: 'TypeScript', level: 95, category: 'frontend', icon: 'javascript' },
-  { name: 'React', level: 90, category: 'frontend', icon: 'code' },
-  { name: 'Next.js', level: 85, category: 'frontend', icon: 'web' },
-  { name: 'Tailwind', level: 88, category: 'frontend', icon: 'palette' },
-  { name: 'Node.js', level: 85, category: 'backend', icon: 'terminal' },
+  { name: 'TypeScript', level: 92, category: 'frontend', icon: 'javascript' },
+  { name: 'React', level: 85, category: 'frontend', icon: 'code' },
+  { name: 'Angular', level: 80, category: 'frontend', icon: 'code' },
+  { name: 'Tailwind', level: 85, category: 'frontend', icon: 'palette' },
+  { name: 'Java/Kotlin', level: 95, category: 'backend', icon: 'terminal' },
+  { name: 'Spring Boot', level: 92, category: 'backend', icon: 'terminal' },
   { name: 'Python', level: 75, category: 'backend', icon: 'vital_signs' },
-  { name: 'GraphQL', level: 80, category: 'backend', icon: 'data_exploration' },
-  { name: 'PostgreSQL', level: 78, category: 'backend', icon: 'database' },
-  { name: 'Docker', level: 72, category: 'devops', icon: 'deployed_code' },
-  { name: 'AWS', level: 68, category: 'devops', icon: 'cloud' },
-  { name: 'CI/CD', level: 76, category: 'devops', icon: 'sync' },
-  { name: 'Figma', level: 70, category: 'design', icon: 'design_services' },
+  { name: 'PostgreSQL', level: 80, category: 'backend', icon: 'database' },
+  { name: 'Docker', level: 80, category: 'devops', icon: 'deployed_code' },
+  { name: 'Kubernetes', level: 70, category: 'devops', icon: 'deployed_code' },
+  { name: 'AWS', level: 78, category: 'devops', icon: 'cloud' },
+  { name: 'Terraform', level: 72, category: 'devops', icon: 'cloud' },
+  { name: 'Wireshark', level: 75, category: 'security', icon: 'security' },
+  { name: 'OWASP ZAP', level: 72, category: 'security', icon: 'security' },
+  { name: 'Burp Suite', level: 70, category: 'security', icon: 'security' },
+  { name: 'Kafka/SNS', level: 65, category: 'backend', icon: 'data_exploration' },
+  { name: 'PyTorch', level: 60, category: 'ai', icon: 'neurology' },
+  { name: 'Scikit-learn', level: 65, category: 'ai', icon: 'neurology' },
 ];
 
-const categories = ['frontend', 'backend', 'devops', 'design'] as const;
+const categories = ['backend', 'frontend', 'devops', 'security', 'ai'] as const;
 
 const categoryColors: Record<string, { text: string; border: string; bar: string }> = {
   frontend: { text: 'text-amber-400', border: 'border-amber-500/30', bar: 'from-amber-500/60 to-amber-400/80' },
   backend: { text: 'text-cyan-400', border: 'border-cyan-500/30', bar: 'from-cyan-500/60 to-cyan-400/80' },
   devops: { text: 'text-purple-400', border: 'border-purple-500/30', bar: 'from-purple-500/60 to-purple-400/80' },
-  design: { text: 'text-pink-400', border: 'border-pink-500/30', bar: 'from-pink-500/60 to-pink-400/80' },
+  security: { text: 'text-rose-400', border: 'border-rose-500/30', bar: 'from-rose-500/60 to-rose-400/80' },
+  ai: { text: 'text-emerald-400', border: 'border-emerald-500/30', bar: 'from-emerald-500/60 to-emerald-400/80' },
 };
 
 export function SkillsSection() {

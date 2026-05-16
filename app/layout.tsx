@@ -9,9 +9,9 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const sora = Sora({ subsets: ['latin'], weight: ['600', '700', '800'], variable: '--font-sora' })
 
 export const metadata: Metadata = {
-  title: 'AETHER | Futuristic Portfolio',
-  description: 'Visionary interface designer and frontend engineer specializing in immersive glassmorphic environments',
-  generator: 'v0.app',
+  title: 'Shounak Bhalerao | Portfolio',
+  description: 'Full Stack Developer & Cybersecurity Expert — 5.5 years designing and shipping production-grade systems at scale.',
+  generator: 'opencode.ai',
   icons: {
     icon: [
       {

@@ -888,22 +888,90 @@ export default function TestPage() {
             </div>
           </TerminalCard>
 
-          <TerminalCard title="Terminal Radar" icon="radar">
+          <TerminalCard title="Architecture Diagram" icon="account_tree" className="md:col-span-6">
             <div className="p-5 font-mono text-[12px] flex flex-col gap-3 flex-1">
               <p className="text-white/50 text-[11px] leading-relaxed">
-                Animated SVG radar/scanline sweeping in a circle. Great as a background or skill visualization.
+                API Gateway → Backend (red) → Observability (green) with animated packet flow.
               </p>
-              <svg viewBox="0 0 80 80" className="w-full max-w-[120px] mx-auto">
-                <circle cx="40" cy="40" r="38" fill="none" stroke="rgba(52,211,153,0.1)" strokeWidth="0.5" />
-                <circle cx="40" cy="40" r="28" fill="none" stroke="rgba(52,211,153,0.15)" strokeWidth="0.5" />
-                <circle cx="40" cy="40" r="18" fill="none" stroke="rgba(52,211,153,0.2)" strokeWidth="0.5" />
-                <circle cx="40" cy="40" r="8" fill="none" stroke="rgba(52,211,153,0.3)" strokeWidth="0.5" />
-                <line x1="40" y1="40" x2="75" y2="15" stroke="rgba(52,211,153,0.4)" strokeWidth="0.5" />
-                <circle cx="60" cy="25" r="1.5" fill="#34d399" />
-                <circle cx="50" cy="55" r="1" fill="#34d399" />
-                <circle cx="30" cy="30" r="1.2" fill="#34d399" />
+              <svg viewBox="0 0 500 250" className="w-full max-w-[500px] mx-auto">
+                {/* Connection lines */}
+                <line x1="140" y1="102" x2="180" y2="102" stroke="#ef4444" strokeWidth="1.5" />
+                <line x1="320" y1="102" x2="360" y2="102" stroke="#34d399" strokeWidth="1.5" />
+                <line x1="250" y1="124" x2="250" y2="150" stroke="#34d399" strokeWidth="1" opacity="0.35" />
+                <line x1="425" y1="124" x2="425" y2="150" stroke="#a78bfa" strokeWidth="1" opacity="0.35" />
+
+                {/* Red packets: API Gateway → Backend */}
+                <circle r="3" fill="#ef4444">
+                  <animateMotion dur="2s" repeatCount="indefinite" path="M140,102 L180,102" />
+                </circle>
+                <circle r="3" fill="#ef4444">
+                  <animateMotion dur="2s" repeatCount="indefinite" begin="0.8s" path="M140,102 L180,102" />
+                </circle>
+
+                {/* Green packets: Backend → Observability */}
+                <circle r="3" fill="#34d399">
+                  <animateMotion dur="2.5s" repeatCount="indefinite" path="M320,102 L360,102" />
+                </circle>
+                <circle r="3" fill="#34d399">
+                  <animateMotion dur="2.5s" repeatCount="indefinite" begin="1s" path="M320,102 L360,102" />
+                </circle>
+
+                {/* Green packets: Backend → Database */}
+                <circle r="3" fill="#34d399">
+                  <animateMotion dur="2.5s" repeatCount="indefinite" path="M250,124 L250,150" />
+                </circle>
+                <circle r="3" fill="#34d399">
+                  <animateMotion dur="2.5s" repeatCount="indefinite" begin="1s" path="M250,124 L250,150" />
+                </circle>
+
+                {/* API Gateway */}
+                <rect x="20" y="80" width="120" height="44" rx="6" fill="#0a0a0a" stroke="#ef4444" strokeWidth="1.3" />
+                <g transform="translate(32, 98)">
+                  <polygon points="7,1 13,4 13,11 7,14 1,11 1,4" fill="none" stroke="#ef4444" strokeWidth="1.2" />
+                  <polyline points="5,7 9,7 7,5" fill="none" stroke="#ef4444" strokeWidth="1" />
+                  <polyline points="5,7 9,7 7,9" fill="none" stroke="#ef4444" strokeWidth="1" />
+                </g>
+                <text x="54" y="108" fill="#ef4444" fontSize="10" fontFamily="monospace" fontWeight="bold">API Gateway</text>
+                <text x="54" y="120" fill="#ef4444" fontSize="7" fontFamily="monospace">entry</text>
+
+                {/* Backend Service */}
+                <rect x="180" y="80" width="140" height="44" rx="6" fill="#0a0a0a" stroke="#34d399" strokeWidth="1.3" />
+                <g transform="translate(194, 98)">
+                  <rect x="1" y="1" width="12" height="4" rx="1" fill="none" stroke="#34d399" strokeWidth="1" />
+                  <rect x="1" y="7" width="12" height="4" rx="1" fill="none" stroke="#34d399" strokeWidth="1" />
+                  <circle cx="7" cy="3" r="1.5" fill="#34d399" opacity="0.4" />
+                  <circle cx="7" cy="9" r="1.5" fill="#34d399" opacity="0.4" />
+                </g>
+                <text x="216" y="108" fill="#34d399" fontSize="9" fontFamily="monospace">Backend Service</text>
+                <text x="216" y="120" fill="#34d399" fontSize="6" fontFamily="monospace">LIVE</text>
+
+                {/* Database (square) */}
+                <rect x="220" y="150" width="60" height="60" rx="6" fill="#0a0a0a" stroke="#34d399" strokeWidth="1" strokeDasharray="3,2" />
+                <g transform="translate(243, 164)">
+                  <rect x="0" y="0" width="14" height="3.5" rx="0.5" fill="none" stroke="#34d399" strokeWidth="1" />
+                  <rect x="0" y="5" width="14" height="3.5" rx="0.5" fill="none" stroke="#34d399" strokeWidth="1" />
+                  <rect x="0" y="10" width="14" height="3.5" rx="0.5" fill="none" stroke="#34d399" strokeWidth="1" />
+                </g>
+                <text x="250" y="198" textAnchor="middle" fill="#34d399" fontSize="7" fontFamily="monospace">DB</text>
+
+                {/* Observability Service */}
+                <rect x="345" y="80" width="140" height="44" rx="6" fill="#0a0a0a" stroke="#a78bfa" strokeWidth="1.3" />
+                <g transform="translate(359, 98)">
+                  <rect x="1" y="6" width="3" height="6" rx="0.5" fill="none" stroke="#a78bfa" strokeWidth="1" />
+                  <rect x="5.5" y="2" width="3" height="10" rx="0.5" fill="none" stroke="#a78bfa" strokeWidth="1" />
+                  <rect x="10" y="8" width="3" height="4" rx="0.5" fill="none" stroke="#a78bfa" strokeWidth="1" />
+                </g>
+                <text x="381" y="108" fill="#a78bfa" fontSize="9" fontFamily="monospace">Observability Service</text>
+                <text x="381" y="120" fill="#a78bfa" fontSize="6" fontFamily="monospace">LIVE</text>
+
+                {/* Stream (square) */}
+                <rect x="395" y="150" width="60" height="60" rx="6" fill="#0a0a0a" stroke="#a78bfa" strokeWidth="1" strokeDasharray="3,2" />
+                <g transform="translate(418, 164)">
+                  <path d="M0,7 Q3.5,2 7,7 T14,7" fill="none" stroke="#a78bfa" strokeWidth="1.5" />
+                </g>
+                <text x="425" y="198" textAnchor="middle" fill="#a78bfa" fontSize="7" fontFamily="monospace">Stream</text>
               </svg>
-              <span className="text-amber-500/60 text-[9px]">// could live in hero/skills</span>
+              <span className="text-amber-500/60 text-[9px]">// red → gateway→backend, green → backend→obs + db</span>
             </div>
           </TerminalCard>
 

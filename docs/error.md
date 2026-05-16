@@ -1,11 +1,30 @@
-Error: Route "/blog/[slug]" used `params.slug`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
-    at <unknown> (app\blog\[slug]\page.tsx:13:52)
-    at Array.find (<anonymous>)
-    at BlogPostPage (app\blog\[slug]\page.tsx:13:22)
-11 |   ...
-12 |   ...ction BlogPostPage({ params }: { params: { slug: string } }) {
-13 |   ...ts.find((p) => p.slug === params.slug);
-   |                                       ^
-14 |   ...und();
-15 |   ...
-16 |   ...
+Build Error
+
+
+
+Expected '</', got 'jsx text'
+./components/testimonials-section.tsx (133:24)
+
+Expected '</', got 'jsx text'
+  131 |             </div>
+  132 |           </div>
+> 133 |         </TerminalCard>
+      |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 134 |       </div>
+      | ^^^^^^
+  135 |
+  136 |       <div className="md:col-span-6 flex flex-col">
+  137 |         <ContactSection />
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./components/testimonials-section.tsx [Client Component Browser]
+    ./app/page.tsx [Client Component Browser]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./components/testimonials-section.tsx [Client Component SSR]
+    ./app/page.tsx [Client Component SSR]
+    ./app/page.tsx [Server Component]

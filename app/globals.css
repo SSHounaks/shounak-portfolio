@@ -115,6 +115,11 @@ body {
   animation: blink 1s step-end infinite;
 }
 
+@keyframes jump-once {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
 @keyframes blink {
   from,
   to {

@@ -14,20 +14,20 @@ interface Project {
 
 const projects: Project[] = [
   {
-    title: 'E-Commerce API',
-    description: 'High-performance Node.js backend',
-    icon: 'code_off',
-    tech: 'Node.js, Express, PostgreSQL, Redis, Stripe',
-    link: 'github.com/user/ecommerce-api',
-    details: 'Full-featured RESTful API handling 10k+ req/s. Implements JWT auth, rate limiting, caching layer with Redis, and Stripe payment integration.',
+    title: 'ThothTech/OnTrack',
+    description: 'Amazon SNS Email Service & Angular 15 migration',
+    icon: 'commit',
+    tech: 'Angular 15, Ruby on Rails, Amazon SNS, Astro.js',
+    link: 'github.com/thoth-tech/ontrack',
+    details: 'Ideated and built an Amazon SNS-based Email Service improving student satisfaction. Migrated legacy Angular 1.x to Angular 15. Championed documentation overhaul using Astro.js, adding onboarding guides and architecture diagrams reducing dev ramp-up time. Fixed 6 long-standing frontend & backend bugs.',
   },
   {
-    title: 'FinTrack Dash',
-    description: 'Next.js analytics dashboard',
-    icon: 'analytics',
-    tech: 'Next.js, TypeScript, D3.js, Prisma, Supabase',
-    link: 'github.com/user/fintrack-dash',
-    details: 'Real-time financial analytics dashboard with interactive D3.js charts, server-side rendering, and role-based access control.',
+    title: 'FasterXML/Jackson-Jr',
+    description: 'Java serialization & deserialization engine',
+    icon: 'data_object',
+    tech: 'Java 17, Groovy, Maven, JUnit',
+    link: 'github.com/FasterXML/jackson-jr',
+    details: 'Engineered support for int[] deserialization, serialization of Java 17 & Groovy Records. Fixed issues regarding Duplicate Key Detection for simple Objects and BigDecimal support for floats. Implemented multi-level testing POC using Maven for different target JREs.',
   },
 ];
 
@@ -39,7 +39,7 @@ export function ProjectsSection() {
   };
 
   return (
-    <TerminalCard title="Projects.sh" icon="folder_open" variant="primary" className="md:col-span-3">
+    <TerminalCard title="Open-Source.sh" icon="folder_open" variant="primary" className="md:col-span-3">
       <div className="font-mono text-[12px] p-4 space-y-0 flex flex-col flex-1 overflow-hidden">
         <div className="border border-white/5 rounded overflow-hidden divide-y divide-white/5 overflow-y-auto flex-1">
           {projects.map((project, index) => (
@@ -49,41 +49,41 @@ export function ProjectsSection() {
                 onClick={() => toggleExpand(index)}
               >
                 <div className="flex items-start gap-2.5">
-                  <div className="mt-0.5 w-1.5 h-1.5 rounded-full bg-emerald-500/50 flex-shrink-0"></div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-emerald-400 font-bold">$</span>
                       <span className="text-emerald-300/90 font-bold text-[11px] truncate group-hover:text-emerald-200 transition-colors">
                         {project.title}
                       </span>
-                      <span className="text-white/20 text-[9px] ml-auto font-mono">[{index + 1}/2]</span>
+                      <span className="text-white/30 text-[9px] font-normal truncate">— {project.description}</span>
+                      <span className="text-white/20 text-[9px] ml-auto font-mono shrink-0">[{index + 1}/{projects.length}]</span>
                       <span className={`text-[10px] transition-transform duration-200 ${expandedIndex === index ? 'rotate-90' : ''}`}>
                         <span className="material-symbols-outlined text-emerald-400/60 text-[12px]">chevron_right</span>
                       </span>
                     </div>
-                    <p className="text-white/40 text-[10px] ml-4 mt-0.5 font-mono">
-                      <span className="text-emerald-500/50">#</span> {project.description}
-                    </p>
                   </div>
                 </div>
               </div>
               {expandedIndex === index && (
                 <div className="px-3 pb-3 pt-0 border-t border-emerald-500/10 mx-3">
-                  <div className="pt-3 space-y-1.5 text-[10px]">
-                    <div className="flex items-start gap-2">
-                      <span className="text-emerald-500/60 flex-shrink-0">├─</span>
-                      <span className="text-white/40">tech:</span>
-                      <span className="text-white/60">{project.tech}</span>
+                  <div className="pt-3 space-y-2 text-[10px]">
+                    <div className="flex items-center gap-2 px-1 py-1 bg-white/[0.02] rounded border border-white/5">
+                      <span className="text-cyan-400/60 text-[9px] flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[10px]">deployed_code</span>
+                      </span>
+                      <span className="text-white/40 text-[9px]">tech:</span>
+                      <span className="text-cyan-400/80 text-[10px] font-medium">{project.tech}</span>
                     </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-emerald-500/60 flex-shrink-0">├─</span>
-                      <span className="text-white/40">repo:</span>
-                      <span className="text-emerald-400/80 underline underline-offset-2">{project.link}</span>
+                    <div className="flex items-center gap-2 px-1 py-1 bg-white/[0.02] rounded border border-white/5">
+                      <span className="text-amber-400/60 text-[9px] flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[10px]">link</span>
+                      </span>
+                      <span className="text-white/40 text-[9px]">repo:</span>
+                      <span className="text-amber-400/80 text-[10px] underline underline-offset-2">{project.link}</span>
                     </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-emerald-500/60 flex-shrink-0">└─</span>
-                      <span className="text-white/40">desc:</span>
-                      <span className="text-white/50 leading-relaxed">{project.details}</span>
+                    <div className="px-1 py-1">
+                      <span className="text-white/40 text-[9px] block mb-1">description:</span>
+                      <span className="text-white/50 text-[10px] leading-relaxed block">{project.details}</span>
                     </div>
                   </div>
                 </div>
