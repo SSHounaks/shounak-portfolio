@@ -176,7 +176,7 @@ export function TestimonialsSection() {
               >
                 <span className="material-symbols-outlined text-lg">chevron_left</span>
               </button>
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-40 justify-center">
                 {testimonials.map((_, i) => (
                   <div
                     key={i}
