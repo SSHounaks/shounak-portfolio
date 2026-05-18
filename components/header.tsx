@@ -20,7 +20,7 @@ export function Header() {
         </a>
         <div className="flex items-center gap-0 flex-1 h-full">
           <Breadcrumbs />
-          <nav className="hidden md:flex items-stretch h-full ml-auto">
+          <nav className="flex items-stretch h-full ml-auto">
             {links.map((item) => {
               const isActive = pathname === item.href;
               const idx = links.indexOf(item);

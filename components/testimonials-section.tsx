@@ -147,7 +147,7 @@ export function TestimonialsSection() {
               </div>
             </div>
               {showPauseIndicator && (
-                <div className="absolute inset-0 flex items-center justify-center z-10">
+                <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
                   <div
                     className={`flex items-center gap-2 transition-all duration-200 ${
                       showPauseIndicator === 'enter' ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
