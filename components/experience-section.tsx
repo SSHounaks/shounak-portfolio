@@ -70,7 +70,7 @@ export function ExperienceSection() {
   return (
     <TerminalCard title="Work Experience.sh" icon="history_edu" variant="secondary" className="md:col-span-5">
       <div className="font-mono text-[12px] p-6 space-y-0 flex flex-col flex-1 overflow-hidden">
-        <div className="border border-white/5 rounded overflow-hidden divide-y divide-white/5 overflow-y-auto flex-1 max-h-[360px]">
+        <div className="border border-white/5 rounded overflow-hidden divide-y divide-white/5 overflow-y-auto flex-1 max-h-[520px]">
           {experiences.map((exp, index) => (
             <div key={index}>
               <div

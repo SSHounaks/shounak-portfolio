@@ -8,6 +8,7 @@ import { IntroSection } from '@/components/intro-section';
 import { ExperienceSection } from '@/components/experience-section';
 import { SkillsSection } from '@/components/skills-section';
 import { ProjectsSection } from '@/components/projects-section';
+import { GithubSnake } from '@/components/github-snake';
 import { TestimonialsSection } from '@/components/testimonials-section';
 import { PageTransition } from '@/components/page-transition';
 
@@ -31,6 +32,7 @@ export default function Home() {
           <SkillsSection />
           <div className="md:col-span-3 flex flex-col gap-6">
             <ProjectsSection />
+            <GithubSnake />
           </div>
         </div>
 

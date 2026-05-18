@@ -44,7 +44,7 @@ export function SkillsSection() {
   return (
     <TerminalCard title="Skills.sh" icon="category" className="md:col-span-4">
       <div className="font-mono text-[12px] p-4 space-y-0 flex flex-col flex-1 overflow-hidden">
-        <div className="overflow-y-auto flex-1 max-h-[340px]">
+        <div className="overflow-y-auto flex-1 max-h-[520px]">
           <div className="space-y-4">
             {categories.map((cat) => {
               const catSkills = skills.filter((s) => s.category === cat);
