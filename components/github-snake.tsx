@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 
-const GRID = 20;
+const COLS = 30;
+const ROWS = 5;
 const CELL = 10;
 const TICK = 120;
 
@@ -10,6 +11,7 @@ type Pos = { x: number; y: number };
 
 export function GithubSnake() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const colsRef = useRef(COLS);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -17,8 +19,17 @@ export function GithubSnake() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let snake: Pos[] = [{ x: 5, y: 10 }, { x: 4, y: 10 }, { x: 3, y: 10 }];
-    let food: Pos = { x: 15, y: 10 };
+    const parent = canvas.parentElement;
+    if (parent) {
+      const w = parent.clientWidth;
+      const c = Math.floor(w / CELL);
+      colsRef.current = c;
+      canvas.width = c * CELL;
+      canvas.height = ROWS * CELL;
+    }
+
+    let snake: Pos[] = [{ x: 8, y: 2 }, { x: 7, y: 2 }, { x: 6, y: 2 }];
+    let food: Pos = { x: 20, y: 2 };
     let dir: Pos = { x: 1, y: 0 };
     let gameOver = false;
     let frame: number;
@@ -26,8 +37,8 @@ export function GithubSnake() {
     function placeFood() {
       const occupied = new Set(snake.map((p) => `${p.x},${p.y}`));
       const free: Pos[] = [];
-      for (let x = 0; x < GRID; x++)
-        for (let y = 0; y < GRID; y++)
+      for (let x = 0; x < colsRef.current; x++)
+        for (let y = 0; y < ROWS; y++)
           if (!occupied.has(`${x},${y}`)) free.push({ x, y });
       if (free.length === 0) return;
       food = free[Math.floor(Math.random() * free.length)];
@@ -41,7 +52,7 @@ export function GithubSnake() {
       const valid = candidates.filter((d) => {
         const nx = head.x + d.x;
         const ny = head.y + d.y;
-        if (nx < 0 || nx >= GRID || ny < 0 || ny >= GRID) return false;
+        if (nx < 0 || nx >= colsRef.current || ny < 0 || ny >= ROWS) return false;
         return !snake.some((s) => s.x === nx && s.y === ny);
       });
       if (valid.length === 0) { gameOver = true; return; }
@@ -59,7 +70,7 @@ export function GithubSnake() {
       aiMove();
 
       const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
-      if (head.x < 0 || head.x >= GRID || head.y < 0 || head.y >= GRID ||
+      if (head.x < 0 || head.x >= colsRef.current || head.y < 0 || head.y >= ROWS ||
           snake.some((s) => s.x === head.x && s.y === head.y)) {
         gameOver = true;
       } else {
@@ -79,12 +90,12 @@ export function GithubSnake() {
 
     function draw() {
       if (!ctx || !canvas) return;
-      ctx.clearRect(0, 0, GRID * CELL, GRID * CELL);
+      ctx.clearRect(0, 0, colsRef.current * CELL, ROWS * CELL);
 
       const isHead = (p: Pos) => p.x === snake[0].x && p.y === snake[0].y;
 
-      for (let x = 0; x < GRID; x++) {
-        for (let y = 0; y < GRID; y++) {
+      for (let x = 0; x < colsRef.current; x++) {
+        for (let y = 0; y < ROWS; y++) {
           const seg = snake.find((s) => s.x === x && s.y === y);
           if (seg) {
             const idx = snake.indexOf(seg);
@@ -103,11 +114,11 @@ export function GithubSnake() {
 
       if (gameOver) {
         ctx.fillStyle = 'rgba(0,0,0,0.7)';
-        ctx.fillRect(0, 0, GRID * CELL, GRID * CELL);
+        ctx.fillRect(0, 0, colsRef.current * CELL, ROWS * CELL);
         ctx.fillStyle = '#27d545';
         ctx.font = 'bold 9px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('// RESTARTING', GRID * CELL / 2, GRID * CELL / 2);
+        ctx.fillText('// RESTARTING', colsRef.current * CELL / 2, ROWS * CELL / 2);
       }
     }
 
@@ -118,14 +129,16 @@ export function GithubSnake() {
   }, []);
 
   return (
-    <div className="rounded-lg border border-white/5 overflow-hidden bg-black/20">
-      <canvas
-        ref={canvasRef}
-        width={GRID * CELL}
-        height={GRID * CELL}
-        className="w-full"
-        style={{ aspectRatio: '1/1', imageRendering: 'pixelated' }}
-      />
+    <div className="rounded-lg border border-white/5 hover:border-red-500/40 bg-black/20 overflow-hidden transition-colors duration-300">
+      <div className="p-3">
+        <canvas
+          ref={canvasRef}
+          width={COLS * CELL}
+          height={ROWS * CELL}
+          className="w-full"
+          style={{ imageRendering: 'pixelated' }}
+        />
+      </div>
     </div>
   );
 }
