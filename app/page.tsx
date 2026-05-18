@@ -29,7 +29,9 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-6">
           <ExperienceSection />
           <SkillsSection />
-          <ProjectsSection />
+          <div className="md:col-span-3 flex flex-col gap-6">
+            <ProjectsSection />
+          </div>
         </div>
 
         {/* Row 3: Testimonials & Contact */}
