@@ -4,6 +4,7 @@ A terminal-inspired bento-grid portfolio built with **Next.js 16**, **MDX via Ve
 
 ## Stack
 
+- **Runtime:** Deno (npm compatibility layer via `deno run -A npm:next`)
 - **Framework:** Next.js 16 (App Router, Turbopack)
 - **Content:** Velite (MDX → typed content)
 - **Styling:** Tailwind CSS, custom CSS animations
@@ -23,10 +24,10 @@ A terminal-inspired bento-grid portfolio built with **Next.js 16**, **MDX via Ve
 ## Getting Started
 
 ```bash
-pnpm install
-pnpm dev        # dev server at localhost:3000
-pnpm build      # production build
-pnpm start      # serve production build
+deno install npm:next npm:next-mdx-remote
+deno run -A npm:next dev        # dev server at localhost:3000
+deno run -A npm:next build      # production build
+deno run -A npm:next start      # serve production build
 ```
 
 ## License

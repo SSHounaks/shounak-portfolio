@@ -3,7 +3,7 @@
 ## Running the dev server
 
 ```bash
-npm run dev
+deno run -A npm:next dev
 ```
 
 This starts the Next.js dev server at `http://localhost:3000`. Velite will rebuild content automatically in watch mode when files change.
@@ -11,7 +11,7 @@ This starts the Next.js dev server at `http://localhost:3000`. Velite will rebui
 ## Building for production
 
 ```bash
-npm run build
+deno run -A npm:next build
 ```
 
 Builds the static site output. Velite runs first to process content, then Next.js compiles and generates pages.
@@ -49,11 +49,24 @@ function Hello() {
 
 ## Adding images
 
-Place images in the `public/` folder and reference them in MDX with standard Markdown syntax:
+Place images in the `public/images/blog/<post-slug>/` folder and reference them with standard Markdown syntax:
 
 ```mdx
-![Alt text](/image-name.jpg)
+![Architecture diagram](/images/blog/url-shortener/architecture.png)
 ```
+
+**Featured image** — set `image` in the frontmatter to show a hero image at the top of the post:
+
+```yaml
+---
+image: /images/blog/url-shortener/hero.png
+---
+```
+
+**File naming conventions:**
+- Use `kebab-case` for all filenames
+- Prefer `.webp` for photos, `.png` for diagrams/screenshots
+- Keep each post's images in its own folder under `public/images/blog/<post-slug>/` for easy management
 
 ## Project structure
 

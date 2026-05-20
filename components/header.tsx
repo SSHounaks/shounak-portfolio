@@ -28,7 +28,7 @@ export function Header() {
                 <a
                   key={item.label}
                   href={item.href}
-                  className={`flex items-center px-3 text-[10px] font-mono uppercase tracking-widest transition-all ${
+                  className={`flex items-center px-3 text-[10px] font-mono font-bold uppercase tracking-widest transition-all ${
                     isActive
                       ? idx === 0
                         ? 'text-black bg-emerald-400 font-bold'
@@ -36,10 +36,10 @@ export function Header() {
                         ? 'text-black bg-amber-400 font-bold'
                         : 'text-black bg-purple-400 font-bold'
                       : idx === 0
-                      ? 'text-emerald-700/50 hover:text-black hover:bg-emerald-400'
+                      ? 'text-emerald-400/70 hover:text-black hover:bg-emerald-400'
                       : idx === 1
-                      ? 'text-amber-700/50 hover:text-black hover:bg-amber-400'
-                      : 'text-purple-700/50 hover:text-black hover:bg-purple-400'
+                      ? 'text-amber-400/70 hover:text-black hover:bg-amber-400'
+                      : 'text-purple-400/70 hover:text-black hover:bg-purple-400'
                   }`}
                 >
                   {item.label}

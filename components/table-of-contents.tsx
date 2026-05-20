@@ -35,7 +35,7 @@ export function TableOfContents({ headings }: { headings: TocEntry[] }) {
   return (
     <aside className="sticky top-24 w-full max-w-[220px]">
       <div className="font-mono text-[10px] text-emerald-500/60 mb-3 tracking-wider uppercase">// sections</div>
-      <nav className="space-y-1">
+      <nav className="space-y-1 overflow-y-auto no-scrollbar max-h-[calc(100vh-140px)]">
         {headings.map((h) => (
           <div key={h.url}>
             <a

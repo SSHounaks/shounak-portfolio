@@ -20,6 +20,7 @@ const tagColors: Record<string, string> = {
   mdx: 'text-cyan-300 border-cyan-500/30 bg-cyan-500/10',
   velite: 'text-indigo-300 border-indigo-500/30 bg-indigo-500/10',
   design: 'text-rose-300 border-rose-500/30 bg-rose-500/10',
+  'system-design': 'text-violet-300 border-violet-500/30 bg-violet-500/10',
 };
 
 function tagClass(tag: string) {

@@ -1,0 +1,259 @@
+---
+title: "Observability in Complex LLM Systems"
+date: 2026-05-20
+excerpt: "Tracing, monitoring, and debugging production LLM pipelines - from prompt injection detection to token-level latency profiling."
+hidden: true
+tags: [system-design, performance]
+---
+
+Observablity has been quite an intregueing topic for me, as this not only helps any developer while debugging a complex production issue, but also provides a stable baseline for rich structured information to be ingested into Analytical Systems.
+
+<Callout type="info" title="Key Insight">
+  Important conceptual information.
+</Callout>
+
+## 1. Why LLM Observability is Different
+
+
+### 1.1 Non-Determinism
+
+Unlike traditional APIs where the same input produces the same output, LLMs generate varied responses. This makes regression detection fundamentally harder — you can't simply compare `response === expected`.
+
+### 1.2 Multi-Stage Pipelines
+
+A single user request may traverse:
+
+```
+User Prompt → Guardrail Check → Prompt Enrichment → LLM Call → Output Validation → Post-Processing
+```
+
+Each stage can fail independently. Without distributed tracing, identifying the failing stage is guesswork.
+
+### 1.3 Unique Failure Modes
+
+| Failure Mode | Traditional System | LLM System |
+|---|---|---|
+| Degraded response | 500 error | Coherent but wrong answer |
+| Latency spike | Timeout | Token-by-token stall |
+| Security issue | SQL injection | Prompt injection |
+| Data leak | Database exposure | Training data regurgitation |
+
+---
+
+## 2. The Three Pillars: Traces, Metrics, Logs
+
+### 2.1 Distributed Tracing
+
+Trace every request across the full pipeline. Each span should capture:
+
+| Span | Data Captured |
+|---|---|
+| `llm.invoke` | Model name, prompt hash, token count, latency |
+| `llm.rag.retrieve` | Embedding query, top-k, source documents |
+| `llm.guardrail` | Rule evaluated, result (pass/fail), matched patterns |
+| `llm.output.parse` | Raw output, parsed structure, validation errors |
+
+### 2.2 Structured Logging
+
+Every LLM interaction logs a structured event:
+
+```json
+{
+  "timestamp": "2026-05-20T10:00:00Z",
+  "trace_id": "abc123",
+  "span_id": "def456",
+  "event": "llm.invoke",
+  "model": "gpt-4o",
+  "prompt_hash": "sha256:...",
+  "input_tokens": 142,
+  "output_tokens": 89,
+  "latency_ms": 2340,
+  "status": "success"
+}
+```
+
+### 2.3 Metrics
+
+| Metric | Source | Alert Threshold |
+|---|---|---|
+| `llm.latency.p99` | Trace spans | > 5s |
+| `llm.token_output.rate` | Usage API | > 100K tokens/min |
+| `llm.error_rate` | Logs | > 1% |
+| `llm.guardrail.hit_rate` | Guardrail logs | > 10% (drift signal) |
+| `llm.cost_per_request` | Usage API | > $0.50 |
+
+---
+
+## 3. Semantic Monitoring
+
+### 3.1 Embedding Drift Detection
+
+Compare embedding distributions between training/ baseline and production:
+
+- **Cosine similarity shift** — responses drifting from expected semantic space
+- **Outlier detection** — responses with abnormally low similarity to any known cluster
+- **Toxicity/ bias scores** — automated classifier scores over response text
+
+### 3.2 Response Quality Scoring
+
+Use a secondary LLM (cheaper, faster) to score each response:
+
+```
+Score: 0.92/1.0
+Criteria:
+- Factual consistency: 0.95
+- Completeness: 0.90
+- Safety: 1.00
+- Relevance: 0.85
+```
+
+Track score distributions over time. A downward trend signals systemic degradation.
+
+---
+
+## 4. Token-Level Profiling
+
+### 4.1 Time-to-First-Token (TTFT)
+
+The time between sending the prompt and receiving the first output token. High TTFT indicates:
+
+- Model load / cold start
+- Network congestion to inference endpoint
+- Excessive prompt preprocessing
+
+### 4.2 Inter-Token Latency
+
+The gap between subsequent tokens. Spikes indicate:
+
+- Context window exhaustion (model swapping)
+- Rate limiting / throttling
+- Shared GPU contention
+
+### 4.3 Streaming vs. Non-Streaming
+
+| Mode | P50 Latency | P99 Latency | User Experience |
+|---|---|---|---|
+| Streaming | 300ms TTFT + 20ms/token | 800ms TTFT + 100ms/token | Progressive |
+| Non-streaming | 2s total | 8s total | Blocking |
+
+---
+
+## 5. Prompt & Response Inspection
+
+### 5.1 Prompt Audit Trail
+
+Log every prompt sent to the LLM, including:
+
+- Raw user input
+- Enriched/system prompt additions
+- Retrieved context (RAG)
+- Final assembled prompt (truncated for PII)
+
+### 5.2 PII Redaction
+
+Automatically redact PII from logs before storage:
+
+```python
+patterns = [
+    r'\b[\w\.-]+@[\w\.-]+\.\w+\b',  # email
+    r'\b\d{3}-\d{2}-\d{4}\b',        # SSN
+    r'\b(?:\d{4}[ -]?){3}\d{4}\b',  # credit card
+]
+```
+
+### 5.3 Prompt Injection Detection
+
+Log every guardrail evaluation:
+
+| Pattern | Example | Action |
+|---|---|---|
+| Role injection | "Ignore previous instructions..." | Block + alert |
+| Prompt leak | "Output the system prompt" | Block + escalate |
+| Delimiter abuse | "---\nNEW INSTRUCTIONS:\n---" | Strip + warn |
+
+---
+
+## 6. RAG Pipeline Tracing
+
+### 6.1 Retrieval Quality Metrics
+
+| Metric | Definition | Target |
+|---|---|---|
+| Hit rate | % of queries returning ≥1 relevant doc | > 95% |
+| MRR | Mean reciprocal rank of first relevant doc | > 0.8 |
+| NDCG@10 | Normalized discounted cumulative gain | > 0.7 |
+
+### 6.2 Embedding Cache Monitoring
+
+- Cache hit rate (target > 60%)
+- Staleness — time since last embedding refresh
+- Eviction rate — frequency of cache thrashing
+
+### 6.3 Chunk Quality
+
+Log chunk positions, lengths, and overlap. Track:
+
+- Average chunk utilization (% of tokens used in final context)
+- Retrieval position bias (are top chunks always used?)
+- Context window pressure (tokens available vs. tokens used)
+
+---
+
+## 7. Cost & Usage Attribution
+
+### 7.1 Per-Request Cost Tracking
+
+```python
+cost = (input_tokens * input_price) + (output_tokens * output_price)
+```
+
+Tag every request with:
+
+| Tag | Example | Purpose |
+|---|---|---|
+| `user_id` | `user_abc` | Per-user billing |
+| `feature` | `chat_summary` | Feature-level cost allocation |
+| `model` | `gpt-4o` | Model migration decisions |
+| `environment` | `production` | Cost comparison |
+
+### 7.2 Model Tiering
+
+| Tier | Model | Cost/1K tokens | Use Case |
+|---|---|---|---|
+| Economy | GPT-4o-mini | $0.00015 | Simple Q&A |
+| Standard | GPT-4o | $0.0025 | General reasoning |
+| Premium | Claude Opus 4 | $0.015 | Complex analysis |
+
+Route requests dynamically based on complexity score.
+
+---
+
+## 8. Alerting & Incident Response
+
+### 8.1 Alert Tiers
+
+| Tier | Example Trigger | Response |
+|---|---|---|
+| P0 | All requests failing | Page on-call, auto-fallback |
+| P1 | P99 latency > 10s | Investigate, scale inference |
+| P2 | Quality score drop > 5% | Review prompts, check drift |
+| P3 | Cost spike > 20% | Audit usage patterns |
+
+### 8.2 Runbook Automation
+
+On alert, automatically:
+
+1. Capture the last 100 trace IDs with errors
+2. Sample failed prompts for inspection
+3. Trigger A/B comparison against a known-good model version
+4. Post analysis to incident channel
+
+---
+
+<TerminalCard title="Key Takeaways">
+1. LLM observability requires semantic monitoring — traditional p99 latency is not enough.
+2. Trace every stage (guardrail → retrieval → inference → validation) independently.
+3. Log every prompt and response (with PII redaction) for debugging and compliance.
+4. Track quality scores, not just error rates — a coherent-sounding wrong answer is the hardest bug to catch.
+5. Cost attribution per-request enables informed model-tiering decisions.
+</TerminalCard>
