@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { cn } from '@/lib/utils';
 
 type TocEntry = {
   title: string;
@@ -10,6 +11,33 @@ type TocEntry = {
 
 export function TableOfContents({ headings }: { headings: TocEntry[] }) {
   const [activeId, setActiveId] = useState<string>('');
+  const [isAtBottom, setIsAtBottom] = useState(false);
+  const [recentScroll, setRecentScroll] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+  const scrollTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const checkBottom = useCallback(() => {
+    const el = navRef.current;
+    if (!el) return;
+    setIsAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 2);
+  }, []);
+
+  const handleScroll = useCallback(() => {
+    checkBottom();
+    setRecentScroll(true);
+    clearTimeout(scrollTimer.current);
+    scrollTimer.current = setTimeout(() => setRecentScroll(false), 1500);
+  }, [checkBottom]);
+
+  useEffect(() => {
+    return () => clearTimeout(scrollTimer.current);
+  }, []);
+
+  useEffect(() => {
+    checkBottom();
+    window.addEventListener('resize', checkBottom);
+    return () => window.removeEventListener('resize', checkBottom);
+  }, [checkBottom, headings]);
 
   useEffect(() => {
     const ids = headings.flatMap(h => [h.url.slice(1), ...h.items.map(c => c.url.slice(1))]);
@@ -35,7 +63,12 @@ export function TableOfContents({ headings }: { headings: TocEntry[] }) {
   return (
     <aside className="sticky top-24 w-full max-w-[220px]">
       <div className="font-mono text-[10px] text-emerald-500/60 mb-3 tracking-wider uppercase">// sections</div>
-      <nav className="space-y-1 overflow-y-auto no-scrollbar max-h-[calc(100vh-140px)]">
+      <div className="relative">
+        <nav
+          ref={navRef as React.RefObject<HTMLElement>}
+          onScroll={handleScroll}
+          className="space-y-1 overflow-y-auto no-scrollbar max-h-[calc(100vh-140px)]"
+        >
         {headings.map((h) => (
           <div key={h.url}>
             <a
@@ -67,7 +100,14 @@ export function TableOfContents({ headings }: { headings: TocEntry[] }) {
             )}
           </div>
         ))}
-      </nav>
+        </nav>
+        <div
+          className={cn(
+            'pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-emerald-500/20 via-emerald-500/5 to-transparent transition-opacity duration-1000',
+            isAtBottom && recentScroll ? 'opacity-100' : 'opacity-0',
+          )}
+        />
+      </div>
     </aside>
   );
 }

@@ -32,12 +32,12 @@ const skills: Skill[] = [
 
 const categories = ['backend', 'frontend', 'devops', 'security', 'ai'] as const;
 
-const categoryColors: Record<string, { text: string; border: string; bar: string }> = {
-  frontend: { text: 'text-amber-400', border: 'border-amber-500/30', bar: 'from-amber-500/60 to-amber-400/80' },
-  backend: { text: 'text-cyan-400', border: 'border-cyan-500/30', bar: 'from-cyan-500/60 to-cyan-400/80' },
-  devops: { text: 'text-purple-400', border: 'border-purple-500/30', bar: 'from-purple-500/60 to-purple-400/80' },
-  security: { text: 'text-rose-400', border: 'border-rose-500/30', bar: 'from-rose-500/60 to-rose-400/80' },
-  ai: { text: 'text-emerald-400', border: 'border-emerald-500/30', bar: 'from-emerald-500/60 to-emerald-400/80' },
+const categoryColors: Record<string, { text: string; textMuted: string; border: string; bar: string }> = {
+  frontend: { text: 'text-amber-400', textMuted: 'text-amber-400/60', border: 'border-amber-500/30', bar: 'from-amber-500/60 to-amber-400/80' },
+  backend: { text: 'text-cyan-400', textMuted: 'text-cyan-400/60', border: 'border-cyan-500/30', bar: 'from-cyan-500/60 to-cyan-400/80' },
+  devops: { text: 'text-purple-400', textMuted: 'text-purple-400/60', border: 'border-purple-500/30', bar: 'from-purple-500/60 to-purple-400/80' },
+  security: { text: 'text-rose-400', textMuted: 'text-rose-400/60', border: 'border-rose-500/30', bar: 'from-rose-500/60 to-rose-400/80' },
+  ai: { text: 'text-emerald-400', textMuted: 'text-emerald-400/60', border: 'border-emerald-500/30', bar: 'from-emerald-500/60 to-emerald-400/80' },
 };
 
 export function SkillsSection() {
@@ -52,9 +52,9 @@ export function SkillsSection() {
               return (
                 <div key={cat}>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className={`${color.text}/60`}>[</span>
-                    <span className={`text-[10px] uppercase tracking-widest ${color.text}/80 font-bold`}>{cat}</span>
-                    <span className={`${color.text}/60`}>]</span>
+                    <span className={color.textMuted}>[</span>
+                    <span className={`text-[10px] uppercase tracking-widest ${color.text} font-bold`}>{cat}</span>
+                    <span className={color.textMuted}>]</span>
                   </div>
                   <div className="space-y-1.5">
                     {catSkills.map((skill) => {

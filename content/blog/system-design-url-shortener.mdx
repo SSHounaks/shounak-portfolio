@@ -2,7 +2,7 @@
 title: "SYSTEM DESIGN: URL Shortner"
 date: 2026-05-19
 excerpt: "A comprehensive architectural deep-dive into designing, scaling, and securing a production-grade URL shortening service — from requirements to deployment."
-hidden: true
+hidden: false
 tags: [system-design]
 ---
 
@@ -65,13 +65,12 @@ Abuse detection|✅|❌|Limited|✅" />
 
 ### 1.6 Core Terminology
 
-| Term | Definition |
-|---|---|
-| Short code / Key | The unique alphanumeric identifier (e.g., `abc123` in `https://short.link/abc123`). |
-| Slug | The human-readable custom alias portion of the short URL. |
-| Redirect | HTTP 301 (permanent) or 302 (temporary) response pointing to the long URL. |
-| Click / Hit | A single successful redirect event. |
-| Collision | Two different long URLs generating the same short key. |
+<TableCSV source="Term|Definition
+Short code / Key|The unique alphanumeric identifier (e.g., `abc123` in `https://short.link/abc123`).
+Slug|The human-readable custom alias portion of the short URL.
+Redirect|HTTP 301 (permanent) or 302 (temporary) response pointing to the long URL.
+Click / Hit|A single successful redirect event.
+Collision|Two different long URLs generating the same short key." />
 
 ---
 
@@ -79,39 +78,36 @@ Abuse detection|✅|❌|Limited|✅" />
 
 ### 2.1 Primary Stakeholders
 
-| Role | Primary Use Case | Frequency |
-|---|---|---|
-| **Anonymous users** | Click short links shared by others | Read-heavy, billions/day |
-| **Content creators** | Create & manage short links | Write-heavy, bursty |
-| **Enterprise admins** | Domain management, team audit logs | Operational, admin |
-| **API consumers** | Programmatic create/read/update/delete | Automated, high throughput |
-| **Security team** | Abuse monitoring, takedown workflows | Event-driven, low volume |
+<TableCSV source="Role|Primary Use Case|Frequency
+Anonymous users|Click short links shared by others|Read-heavy, billions/day
+Content creators|Create & manage short links|Write-heavy, bursty
+Enterprise admins|Domain management, team audit logs|Operational, admin
+API consumers|Programmatic create/read/update/delete|Automated, high throughput
+Security team|Abuse monitoring, takedown workflows|Event-driven, low volume" />
 
 ### 2.2 User Population Distribution
 
 Estimated tier breakdown for a service at 1B redirects/month:
 
-| Tier | Users | % of Users | % of Redirects | Behavior |
-|---|---|---|---|---|
-| Click-only (anonymous) | 500M | 99.95% | 99.5% | GET only |
-| Casual creators | 100K | 0.04% | 0.4% | ~10 links/month |
-| Power creators | 10K | 0.004% | 0.08% | ~500 links/month |
-| API / Enterprise | 500 | 0.0002% | 0.02% | ~5000 links/month |
+<TableCSV source="Tier|Users|% of Users|% of Redirects|Behavior
+Click-only (anonymous)|500M|99.95%|99.5%|GET only
+Casual creators|100K|0.04%|0.4%|~10 links/month
+Power creators|10K|0.004%|0.08%|~500 links/month
+API / Enterprise|500|0.0002%|0.02%|~5000 links/month" />
 
 **Key insight:** 0.05% of users generate 0.5% of writes but require 90% of the API infrastructure.
 
 ### 2.3 Usage Metrics & SLO Targets
 
-| Metric | Current Target | Year+2 Projection |
-|---|---|---|
-| Total stored links | 500M | 2B |
-| Monthly redirects | 1B | 5B |
-| Peak redirects/second | 60K | 300K |
-| Peak creates/second | 2K | 10K |
-| P99 redirect latency | < 50ms | < 50ms |
-| P99 create latency | < 200ms | < 200ms |
-| Availability SLA | 99.95% | 99.99% |
-| Durability | 99.9999999% | 99.9999999% |
+<TableCSV source="Metric|Current Target|Year+2 Projection
+Total stored links|500M|2B
+Monthly redirects|1B|5B
+Peak redirects/second|60K|300K
+Peak creates/second|2K|10K
+P99 redirect latency|< 50ms|< 50ms
+P99 create latency|< 200ms|< 200ms
+Availability SLA|99.95%|99.99%
+Durability|99.9999999%|99.9999999%" />
 
 ---
 
@@ -119,59 +115,43 @@ Estimated tier breakdown for a service at 1B redirects/month:
 
 ### 3.1 Functional Requirements
 
-#### 3.1.1 Core Redirect
-- **FR-01** — System MUST redirect a short URL to its corresponding long URL via HTTP 301/302.
-- **FR-02** — Custom aliases SHALL be user-specified (min 4, max 32 chars, alphanumeric + `-` `_`).
-- **FR-03** — Auto-generated keys SHALL be base62 encoded (7 chars → ~3.5T unique combinations).
-- **FR-04** — Expired links SHALL return HTTP 410 Gone with a meaningful message.
-
-#### 3.1.2 Link Management (CRUD)
-- **FR-05** — Authenticated users MAY create, read, update, and delete their links.
-- **FR-06** — Updates to a link's destination MUST propagate within 60 seconds (eventual consistency).
-- **FR-07** — Bulk operations (CSV import/export, batch delete) SHALL be supported via async jobs.
-
-#### 3.1.3 Analytics
-- **FR-08** — Every redirect SHALL record: timestamp, IP (truncated / anonymized), user-agent, referrer.
-- **FR-09** — Creators SHALL see aggregates: total clicks, unique clicks, top referrers, top geos, device breakdown, hourly/daily trends.
-- **FR-10** — Analytics data SHALL be queryable via API with pagination and date-range filters.
-
-#### 3.1.4 Security & Abuse
-- **FR-11** — System SHALL scan every destination URL against a phishing / malware blocklist before creating the link.
-- **FR-12** — Password-protected links SHALL require a correct `X-Shortlink-Password` header or session before redirect.
-- **FR-13** — Rate limiting SHALL be enforced per API key and per IP.
-
-#### 3.1.5 Administration
-- **FR-14** — Admin dashboard SHALL support link takedown, user suspension, and domain blacklisting.
-- **FR-15** — Audit logs SHALL record every administrative action with before/after state.
+<TableCSV source="Requirement #|Description
+FR-01|System MUST redirect a short URL to its corresponding long URL via HTTP 301/302.
+FR-02|Custom aliases SHALL be user-specified (min 4, max 32 chars, alphanumeric + `-` `_`).
+FR-03|Auto-generated keys SHALL be base62 encoded (7 chars → ~3.5T unique combinations).
+FR-04|Expired links SHALL return HTTP 410 Gone with a meaningful message.
+FR-05|Authenticated users MAY create, read, update, and delete their links.
+FR-06|Updates to a link's destination MUST propagate within 60 seconds (eventual consistency).
+FR-07|Bulk operations (CSV import/export, batch delete) SHALL be supported via async jobs.
+FR-08|Every redirect SHALL record: timestamp, IP (truncated / anonymized), user-agent, referrer.
+FR-09|Creators SHALL see aggregates: total clicks, unique clicks, top referrers, top geos, device breakdown, hourly/daily trends.
+FR-10|Analytics data SHALL be queryable via API with pagination and date-range filters.
+FR-11|System SHALL scan every destination URL against a phishing / malware blocklist before creating the link.
+FR-12|Password-protected links SHALL require a correct `X-Shortlink-Password` header or session before redirect.
+FR-13|Rate limiting SHALL be enforced per API key and per IP.
+FR-14|Admin dashboard SHALL support link takedown, user suspension, and domain blacklisting.
+FR-15|Audit logs SHALL record every administrative action with before/after state." />
 
 ### 3.2 Non-Functional Requirements
 
-#### 3.2.1 Performance
-- **NFR-01** — P99 redirect latency ≤ 50ms (excluding network round-trip to client).
-- **NFR-02** — P95 link creation latency ≤ 200ms.
-- **NFR-03** — Analytics queries over 30-day window SHALL return in ≤ 5s.
-- **NFR-04** — Read path SHALL sustain 100K RPS per region with < 1% degradation.
-
-#### 3.2.2 Availability & Durability
-- **NFR-05** — Redirect path availability ≥ 99.99% (≈53 min downtime/year).
-- **NFR-06** — Link metadata durability ≥ 11 nines (backup to offline/cold storage).
-- **NFR-07** — Cold-start recovery time ≤ 15 minutes with automated failover.
-
-#### 3.2.3 Scalability
-- **NFR-08** — System SHALL scale horizontally: redirect tier, API tier, and database tier.
-- **NFR-09** — Read path SHALL add capacity linearly with node count.
-- **NFR-10** — Write path SHALL gracefully handle 100× burst traffic (viral campaigns).
-
-#### 3.2.4 Security & Compliance
-- **NFR-11** — All API traffic SHALL be TLS 1.3.
-- **NFR-12** — PII (IP addresses) SHALL be truncated/aggregated within 24 hours.
-- **NFR-13** — System SHALL comply with GDPR, CCPA, SOC 2 Type II.
-- **NFR-14** — Secrets (DB creds, API keys, encryption keys) SHALL be rotated every 90 days.
-
-#### 3.2.5 Operational
-- **NFR-15** — Deployments SHALL be zero-downtime (rolling or blue-green).
-- **NFR-16** — System SHALL expose health-check and readiness endpoints with dependency status.
-- **NFR-17** — Every component SHALL export Prometheus metrics; key alerts SHALL page on-call within 5 minutes.
+<TableCSV source="Requirement #|Description
+NFR-01|P99 redirect latency ≤ 50ms (excluding network round-trip to client).
+NFR-02|P95 link creation latency ≤ 200ms.
+NFR-03|Analytics queries over 30-day window SHALL return in ≤ 5s.
+NFR-04|Read path SHALL sustain 100K RPS per region with < 1% degradation.
+NFR-05|Redirect path availability ≥ 99.99% (≈53 min downtime/year).
+NFR-06|Link metadata durability ≥ 11 nines (backup to offline/cold storage).
+NFR-07|Cold-start recovery time ≤ 15 minutes with automated failover.
+NFR-08|System SHALL scale horizontally: redirect tier, API tier, and database tier.
+NFR-09|Read path SHALL add capacity linearly with node count.
+NFR-10|Write path SHALL gracefully handle 100× burst traffic (viral campaigns).
+NFR-11|All API traffic SHALL be TLS 1.3.
+NFR-12|PII (IP addresses) SHALL be truncated/aggregated within 24 hours.
+NFR-13|System SHALL comply with GDPR, CCPA, SOC 2 Type II.
+NFR-14|Secrets (DB creds, API keys, encryption keys) SHALL be rotated every 90 days.
+NFR-15|Deployments SHALL be zero-downtime (rolling or blue-green).
+NFR-16|System SHALL expose health-check and readiness endpoints with dependency status.
+NFR-17|Every component SHALL export Prometheus metrics; key alerts SHALL page on-call within 5 minutes." />
 
 ---
 
@@ -227,13 +207,12 @@ Estimated tier breakdown for a service at 1B redirects/month:
 
 ### 4.4 Making the System Cost Effective
 
-| Strategy | Savings Estimate | Complexity |
-|---|---|---|
-| Pre-generated keys in object store vs. on-the-fly ID generation | ~30% DB write reduction | Low |
-| Tiered storage: Hot (Redis) → Warm (SSD Postgres) → Cold (GCS/S3) | ~60% storage cost reduction | Medium |
-| Spot/preemptible instances for analytics workers | ~70% compute cost reduction | Low |
-| CDN edge redirects for top 10K links | ~90% redirect compute offload | Medium |
-| Compression & columnar storage for analytics | ~80% analytics query cost | High |
+<TableCSV source="Strategy|Savings Estimate|Complexity
+Pre-generated keys in object store vs. on-the-fly ID generation|~30% DB write reduction|Low
+Tiered storage: Hot (Redis) → Warm (SSD Postgres) → Cold (GCS/S3)|~60% storage cost reduction|Medium
+Spot/preemptible instances for analytics workers|~70% compute cost reduction|Low
+CDN edge redirects for top 10K links|~90% redirect compute offload|Medium
+Compression & columnar storage for analytics|~80% analytics query cost|High" />
 
 ---
 
@@ -247,15 +226,14 @@ Client → CDN / DNS → Global HTTP LB → API Gateway → Auth Service → Red
 
 #### 5.1.1 API Surface
 
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| GET | `/{key}` | Redirect to long URL | Optional (password) |
-| POST | `/api/v1/links` | Create short link | API key |
-| GET | `/api/v1/links/{id}` | Get link details | API key |
-| PATCH | `/api/v1/links/{id}` | Update destination | API key |
-| DELETE | `/api/v1/links/{id}` | Delete link | API key |
-| GET | `/api/v1/links/{id}/analytics` | Get click analytics | API key |
-| POST | `/api/v1/bulk` | Bulk create links | API key + scope |
+<TableCSV source="Method|Endpoint|Description|Auth
+GET|`/{key}`|Redirect to long URL|Optional (password)
+POST|`/api/v1/links`|Create short link|API key
+GET|`/api/v1/links/{id}`|Get link details|API key
+PATCH|`/api/v1/links/{id}`|Update destination|API key
+DELETE|`/api/v1/links/{id}`|Delete link|API key
+GET|`/api/v1/links/{id}/analytics`|Get click analytics|API key
+POST|`/api/v1/bulk`|Bulk create links|API key + scope" />
 
 #### 5.1.2 API Gateway Responsibilities
 - Rate limiting (token bucket per API key)
@@ -268,17 +246,16 @@ Client → CDN / DNS → Global HTTP LB → API Gateway → Auth Service → Red
 
 #### 5.2.1 Link Metadata — Primary Store
 
-| Field | Type | Index |
-|---|---|---|
-| `id` | UUID (PK) | Primary |
-| `short_key` | VARCHAR(10) | Unique BTREE |
-| `long_url` | TEXT | GIN trigram |
-| `user_id` | UUID | BTREE |
-| `created_at` | TIMESTAMPTZ | BTREE |
-| `expires_at` | TIMESTAMPTZ | Partial BTREE |
-| `password_hash` | VARCHAR(256) | None |
-| `is_active` | BOOLEAN | Partial BTREE |
-| `version` | INTEGER | Optimistic lock |
+<TableCSV source="Field|Type|Index
+`id`|UUID (PK)|Primary
+`short_key`|VARCHAR(10)|Unique BTREE
+`long_url`|TEXT|GIN trigram
+`user_id`|UUID|BTREE
+`created_at`|TIMESTAMPTZ|BTREE
+`expires_at`|TIMESTAMPTZ|Partial BTREE
+`password_hash`|VARCHAR(256)|None
+`is_active`|BOOLEAN|Partial BTREE
+`version`|INTEGER|Optimistic lock" />
 
 **Storage engine:** PostgreSQL (or Spanner for global distribution).
 
@@ -286,15 +263,14 @@ Client → CDN / DNS → Global HTTP LB → API Gateway → Auth Service → Red
 
 Use **Apache Kafka** or **Amazon Kinesis** as an event bus, then sink to a columnar store:
 
-| Field | Type | Notes |
-|---|---|---|
-| `short_key` | VARCHAR(10) | Partition key |
-| `timestamp` | TIMESTAMPTZ | Event time |
-| `ip_truncated` | VARCHAR(15) | /24 subnet |
-| `user_agent` | TEXT | Raw |
-| `referrer` | TEXT | Raw |
-| `country_code` | CHAR(2) | GeoIP lookup |
-| `device_type` | VARCHAR(20) | Mobile / Desktop / Tablet |
+<TableCSV source="Field|Type|Notes
+`short_key`|VARCHAR(10)|Partition key
+`timestamp`|TIMESTAMPTZ|Event time
+`ip_truncated`|VARCHAR(15)|/24 subnet
+`user_agent`|TEXT|Raw
+`referrer`|TEXT|Raw
+`country_code`|CHAR(2)|GeoIP lookup
+`device_type`|VARCHAR(20)|Mobile / Desktop / Tablet" />
 
 **Storage engine:** ClickHouse or BigQuery for analytics; raw events stream to S3 for archival in Parquet.
 
@@ -304,13 +280,12 @@ Use **Apache Kafka** or **Amazon Kinesis** as an event bus, then sink to a colum
 
 ### 5.3 Load Balancing Strategies
 
-| Layer | Strategy | Technology |
-|---|---|---|
-| **Global DNS** | Anycast + Latency-based routing | Route53 / Cloud DNS |
-| **HTTP LB** | Least-connections + ring-hash session affinity | Google Cloud LB / AWS ALB |
-| **Internal RPC** | Client-side load balancing with P2C (power of two choices) | gRPC + Envoy sidecar |
-| **Cache (Redis)** | Consistent hashing with virtual nodes | Redis Cluster / Valkey |
-| **Database** | Read replicas (round-robin); Shards (key-based routing) | PgBouncer / ProxySQL |
+<TableCSV source="Layer|Strategy|Technology
+Global DNS|Anycast + Latency-based routing|Route53 / Cloud DNS
+HTTP LB|Least-connections + ring-hash session affinity|Google Cloud LB / AWS ALB
+Internal RPC|Client-side load balancing with P2C (power of two choices)|gRPC + Envoy sidecar
+Cache (Redis)|Consistent hashing with virtual nodes|Redis Cluster / Valkey
+Database|Read replicas (round-robin); Shards (key-based routing)|PgBouncer / ProxySQL" />
 
 ### 5.4 Message Queues & CQRS
 
@@ -327,10 +302,9 @@ Use **Apache Kafka** or **Amazon Kinesis** as an event bus, then sink to a colum
 
 #### 5.4.2 CQRS Pattern
 
-| Path | Store | Consistency |
-|---|---|---|
-| **Command (Write)** | PostgreSQL (primary) | Strong |
-| **Query (Read)** | Redis → PostgreSQL (replica) | Eventual (≤ 1s) |
+<TableCSV source="Path|Store|Consistency
+Command (Write)|PostgreSQL (primary)|Strong
+Query (Read)|Redis → PostgreSQL (replica)|Eventual (≤ 1s)" />
 
 **Why CQRS here:**
 - Read-to-write ratio is extreme (99.9% reads).
@@ -339,12 +313,11 @@ Use **Apache Kafka** or **Amazon Kinesis** as an event bus, then sink to a colum
 
 #### 5.4.3 Async Job Queue
 
-| Job Type | Queue | Consumer | SLA |
-|---|---|---|---|
-| Link creation | Priority queue (Redis) | API worker | < 200ms |
-| Bulk import | Batch queue (RabbitMQ) | Importer worker | < 5min |
-| Link expiry | Scheduled queue (w/ delay) | Expiry worker | < 1min |
-| Abuse scan | FIFO queue | Scanner worker | < 30s |
+<TableCSV source="Job Type|Queue|Consumer|SLA
+Link creation|Priority queue (Redis)|API worker|< 200ms
+Bulk import|Batch queue (RabbitMQ)|Importer worker|< 5min
+Link expiry|Scheduled queue (w/ delay)|Expiry worker|< 1min
+Abuse scan|FIFO queue|Scanner worker|< 30s" />
 
 ---
 
@@ -352,63 +325,60 @@ Use **Apache Kafka** or **Amazon Kinesis** as an event bus, then sink to a colum
 
 ### 6.1 Key Design Principles
 
-| Principle | Application |
-|---|---|
-| **Separation of concerns** | Redirect path ≠ API path ≠ Analytics path. Independent deploy & scale. |
-| **Stateless over stateful** | Redirect pods are ephemeral; no local state beyond LRU cache. |
-| **Fail fast** | Downstream dependency timeout → degrade → return 503 with backoff hint. |
-| **Defense in depth** | Every layer (LB, API, DB, analytics) has its own authz policy. |
-| **Observability by default** | Every service exports metrics, structured logs, and distributed traces. |
+<TableCSV source="Principle|Application
+Separation of concerns|Redirect path ≠ API path ≠ Analytics path. Independent deploy & scale.
+Stateless over stateful|Redirect pods are ephemeral; no local state beyond LRU cache.
+Fail fast|Downstream dependency timeout → degrade → return 503 with backoff hint.
+Defense in depth|Every layer (LB, API, DB, analytics) has its own authz policy.
+Observability by default|Every service exports metrics, structured logs, and distributed traces." />
 
 ### 6.2 Tradeoff Analysis
 
 #### 6.2.1 Auto-Generated Key Length: 7 vs. 8 Characters
 
-| | 7 chars | 8 chars |
-|---|---|---|
-| Keyspace | 3.5T | 218T |
-| URL overhead | +0 bytes | +1 byte |
-| User experience | More collisions; compact | Safer; slightly longer |
-| **Choice:** | ✅ 7 chars | — |
+<TableCSV source="|7 chars|8 chars
+Keyspace|3.5T|218T
+URL overhead|+0 bytes|+1 byte
+User experience|More collisions; compact|Safer; slightly longer" />
 
-**Rationale:** 3.5T is sufficient for years; shorter URLs improve sharing UX.
+**Choice: 7 chars** — 3.5T is sufficient for years; shorter URLs improve sharing UX.
 
 #### 6.2.2 Base62 vs. Base64 vs. UUID
 
-| Criterion | Base62 | Base64 URL-safe | UUID |
-|---|---|---|---|
-| Length | 7 chars | 6 chars | 36 chars |
-| Collision resistance | Probabilistic | Probabilistic | Deterministic |
-| Guessability | Sequential (if naively done) | Non-sequential | Non-sequential |
-| **Choice:** | ✅ Base62 (no +/ = issues) | — | — |
+<TableCSV source="Criterion|Base62|Base64 URL-safe|UUID
+Length|7 chars|6 chars|36 chars
+Collision resistance|Probabilistic|Probabilistic|Deterministic
+Guessability|Sequential (if naively done)|Non-sequential|Non-sequential" />
+
+**Choice: Base62** (no `+/` `=` issues)
 
 #### 6.2.3 Cache-Aside vs. Write-Through Cache
 
-| | Cache-Aside | Write-Through |
-|---|---|---|
-| Read latency | Cache miss → slower hit | Always fast   |
-| Write latency | No impact | +1-2ms per write |
-| Cache staleness | Possible stale read | Always consistent |
-| **Choice:** | ✅ (redirects are 99.9% reads) | — |
+<TableCSV source="|Cache-Aside|Write-Through
+Read latency|Cache miss → slower hit|Always fast
+Write latency|No impact|+1-2ms per write
+Cache staleness|Possible stale read|Always consistent" />
+
+**Choice: Cache-Aside** (redirects are 99.9% reads)
 
 #### 6.2.4 PostgreSQL vs. DynamoDB vs. Spanner
 
-| | PostgreSQL | DynamoDB | Spanner |
-|---|---|---|---|
-| Latency (P99) | 5ms (replica) | 10ms | 10ms |
-| Strong consistency | ✅ | ❌ (optional) | ✅ |
-| Joins / analytics | ✅ | ❌ | Limited |
-| Global distribution | Manual (logical replication) | Multi-region | Built-in |
-| **Choice:** | ✅ (for link metadata) | — | — (v2) |
+<TableCSV source="|PostgreSQL|DynamoDB|Spanner
+Latency (P99)|5ms (replica)|10ms|10ms
+Strong consistency|✅|❌ (optional)|✅
+Joins / analytics|✅|❌|Limited
+Global distribution|Manual (logical replication)|Multi-region|Built-in" />
+
+**Choice: PostgreSQL** (for link metadata); Spanner deferred to v2.
 
 #### 6.2.5 Row-Level vs. Bucket Rate Limiting
 
-| | Row-level (exact) | Bucket (token bucket) |
-|---|---|---|
-| Memory per key | 100 bytes | 10 bytes |
-| Accuracy | Exact per-API-key | Approximate |
-| Bypass risk | None | Low-level burst allowed |
-| **Choice:** | — | ✅ (memory-efficient at scale) |
+<TableCSV source="|Row-level (exact)|Bucket (token bucket)
+Memory per key|100 bytes|10 bytes
+Accuracy|Exact per-API-key|Approximate
+Bypass risk|None|Low-level burst allowed" />
+
+**Choice: Bucket (token bucket)** — memory-efficient at scale.
 
 ### 6.3 What We Are NOT Building (v1)
 
@@ -423,17 +393,16 @@ Use **Apache Kafka** or **Amazon Kinesis** as an event bus, then sink to a colum
 
 ### 7.1 Threat Model
 
-| Threat | Vector | Impact | Mitigation |
-|---|---|---|---|
-| **Phishing link creation** | Public API | Reputational damage | Pre-scan every URL against Google Safe Browsing + custom blocklist |
-| **Short-key enumeration** | Sequential keys | Data leak (guess other users' links) | Cryptographic nonce-like key generation |
-| **Password brute-force** | Protected link | Unauthorized access | Rate-limit password attempts; exponential backoff |
-| **API key leakage** | Logs / client side | Account takeover | API keys with scoped permissions; rotate every 90d |
-| **DDoS on redirect path** | Public endpoint | Availability degradation | Cloudflare / Google Cloud Armor; WAF rules; rate limiting |
-| **Cache poisoning** | Redis | Serve wrong redirects | Redis ACLs; network isolation; TLS to Redis |
-| **SQL injection** | API input | Data exfiltration | Parameterized queries; input sanitization |
-| **Supply chain** | npm/pip deps | RCE / backdoor | Dependency scanning (Dependabot, Snyk); lockfiles; SBOM |
-| **Insider threat** | Admin dashboard | Mass link hijack | Just-in-time admin access; audit logs; break-glass procedures |
+<TableCSV source="Threat|Vector|Impact|Mitigation
+Phishing link creation|Public API|Reputational damage|Pre-scan every URL against Google Safe Browsing + custom blocklist
+Short-key enumeration|Sequential keys|Data leak (guess other users' links)|Cryptographic nonce-like key generation
+Password brute-force|Protected link|Unauthorized access|Rate-limit password attempts; exponential backoff
+API key leakage|Logs / client side|Account takeover|API keys with scoped permissions; rotate every 90d
+DDoS on redirect path|Public endpoint|Availability degradation|Cloudflare / Google Cloud Armor; WAF rules; rate limiting
+Cache poisoning|Redis|Serve wrong redirects|Redis ACLs; network isolation; TLS to Redis
+SQL injection|API input|Data exfiltration|Parameterized queries; input sanitization
+Supply chain|npm/pip deps|RCE / backdoor|Dependency scanning (Dependabot, Snyk); lockfiles; SBOM
+Insider threat|Admin dashboard|Mass link hijack|Just-in-time admin access; audit logs; break-glass procedures" />
 
 ### 7.2 Security Controls
 
@@ -482,24 +451,22 @@ Use **Apache Kafka** or **Amazon Kinesis** as an event bus, then sink to a colum
 
 ### 7.3 Incident Response Plan
 
-| Phase | Actions | SLA |
-|---|---|---|
-| Detection | Monitoring alert → on-call paged | 5 min |
-| Triage | Assess severity (S0–S3) | 15 min |
-| Containment | Rate-limit / block offending traffic | 30 min |
-| Eradication | Remove malicious links; patch vulnerability | 4 hrs |
-| Recovery | Restore from backup if needed | 2 hrs |
-| Post-mortem | Root cause analysis; public disclosure if required | 72 hrs |
+<TableCSV source="Phase|Actions|SLA
+Detection|Monitoring alert → on-call paged|5 min
+Triage|Assess severity (S0–S3)|15 min
+Containment|Rate-limit / block offending traffic|30 min
+Eradication|Remove malicious links; patch vulnerability|4 hrs
+Recovery|Restore from backup if needed|2 hrs
+Post-mortem|Root cause analysis; public disclosure if required|72 hrs" />
 
 ### 7.4 Compliance Checkpoints
 
-| Regulation | Requirement | Implementation |
-|---|---|---|
-| GDPR Art. 17 | Right to erasure | Async delete job purges click logs and link data |
-| GDPR Art. 32 | Security of processing | Encryption at rest + in transit; access controls |
-| CCPA | Right to opt-out | Do-not-sell toggle on dashboard |
-| SOC 2 CC6.1 | Logical and physical access controls | IAM, RBAC, audit logs |
-| SOC 2 CC7.2 | Monitoring of system operations | Prometheus + PagerDuty; quarterly penetration testing |
+<TableCSV source="Regulation|Requirement|Implementation
+GDPR Art. 17|Right to erasure|Async delete job purges click logs and link data
+GDPR Art. 32|Security of processing|Encryption at rest + in transit; access controls
+CCPA|Right to opt-out|Do-not-sell toggle on dashboard
+SOC 2 CC6.1|Logical and physical access controls|IAM, RBAC, audit logs
+SOC 2 CC7.2|Monitoring of system operations|Prometheus + PagerDuty; quarterly penetration testing" />
 
 ---
 
@@ -532,16 +499,15 @@ Client          DNS/LB          Redirect Pod        Redis         PostgreSQL
 
 ### 8.3 Cost Projection (Monthly, at 1B redirects)
 
-| Component | Units | Unit Cost | Monthly Cost |
-|---|---|---|---|
-| Redirect pods (100 replicas) | 100 × n2-standard-4 | $120 | $12,000 |
-| Redis cluster (5 nodes) | 5 × n2-standard-8 | $400 | $2,000 |
-| PostgreSQL (3 nodes × 4 replicas) | 12 × n2-standard-16 | $900 | $10,800 |
-| Kafka (3 brokers) | 3 × n2-standard-8 | $400 | $1,200 |
-| ClickHouse (3 nodes) | 3 × n2-standard-16 | $900 | $2,700 |
-| CDN / Egress (10 PB) | 10,000 TB × $0.08 | $0.08/GB | $800 |
-| Object Storage (cold) | 50 TB | $0.02/GB | $1,000 |
-| **Total** | | | **$30,500** |
+<TableCSV source="Component|Units|Unit Cost|Monthly Cost
+Redirect pods (100 replicas)|100 × n2-standard-4|$120|$12,000
+Redis cluster (5 nodes)|5 × n2-standard-8|$400|$2,000
+PostgreSQL (3 nodes × 4 replicas)|12 × n2-standard-16|$900|$10,800
+Kafka (3 brokers)|3 × n2-standard-8|$400|$1,200
+ClickHouse (3 nodes)|3 × n2-standard-16|$900|$2,700
+CDN / Egress (10 PB)|10,000 TB × $0.08|$0.08/GB|$800
+Object Storage (cold)|50 TB|$0.02/GB|$1,000
+Total|||**$30,500**" />
 
 ---
 
