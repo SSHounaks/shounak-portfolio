@@ -3,12 +3,15 @@ import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { Inter, Sora } from 'next/font/google'
+import { baseMetadata, jsonLdPerson } from '@/lib/metadata'
+import { JsonLd } from '@/components/json-ld'
 
 // Initialize fonts
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const sora = Sora({ subsets: ['latin'], weight: ['600', '700', '800'], variable: '--font-sora' })
 
 export const metadata: Metadata = {
+  ...baseMetadata(),
   title: 'Shounak Bhalerao | Portfolio',
   description: 'Full Stack Developer & Cybersecurity Expert — 5.5 years designing and shipping production-grade systems at scale.',
   generator: 'opencode.ai',
@@ -32,6 +35,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${sora.variable} bg-background text-on-background font-body-md overflow-x-hidden selection:bg-primary selection:text-on-primary min-h-screen`}>
+        <JsonLd data={jsonLdPerson()} />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

@@ -5,21 +5,25 @@ export function Footer() {
         © 2026 SHOUNAK BHALERAO // BUILD_ID: 89X-FF2
       </div>
       <div className="flex gap-8 mt-4 md:mt-0">
-        <a 
+        <a
           className="font-mono text-[10px] text-on-surface-variant hover:text-secondary transition-colors uppercase tracking-widest"
-          href="#"
+          href="mailto:shounakbhalerao777@gmail.com"
         >
-          Twitter
+          Email
         </a>
-        <a 
+        <a
           className="font-mono text-[10px] text-on-surface-variant hover:text-secondary transition-colors uppercase tracking-widest"
-          href="#"
+          href="https://github.com/Shounaks"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           GitHub
         </a>
-        <a 
+        <a
           className="font-mono text-[10px] text-on-surface-variant hover:text-secondary transition-colors uppercase tracking-widest"
-          href="#"
+          href="https://linkedin.com/in/shounak-bhalerao"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           LinkedIn
         </a>

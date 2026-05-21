@@ -16,6 +16,8 @@ import { TableOfContents } from '@/components/table-of-contents';
 import { ReadingProgress } from '@/components/reading-progress';
 import { CodeCopyHandler } from '@/components/code-copy-btn';
 import { mdxComponents } from '@/lib/mdx-components';
+import { blogMetadata, jsonLdBlogPosting } from '@/lib/metadata';
+import { JsonLd } from '@/components/json-ld';
 
 const tagColors: Record<string, string> = {
   react: 'text-sky-300 border-sky-500/30 bg-sky-500/10',
@@ -33,6 +35,13 @@ const tagColors: Record<string, string> = {
 
 function tagClass(tag: string) {
   return tagColors[tag] || 'text-amber-300 border-amber-500/30 bg-amber-500/10';
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = posts.find((p) => p.slug === slug);
+  if (!post) return {};
+  return blogMetadata(post);
 }
 
 export function generateStaticParams() {
@@ -64,6 +73,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <BackgroundCanvas />
       <Header />
       <ReadingProgress />
+      <JsonLd data={jsonLdBlogPosting(post)} />
       <div className="min-h-screen bg-background p-6 md:p-10 max-w-[1100px] mx-auto pt-24">
         <article className="lg:flex lg:gap-10">
           <div className="flex-1 min-w-0 max-w-[800px]">
