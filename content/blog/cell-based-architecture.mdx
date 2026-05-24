@@ -1,0 +1,288 @@
+---
+title: Cell Based Architecture
+date: 2026-05-24
+excerpt: Safe evolution under scale - from monoliths to microservices to shards to cells
+tags: [system-design, performance]
+hidden: false
+---
+
+## Prologue
+
+The question that started this essay is deceptively simple: *how do you build a SaaS product that can evolve safely at scale?*
+
+Not scale throughput. Not scale teams. But scale *change* - without every deployment feeling like a bet-the-company event.
+
+Throughout my tenure at Atlassian, I watched how deeply infrastructure abstraction shapes organizational velocity. The difference between a startup shipping freely and an enterprise moving cautiously isn't just process - it's architecture. The isolation boundaries you choose determine how fast you can safely evolve.
+
+This essay is the distillation of that observation. It traces the natural evolution of isolation boundaries - from monoliths to microservices to shards to cells - and explains why the industry is converging on cell-based architecture as the primitive for fleet-level safety.
+
+<Callout type="info" title="What this essay is">
+  A long-form systems engineering essay on how isolation boundaries evolve under operational pressure. Not a tutorial. Not a sales pitch. A causal chain from first principles to production reality.
+</Callout>
+
+## Traditional Service Architecture
+
+It is remarkably easy to build a service that works for a hundred customers. Spin up an <Tip tip="Amazon Elastic Compute Cloud - virtual servers in AWS">EC2</Tip> instance, connect it to <Tip tip="Amazon Relational Database Service - managed SQL databases">RDS</Tip>, put a load balancer in front, and you have a standard three-tier application with reasonable separation of concerns.
+
+<Figure size="small" src="/static/cell-architecture.svg" alt="Standard three-tier architecture with ALB and Auto Scaling Group" caption="The default architecture: simple, shared, and sufficient - until it isn't" />
+
+Scale that to a thousand customers, and you add Auto Scaling Groups. Ten thousand, and you introduce caching layers, read replicas, and queue-based load shedding. The architecture grows *technically* - more instances, more redundancy, more throughput.
+
+But underneath all of that growth, something critical remains unchanged: *everything is shared*. Every customer's requests hit the same load balancers, the same database cluster, the same deployment pipeline. The system scales technically, but operationally everything stays coupled.
+
+> "The system scales technically, but operationally everything remains shared."
+
+This coupling is invisible during normal operation. It only reveals itself during failure. A bad deployment doesn't just affect the team that shipped it - it affects every tenant on the platform. A misconfigured migration doesn't just slow down one query pattern - it risks the entire datastore.
+
+The default architecture is not wrong. It is correct for its domain. But the domain changes when the cost of shared fate exceeds the cost of partitioning.
+
+<Callout type="info" title="→ The first isolation primitive">
+  When the cost of shared fate exceeds the cost of partitioning, the natural evolution is to partition the service itself. What follows is **service sharding** - the first isolation boundary.
+</Callout>
+
+## Service Sharding
+
+The first architectural insight is that not every customer needs to share the same runtime.
+
+<Callout type="error" title="Sharding is not Horizontal Scaling">
+  A load-balanced fleet of identical service instances is *replication*, not sharding. This distinction matters enormously.
+
+  <TableCSV compact source="Dimension| Service Replication | Service Sharding
+  State | Stateless | Stateful
+  Request Routing | Any instance can serve any request | Each request has a correct shard
+  Load Distribution | Random / Round Robin / Least Loaded | Deterministic based on routing key
+  Failure of One Instance | Other instances pick up traffic | Only customers on that shard are affected
+  " />
+</Callout>
+
+Service sharding partitions a service into multiple operationally-independent instances called *shards*. Each shard owns everything needed to serve its slice of customers - its own compute, its own database, its own deployment lifecycle.
+
+<Figure size="small" src="/static/sharding-topology.svg" alt="Shard registry routing requests to three shards, each with its own service, database, and queue" caption="A shard registry maps tenants to shards, each of which is a self-contained operational unit" />
+
+The advantages follow from the isolation:
+- <Tip tip="A shard can deploy, scale, or fail without affecting any other shard">**Independent**</Tip> - Shards share no state, deployments, or failure domains.
+- <Tip tip="Each shard is a fully self-contained service that owns its slice of customers and data">**Complete**</Tip>  - No shard depends on another to serve its requests.
+- <Tip tip="A customer always routes to the same shard - this is not load balancing">**Subset**</Tip> - Each customer belongs to exactly one shard, determined by a routing key.
+
+
+### What Makes a Shard?
+
+A shard is not just a database partition. For it to serve as a complete operational unit, it needs:
+
+- A **unique shard name** and environment assignment (dev, staging, prod, prod-eu)
+- The **service or services** it hosts
+- **Region, availability zone, and topology metadata**
+- A **type** - for tainting or capability tagging
+- **Service mesh or sidecar** integration for cross-shard communication
+
+### Routing to a Shard
+
+Once sharded, every request must reach its correct shard. This requires a resource identifier that encodes the routing decision.
+
+<Quote from="Atlassian Resource Identifier" link="https://developer.atlassian.com/cloud/guard-detect/developer/build-your-ari/">
+  Atlassian uses ARI (Atlassian Resource Identifier) which encodes the cloud ID, service, and resource type - enabling deterministic routing without external lookups for every request.
+</Quote>
+
+```
+ari:cloud:beacon:<cloud-id>:workspace/<workspace-id>
+ari:cloud:beacon:<cloud-id>:alerts/<alert-id>
+```
+
+This pattern allows the infrastructure to determine the target shard purely from the request path, without querying a routing table on every call.
+
+<Callout type="info" title="Shard Registry">
+  A separate *shard registry* service tracks all active shards and their assignments. A companion *sharding service* handles allocation and de-allocation of shards as tenants are onboarded or migrated.
+</Callout>
+
+### The Cost of Sharding
+
+Sharding is not free. It introduces several hard problems:
+
+**Cross-shard operations are expensive.** Querying across shards means crossing operational boundaries - authentication, authorization, network hops. Aggregation, search, and analytics all become significantly harder.
+
+**Shard migrations are extremely difficult.** Moving a tenant from one shard to another means migrating their data, draining in-flight requests, draining queue messages, and maintaining consistency - all without downtime. This is a substantial engineering challenge on its own.
+
+**Capacity rebalancing is necessary.** A noisy tenant can saturate a shard while others remain idle. The options are shard splitting, tenant migration, or finer-grained sharding - none of them trivial.
+
+**Cognitive cost for teams.** Developers must pick a sharding key, register it in the shard registry, refactor cross-tenant logic, and maintain per-shard observability. The operational surface area grows.
+
+<Callout type="info" title="→ The missing layer">
+  But sharding isolates a *single* service. Real incidents cascade across services. What follows is the realization that we need isolation at the **fleet level** - not just the service level.
+</Callout>
+
+## Why Sharding Is Not Enough
+
+Sharding isolates one service. But companies are not one service - they are fleets of services.
+
+<Callout type="warn" title="The limits of service-level isolation">
+  <TableCSV compact source="Guarantee | Sharding | What we actually want
+  Blast Radius | When service X fails, only 10% of X's customers are affected | When *anything* fails, only 10% of *all* customers are affected
+  Cross-Service Coordination | Sharding is per-service | Cells span multiple services
+  Deployment Safety | One service deploys independently | A coordinated fleet deploys safely
+  " />
+</Callout>
+
+This is the critical gap. Sharding gives you isolation *within* a service boundary. But a real production incident rarely stays within one service. A bad deployment to the auth service, a misconfigured message broker, a runaway query against the shared analytics pipeline - these cascade across service boundaries because *the infrastructure itself is shared*.
+
+The problem is not service-level coupling. The problem is *fleet-level coupling*.
+
+And this brings us to the real question: how do you isolate failure domains at the fleet level, not just the service level?
+
+<Callout type="info" title="→ The pressure builds">
+  Fleet-level coupling creates organizational friction that compounds with every new team and every new feature. This friction manifests as the problems of **100× scale**.
+</Callout>
+
+## Problems at 100× Scale
+
+When a system grows 100×, the failure modes evolve from technical problems to organizational problems. The challenge is no longer handling traffic - it is managing *change* safely in a deeply shared environment.
+
+A single faulty commit can bring down every tenant. An infrastructure migration that touches shared state becomes a bet-the-company event. Rollback strategies that worked at small scale become operationally paralyzing at large scale.
+
+> "Scaling infrastructure becomes easier than scaling trust."
+
+The problems compound:
+
+<Quote from="Stripe Engineering Blog">
+  <Tip tip="When one tenant's behavior impacts another's performance due to shared resources">Noisy neighbor</Tip> problems mean one aggressive tenant can degrade the entire platform.
+
+  <Tip tip="The organizational overhead required to approve and coordinate any change to shared infrastructure">Deployment paralysis</Tip> means teams stop shipping because the risk of breaking something shared is too high.
+
+  <Tip tip="Different parts of the fleet evolve at different speeds, creating inconsistent behavior">Architectural drift</Tip> means the system becomes harder to reason about over time.
+</Quote>
+
+Technically, the system still functions. Organizationally, it begins to seize. Every change requires cross-team coordination. Every incident triggers a war room. Every new compliance requirement becomes a multi-quarter platform fork.
+
+This is the pressure that drives the next architectural evolution.
+
+<Callout type="info" title="→ The architectural answer">
+  These problems demand an architecture where fleet-level isolation is not a property you *add* but a property you are *born with*. This is where **cell-based architecture** enters.
+</Callout>
+
+## Cell-Based Architecture
+
+Cell-based architecture is the answer to a specific question: *how do you make fleet-level failure isolation a first-class architectural primitive?*
+
+> CBA should feel inevitable, not novel.
+
+The idea is simple: partition your entire infrastructure into fully isolated, self-contained units called *cells*. Each cell is a complete copy of your stack - compute, database, networking, queues - serving a defined slice of your customers. Cells do not share infrastructure. They do not share deployment pipelines. They do not share failure domains.
+
+<Figure src="/static/stacks.png" alt="Complete fleet-level architecture showing multiple cells" caption="Fleet-level coherence: each cell is a complete, isolated stack" />
+
+If Cell A goes down, Cells B, C, and D are completely unaffected. If you deploy to Cell A first, you validate the change on 10% of customers before touching the rest. If the deployment goes wrong, your blast radius is exactly one cell.
+
+This is not a new idea. Companies like <Tip tip="Stripe's cell-based architecture isolates payment processing into independent cells">Stripe</Tip>, <Tip tip="Slack uses cells to ensure messaging reliability across their global fleet">Slack</Tip>, and <Tip tip="DoorDash's cell architecture prevents delivery outages from cascading">DoorDash</Tip> have all converged on similar patterns. The convergence is not coincidence - it is the natural outcome of the same operational pressures.
+
+### What Is a Cell?
+
+A cell is a fully self-sufficient deployment of your product stack. It contains everything a subset of customers needs to operate independently:
+
+<TableCSV source="Component | Definition
+Cell Router | The only global entry point. On each request, it looks up the tenant-to-cell mapping and forwards deterministically. Typically a thin, stateless service or API gateway configuration.
+Cell | An identical clone of your full application stack - compute, database, caches, queues - for its assigned tenants. Cell size is determined by your operational model (e.g. 500 tenants per cell, or by usage tier).
+Control Plane | A management layer that knows about all cells. Handles provisioning, deployments, health monitoring, scaling, and cell lifecycle management.
+Global Metadata Store | A small, highly-available database separate from any cell. Stores only the tenant-to-cell mapping, auth tokens, and billing state. The router reads this on every request.
+" />
+
+The key property is that cells are *hermetic*. They do not communicate with each other. Cross-cell requests are architecturally impossible by design. This is what makes the isolation guarantee reliable - it is not enforced by policy, but by topology.
+
+<Figure size="small" src="/static/cell-routing.svg" alt="Cell router dispatching requests to isolated cells, each with a complete stack" caption="The cell router is the only global component - every cell is self-sufficient and fully isolated" />
+
+<Callout type="info" title="→ Why cells work">
+  Hermetic isolation means deployment, failure, and scaling are all cell-local. This yields concrete **benefits** across the entire operational lifecycle.
+</Callout>
+
+### Benefits of CBA
+
+Because deployments are cell-local, blast radius shrinks naturally. Because cells are stampable, regulated environments become composable. Because cells are independent, capacity planning becomes predictable.
+
+<Callout type="note" title="Benefits as consequences of isolation">
+  **Fault isolation** - A cell failure affects only its tenants. No cascading failures across the fleet.
+
+  **Predictable scaling** - Add capacity by adding cells. Each cell has known, bounded resource usage.
+
+  **Safe deployments** - Deploy cell-by-cell. Validate on 10% before rolling to 100%. Rollback is a cell-level operation.
+
+  **Tenant isolation** - No noisy neighbors. Each cell's resource envelope is fixed.
+
+  **Compliance composability** - A validated cell pattern can be stamped into any regulatory perimeter.
+</Callout>
+
+<Callout type="info" title="→ The trade-offs">
+  But isolation at this level comes with real **costs** - operational complexity that every team must be prepared to absorb.
+</Callout>
+
+### The Cost of CBA
+
+You are now operating a distributed fleet OS. The operational complexity of N databases, N deployment pipelines, and N observability stacks is real.
+
+Cross-cell queries are impossible by design - running analytics across your entire dataset requires an ETL pipeline that aggregates from all cells into a data warehouse. Cell migrations (moving a tenant from one cell to another) inherited all the difficulty of shard migrations, now applied at the fleet level.
+
+For most B2B SaaS companies, the crossover point where cells become worthwhile is somewhere around 100–500 paying customers. Before that, a well-structured monolith with good tenant isolation is the right call.
+
+<Callout type="warn" title="CBA is not for everyone">
+  If you have fewer than 100 customers, or your operational tooling is not mature enough to manage multiple independent stacks, CBA will slow you down. The architecture solves problems you don't yet have.
+</Callout>
+
+<Callout type="info" title="→ The compliance dividend">
+  While costs are real, one domain where CBA's isolation pays for itself many times over is **regulatory compliance** - where cells transform platform forks into topology stamps.
+</Callout>
+
+## CBA, GovCloud, and Regulatory Boundaries
+
+This is where CBA becomes *transformational* rather than merely useful.
+
+Before CBA, onboarding a regulated environment - GovCloud, FedRAMP, IL4/5, IRAP, C5 - was treated as a massive one-off engineering initiative. Each new compliance target required its own platform fork, its own deployment model, its own audit process. The result was predictable:
+
+- Commercial environments evolved rapidly while regulated environments stagnated
+- Features available in commercial clouds never reached regulated tenants
+- Engineering teams built environment-specific logic
+- Architectural entropy accumulated
+
+> "CBA turns compliance from a platform fork into a deployment topology problem."
+
+The shift is profound. Once a cell pattern is validated, it can be reproduced consistently across clouds, sovereign environments, and regulatory perimeters. The cell becomes a *stampable* and *repeatable* deployment primitive.
+
+Instead of creating bespoke regulated platforms, teams stamp standardized cells into different trust perimeters while preserving operational consistency and architectural parity.
+
+<Quote from="A Good Engineer">
+  CBA enables a true "Build Once, Deploy Everywhere" capability - compliance becomes a deployment topology decision rather than a platform rebuild.
+</Quote>
+
+### Feature Enablement in Regulated Environments
+
+In regulated systems, deployment is not purely an engineering concern - it is a governance and compliance workflow. CBA changes the deployment model entirely by treating regulated environments as isolated, reproducible cells rather than special-case platform forks.
+
+Standard artifact promotion becomes a structured, traceable pipeline:
+
+1. Snapshot generator detects newly produced artifacts
+2. Artifacts are normalized into structured deployment snapshots
+3. Release manager pulls approved snapshots for the regulated environment
+4. Artifacts are replicated into quarantine storage
+5. Automated and manual compliance review is executed
+6. Approved artifacts are promoted: Quarantine → Trusted Artifact Storage
+7. Release manager triggers deployment pipelines
+8. Deployment occurs independently per cell
+
+The result is that the same deployment primitives operate across both commercial and regulated environments - with stronger isolation guarantees where needed, but without requiring a fundamentally different architecture.
+
+<Callout type="info" title="→ The evolution continues">
+  The shift from monoliths → microservices → shards → cells is the story of isolation boundaries becoming more fundamental. CBA is not the end - it is the current frontier.
+</Callout>
+
+## Final Thoughts
+
+The evolution from monoliths → microservices → shards → cells is fundamentally the evolution of isolation boundaries.
+
+Each step partitions a larger shared system into smaller, more independent units. Each step trades operational simplicity for safety at scale. Each step becomes necessary when the cost of shared fate exceeds the cost of partitioning.
+
+CBA is not the end of this evolution. It is the current answer to a specific class of operational pressure. As systems grow larger and compliance requirements become more complex, the isolation boundaries will continue to shift. But the direction is clear: architectures that make isolation a first-class primitive will consistently outperform those that treat it as an afterthought.
+
+<Quote from="Google SRE Literature">
+  The goal is not to build systems that never fail. It is to build systems where failure is contained, understood, and recoverable - by design.
+</Quote>
+
+---
+
+<Callout type="info" title="→ Next in this series">
+  If CBA gives us fleet-level isolation, what does that mean for how we design security and compliance frameworks? The same isolation primitives that contain failure domains also create natural trust boundaries - enabling a **cell-native Security Reference Architecture** where attestation, authorization, and audit are properties of the topology, not bolt-on afterthoughts. That's the subject of the next essay.
+</Callout>

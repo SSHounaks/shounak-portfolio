@@ -11,6 +11,9 @@ import { TreeTable } from '@/components/mdx/tree-table';
 import { Tooltip } from '@/components/mdx/tooltip';
 import { StatusPill } from '@/components/mdx/status-pill';
 import { TableCSV } from '@/components/mdx/table-csv';
+import { Figure } from '@/components/mdx/figure';
+import { Quote } from '@/components/mdx/quote';
+import { Tip } from '@/components/mdx/tip';
 
 export const mdxComponents = {
   TerminalCard,
@@ -27,4 +30,7 @@ export const mdxComponents = {
   Tooltip,
   StatusPill,
   TableCSV,
+  Figure,
+  Quote,
+  Tip,
 };

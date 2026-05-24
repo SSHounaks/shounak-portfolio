@@ -9,6 +9,8 @@ import { Callout } from '@/components/mdx/callout';
 import { IconButton } from '@/components/mdx/icon-button';
 import { Banner } from '@/components/mdx/banner';
 import { HoverCard } from '@/components/mdx/hover-card';
+import { Tip } from '@/components/mdx/tip';
+import { Quote } from '@/components/mdx/quote';
 import { Popup } from '@/components/mdx/popup';
 import { Grid, GridItem } from '@/components/mdx/grid';
 import { ColorPalette } from '@/components/mdx/color-palette';
@@ -467,7 +469,48 @@ export default function ComponentsPage() {
               <Code>{`<HoverCard trigger={<span>Hover me</span>}>
   <div className="text-emerald-400">&gt; Rich content</div>
   <div className="text-zinc-400">Any React children work here.</div>
-</HoverCard>`}</Code>
+              </HoverCard>`}</Code>
+
+              {/* Quote */}
+              <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
+                <span className="text-emerald-500/60">&gt;</span>
+                Quote
+                <span className="text-[9px] text-zinc-600 font-mono">— Blockquote with attribution</span>
+              </h3>
+              <PropTable props={[
+                { name: 'from', type: 'string', description: 'Attribution (required)' },
+                { name: 'link', type: 'string', default: '—', description: 'Optional source URL' },
+                { name: 'children', type: 'ReactNode', description: 'Quote text' },
+              ]} />
+              <div className="mb-4">
+                <Quote from="John Doe" link="https://example.com">
+                  This is a blockquote component with attribution and an optional source link.
+                </Quote>
+              </div>
+              <Code>{`<Quote from="John Doe" link="https://example.com">
+  This is a blockquote component with attribution.
+</Quote>`}</Code>
+
+              {/* Tip */}
+              <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
+                <span className="text-emerald-500/60">&gt;</span>
+                Tip
+                <span className="text-[9px] text-zinc-600 font-mono">— Inline tooltip</span>
+              </h3>
+              <PropTable props={[
+                { name: 'tip', type: 'string', description: 'Description text (required)' },
+                { name: 'head', type: 'string', default: '—', description: 'Green header; defaults to children if absent' },
+                { name: 'link', type: 'string', default: '—', description: 'Optional documentation URL shown at bottom' },
+                { name: 'children', type: 'ReactNode', description: 'Inline trigger text' },
+              ]} />
+              <p className="mb-4 font-mono text-[12px] text-zinc-400">
+                Hover over <Tip tip="This is an inline tooltip with detailed info">this text</Tip> to see the tip.
+              </p>
+              <Code>{`{/* Minimal: head defaults to children */}
+<Tip tip="This is an inline tooltip">this text</Tip>
+
+{/* Full: custom head, description, and docs link */}
+<Tip head="Sharding" tip="Splits tenants into isolated instances" link="https://example.com">Sharding</Tip>`}</Code>
 
               {/* Popup */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
