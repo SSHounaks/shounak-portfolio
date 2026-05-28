@@ -33,6 +33,7 @@ import { TerminalTable } from '@/components/demos/terminal-table';
 import { ChangelogView } from '@/components/demos/changelog-view';
 import { CodeDiffView } from '@/components/demos/code-diff-view';
 import { cn } from '@/lib/utils';
+import { HighlightSpan } from '@/components/mdx/highlight';
 
 const sections = [
   { id: 'layout', label: 'Layout', icon: 'grid_view' },
@@ -723,6 +724,28 @@ const rows = [
                 Other variants include <StatusPill status="cancelled" />, <StatusPill status="review" />, and <StatusPill status="hold" />.
               </p>
               <Code>{`Task <StatusPill status="done" /> means complete.</Code>`}</Code>
+
+              {/* Highlight */}
+              <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
+                <span className="text-emerald-500/60">&gt;</span>
+                Highlight
+                <span className="text-[9px] text-zinc-600 font-mono">— Inline colored span</span>
+              </h3>
+              <PropTable props={[
+                { name: 'type', type: "'success' | 'info' | 'warn' | 'error'", default: 'success', description: 'Highlight colour; defaults to terminal green' },
+                { name: 'children', type: 'ReactNode', description: 'Inline content to highlight' },
+              ]} />
+              <p className="font-mono text-[12px] text-zinc-400 mb-4 leading-relaxed">
+                An inline <code className="text-emerald-300">{'<span>'}</code> component for colour-highlighting text within
+                paragraphs. Defaults to <HighlightSpan>terminal green</HighlightSpan>. Use <HighlightSpan type="info">info</HighlightSpan>,
+                <HighlightSpan type="warn">warn</HighlightSpan>, or <HighlightSpan type="error">error</HighlightSpan> for other states.
+              </p>
+              <Code>{`Default: <Highlight>green text</Highlight>
+Info:    <Highlight type="info">info text</Highlight>
+Warning: <Highlight type="warn">warning text</Highlight>
+Error:   <Highlight type="error">error text</Highlight>`}</Code>
+
+
 
               {/* TableCSV */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">

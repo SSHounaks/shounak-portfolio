@@ -8,11 +8,10 @@ hidden: false
 
 ## Prologue
 
-The question that started this essay is deceptively simple: *how do you build a SaaS product that can evolve safely at scale?*
-
+The question that started this essay is deceptively simple: <HighlightSpan type="warn">how do you build a SaaS product that can evolve safely at scale?</HighlightSpan>
 Not scale throughput. Not scale teams. But scale *change* - without every deployment feeling like a bet-the-company event.
 
-Throughout my tenure at Atlassian, I watched how deeply infrastructure abstraction shapes organizational velocity. The difference between a startup shipping freely and an enterprise moving cautiously isn't just process - it's architecture. The isolation boundaries you choose determine how fast you can safely evolve.
+Throughout my tenure at Atlassian, I watched how deeply infrastructure abstraction shapes organizational velocity. The difference between a startup shipping freely and an enterprise moving cautiously isn't just process, <HighlightSpan>it's architecture.</HighlightSpan> The isolation boundaries you choose determine how fast you can safely evolve.
 
 This essay is the distillation of that observation. It traces the natural evolution of isolation boundaries - from monoliths to microservices to shards to cells - and explains why the industry is converging on cell-based architecture as the primitive for fleet-level safety.
 
@@ -28,11 +27,9 @@ It is remarkably easy to build a service that works for a hundred customers. Spi
 
 Scale that to a thousand customers, and you add Auto Scaling Groups. Ten thousand, and you introduce caching layers, read replicas, and queue-based load shedding. The architecture grows *technically* - more instances, more redundancy, more throughput.
 
-But underneath all of that growth, something critical remains unchanged: *everything is shared*. Every customer's requests hit the same load balancers, the same database cluster, the same deployment pipeline. The system scales technically, but operationally everything stays coupled.
+But underneath all of that growth, something critical remains unchanged: <HighlightSpan type="error">*everything is shared*.</HighlightSpan> Every customer's requests hit the same load balancers, the same database cluster, the same deployment pipeline. <HighlightSpan type="warn">The system scales technically, but operationally everything stays coupled.</HighlightSpan>
 
-> "The system scales technically, but operationally everything remains shared."
-
-This coupling is invisible during normal operation. It only reveals itself during failure. A bad deployment doesn't just affect the team that shipped it - it affects every tenant on the platform. A misconfigured migration doesn't just slow down one query pattern - it risks the entire datastore.
+This coupling is invisible during normal operation. It only reveals itself during failure. <HighlightSpan type="error">A bad deployment doesn't just affect the team that shipped it - it affects every tenant on the platform.</HighlightSpan> A misconfigured migration doesn't just slow down one query pattern - it risks the entire datastore.
 
 The default architecture is not wrong. It is correct for its domain. But the domain changes when the cost of shared fate exceeds the cost of partitioning.
 
@@ -98,13 +95,13 @@ This pattern allows the infrastructure to determine the target shard purely from
 
 Sharding is not free. It introduces several hard problems:
 
-**Cross-shard operations are expensive.** Querying across shards means crossing operational boundaries - authentication, authorization, network hops. Aggregation, search, and analytics all become significantly harder.
+<HighlightSpan>**Cross-shard operations are expensive.**</HighlightSpan> Querying across shards means crossing operational boundaries - authentication, authorization, network hops. Aggregation, search, and analytics all become significantly harder.
 
-**Shard migrations are extremely difficult.** Moving a tenant from one shard to another means migrating their data, draining in-flight requests, draining queue messages, and maintaining consistency - all without downtime. This is a substantial engineering challenge on its own.
+<HighlightSpan>**Shard migrations are extremely difficult.**</HighlightSpan> Moving a tenant from one shard to another means migrating their data, draining in-flight requests, draining queue messages, and maintaining consistency - all without downtime. This is a substantial engineering challenge on its own.
 
-**Capacity rebalancing is necessary.** A noisy tenant can saturate a shard while others remain idle. The options are shard splitting, tenant migration, or finer-grained sharding - none of them trivial.
+<HighlightSpan>**Capacity rebalancing is necessary.**</HighlightSpan> A noisy tenant can saturate a shard while others remain idle. The options are shard splitting, tenant migration, or finer-grained sharding - none of them trivial.
 
-**Cognitive cost for teams.** Developers must pick a sharding key, register it in the shard registry, refactor cross-tenant logic, and maintain per-shard observability. The operational surface area grows.
+<HighlightSpan>**Cognitive cost for teams.**</HighlightSpan> Developers must pick a sharding key, register it in the shard registry, refactor cross-tenant logic, and maintain per-shard observability. The operational surface area grows.
 
 <Callout type="info" title="→ The missing layer">
   But sharding isolates a *single* service. Real incidents cascade across services. What follows is the realization that we need isolation at the **fleet level** - not just the service level.
@@ -122,9 +119,8 @@ Sharding isolates one service. But companies are not one service - they are flee
   " />
 </Callout>
 
-This is the critical gap. Sharding gives you isolation *within* a service boundary. But a real production incident rarely stays within one service. A bad deployment to the auth service, a misconfigured message broker, a runaway query against the shared analytics pipeline - these cascade across service boundaries because *the infrastructure itself is shared*.
-
-The problem is not service-level coupling. The problem is *fleet-level coupling*.
+This is the critical gap. <HighlightSpan type="error">Sharding gives you isolation *within* a service boundary.</HighlightSpan> But a real production incident rarely stays within one service. A bad deployment to the auth service, a misconfigured message broker, a runaway query against the shared analytics pipeline - these cascade across service boundaries because *the infrastructure itself is shared*.
+<HighlightSpan type="warn">The problem is not service-level coupling. The problem is *fleet-level coupling*.</HighlightSpan>
 
 And this brings us to the real question: how do you isolate failure domains at the fleet level, not just the service level?
 
@@ -132,11 +128,9 @@ And this brings us to the real question: how do you isolate failure domains at t
   Fleet-level coupling creates organizational friction that compounds with every new team and every new feature. This friction manifests as the problems of **100× scale**.
 </Callout>
 
-## Problems at 100× Scale
+When a system grows 100×, the failure modes evolve from technical problems to organizational problems. <HighlightSpan type="info">The challenge is no longer handling traffic, it is managing *change* safely in a deeply shared environment.</HighlightSpan>
 
-When a system grows 100×, the failure modes evolve from technical problems to organizational problems. The challenge is no longer handling traffic - it is managing *change* safely in a deeply shared environment.
-
-A single faulty commit can bring down every tenant. An infrastructure migration that touches shared state becomes a bet-the-company event. Rollback strategies that worked at small scale become operationally paralyzing at large scale.
+<HighlightSpan type="error">A single faulty commit can bring down every tenant. An infrastructure migration that touches shared state becomes a bet-the-company event.</HighlightSpan> Rollback strategies that worked at small scale become operationally paralyzing at large scale.
 
 > "Scaling infrastructure becomes easier than scaling trust."
 
@@ -213,18 +207,16 @@ If we decide Identity lives inside the cell, you now have copies of identity to 
 
 Neither Choice is right or wrong, but both will be permanant. Like I said before, we cannot easily move a service from cell-local to global or vice versa once tenants are running.
 
-#### 3. Iternal failure modes get comple
+#### 3. Internal failure modes get complex
 In a non-cell world, if your DB hits a connection limit, you can fail over to a read replica, perhaps in another AZ, or load-shed to another instance. Inside the cell our options are bounded, thus
-our cell-internal architecture must be over-engineered for resilience. That means:
+our cell-internal architecture must be over-engineered for resilience.<HighlightSpan type="error"> Because there is no help coming from outside the cell.</HighlightSpan> That means:
 - More Replicas
 - Faster Failovers
 - Tighter Circuit Breakers
 
-Because there is no help coming from outside the cell.
-
 #### 4. Cell design is Fleet Design
 Each cell is created from a blueprint called archetype. Think of it as a way to specify what each cell contains, including services, connections, permissions, replications, configurations, and a lot more.
-A flaw in this archetype will propogate itself in the whole fleet. For example if we under-provision the DB connection pool in the archetype, every cell will have the same ceiling. If we forgot to have a 
+A flaw in this archetype will propagate itself in the whole fleet. For example if we under-provision the DB connection pool in the archetype, every cell will have the same ceiling. If we forgot to have a 
 caching layer, no cell have one (a scary thought!). 
 
 Remember, Blueprints are expensive to change once your city is already bustling with people and traffic.
@@ -277,23 +269,23 @@ A user logs in before you know which cell their org lives in. the auth check its
 ### Abuse Detection (needs a fleet-wide, company-wide detection)
 Any bad actor distributing request across cell can look fine from inside any cell. But from outside, the pattern will be visible.
 
-### Entitlements & Liscencing
-Wheather a customer is on the Premium plan is a fact about the customer, not about any one cell. If you replicate them into every cell, you need a distributed acreement protocol to update plans, which is crazy, but also the cross cell coordination, we are trying to avoid.
+### Entitlements & Licensing
+Whether a customer is on the Premium plan is a fact about the customer, not about any one cell. If you replicate them into every cell, you need a distributed agreement protocol to update plans, which is crazy, but also the cross cell coordination, we are trying to avoid.
 
 ### Analytics & Data Warehousing
 You cant run cross-tenant analytics from inside a cell. Building a usage dashboard for the company require ETL pipelines that aggregate every cell data into a different analytical store.
 
 ### The Observablity Control Plane
-We need to have a Dashboard/s that looks across all the cells and provides us with charts, alerts, on-call routing to be usefull. Per-Cell dashboards are not as good. A better way is to add a `X-Cell-Id` to drill-down on per-cell metrics!
+We need to have a Dashboard/s that looks across all the cells and provides us with charts, alerts, on-call routing to be useful. Per-Cell dashboards are not as good. A better way is to add a `X-Cell-Id` to drill-down on per-cell metrics!
 
-CBA doesn't eliminate these, it rather forces you to name, isolate and design them deleberately as a seperate tier. Now comes the real twist!
+CBA doesn't eliminate these, it rather forces you to name, isolate and design them deliberately as a separate tier. Now comes the real twist!
 CBA isnt "everything lives in a cell". Its a Two-Tier Architecture where most things (archetyped) live in cells, and a small carefully bounded set of services,
 live above them (as in providing service to all the cells).
 
 ## The Iterative Adoption Path
 Now that we have a general idea on what and how a CBA is. Lets talk about how or when should we consider this architecture. (The Burning Question everyone might have at this point).
 
-Cells are a destination and not a starting point. Using it from Day 1 is over-engineering. But building a system that cannot evolve thwards cells is a different kind of mistake, which will require a "Refactor"  type of application migration,
+Cells are a destination and not a starting point. Using it from Day 1 is over-engineering. But building a system that cannot evolve towards cells is a different kind of mistake, which will require a "Refactor"  type of application migration,
 in which we need to recreate working system from ground up in order to ensure that extra items and in-place isolation logic is removed.
 
 <Callout type="warn" title="Multi-Tenant SaaS Migration">
@@ -307,17 +299,17 @@ TL;DR : The cost of "cell-ready" design is small, The cost of retrofitting a sys
 
 ### Stage 1: Tenant Context in Every Request
 	
-	Goal: Every request that enters your system carries a clear un-ambigious tenant identifier, and every downstream propogats it. In order to be simple, your API Gateway / Identity Service, would automatically append this for each request based on your login, This will allow the request from outside to not be affected by this complexity.
+	<Callout type="info" title="Goal"> Every request that enters your system carries a clear un-ambigious tenant identifier, and every downstream propogats it. In order to be simple, your API Gateway / Identity Service, would automatically append this for each request based on your login, This will allow the request from outside to not be affected by this complexity.</Callout>
 	
 	This matters because, every later stage (sharding, routing, cells) require this. Retrofitting it across a codebase that "has" or "knew"  the tenant from the session state / URL parsing is one of the most painful migrations engineer ever will have to undertake.
 	And I pray for you if you are the unlucky person doing it.  Doing it from day 1, costs almost nothing.
 	
-### State 2: Pick a Sharding Key (Even if you dont Shard yet)
-	Goal: Choose the attribute by which your system will be partitioned, and start designing around it.
+### Stage 2: Pick a Sharding Key (Even if you dont Shard yet)
+	<Callout type="info" title="Goal">  Choose the attribute by which your system will be partitioned, and start designing around it. </Callout>
 	
 	You may (currently) have one database and one deployment, which is a good starting point. But ask: 
 	<Quote from="A Good Engineer">
-		If I had to split this in per-tenant way what would i split on? What would provide our customers/tenants most benifit? 
+		If I had to split this in per-tenant way what would i split on? What would provide our customers/tenants most benefit? 
 	</Quote>
 	The answer should be in form of Org, Workspace, Region, Customer Tier, or something else entirely based on your requirement.
 	
@@ -341,35 +333,32 @@ TL;DR : The cost of "cell-ready" design is small, The cost of retrofitting a sys
 		- Perhaps, a migration tool to automate this!
 	
 ### Stage 4: Standardize on One Routing Key Across Service
-	Standardize on one routing key across services
-	
-	Goal: Stop letting each service pick its own sharding key!
-	
-	This is the turning-point! By now you should have atleast 3-5 sharded services, and each picked the key that was easiest for them.
+	<Callout type="info" title="Goal">  Stop letting each service pick its own sharding key! </Callout>
+	Standardize on one routing key across services. This is the turning-point! By now you should have atleast 3-5 sharded services, and each picked the key that was easiest for them.
 	For Example: One uses `orgId`, another uses `workspaceId` while the third uses `customerId`. 
 	
 	!!!! STOP !!!!
 	
 	Pick one key that all the service will align to. Migrate service to as they need re-architecting. This is slow-work, but needs to be done. Either Proactively or reactively.
 	
-	Atlassian learned this the hard way. After years of sharding , services had drifterd into differetn keys, and converging them became one of the largest costs of CBA Adoption.
+	Atlassian learned this the hard way. After years of sharding , services had drifterd into different keys, and converging them became one of the largest costs of CBA Adoption.
 	
-### Stage 5: "Its Alive..." Your First Cell
-	Goal: Stamp out a cell for a specific, concrete problem.
-	Dont build cells "for the future". BUild the first cell when you have real present need:
-	- A regulated customer who needs data isolation (FedRAMP, sovereignity)
-	- A Geographic Expansion that requires a seperate region
-	- A noisy enterprise customer who needs dedicated capacity
+### Stage 5: "It's Alive..." Your First Cell
+	<Callout type="info" title="Goal"> Stamp out a cell for a specific, concrete problem. </Callout>
+	Most of the companies stop before reaching here. But if you are able to scale upto this. Dont build cells "for the future". BUild the first cell when you have real present need:
+		- A regulated customer who needs data isolation (FedRAMP, sovereignty)
+		- A Geographic Expansion that requires a separate region
+		- A noisy enterprise customer who needs dedicated capacity
 	
 ### Stage 6: Cell Fleet
-	Goal: Multiple cells, progressive deployment, automatd tenant placement.
+	<Callout type="info" title="Goal"> Multiple cells, progressive deployment, automated tenant placement. </Callout>
 	
 	Now you're at a LARGE COMPANY Problem. Build the platform: Cell Hydration, Archetype management, Tenant Placement, Service Migration Tooling, Observablity across cells.
 	This is Years of work.
 
 ### The Decision Framework
 A simple test when to move to the next stage:
-<TableCSV source="Step | Explaination
+<TableCSV source="Step | Explanation
 Stage 1 → 2 | When you have more than one service that needs to know about tenants.
 Stage 2 → 3 | When one service genuinely cannot scale further without sharding.
 Stage 3 → 4 | When you have more than two sharded services and they're drifting.

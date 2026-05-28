@@ -15,6 +15,7 @@ import { Figure } from '@/components/mdx/figure';
 import { Quote } from '@/components/mdx/quote';
 import { Tip } from '@/components/mdx/tip';
 import { Columns } from '@/components/mdx/columns';
+import { HighlightSpan } from '@/components/mdx/highlight';
 
 export const mdxComponents = {
   TerminalCard,
@@ -35,4 +36,5 @@ export const mdxComponents = {
   Quote,
   Tip,
   Columns,
+  HighlightSpan,
 };
