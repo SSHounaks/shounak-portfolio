@@ -74,7 +74,7 @@ export function IntroSection() {
         <p className="font-body-md text-on-surface-variant max-w-2xl leading-relaxed text-[16px] relative z-10">
           Full Stack Developer & Cybersecurity Expert with 5.5+ years of experience specializing in{' '}
           <span className="text-secondary">scalable backend architecture</span>, distributed microservices,
-          and AI-native engineering — owning systems end-to-end from design through observability.
+          and AI-native engineering; owning systems end-to-end from design through observability.
         </p>
       </div>
     </TerminalCard>

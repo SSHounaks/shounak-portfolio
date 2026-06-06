@@ -333,7 +333,9 @@ TL;DR : The cost of "cell-ready" design is small, The cost of retrofitting a sys
 		- Perhaps, a migration tool to automate this!
 	
 ### Stage 4: Standardize on One Routing Key Across Service
+
 	<Callout type="info" title="Goal">  Stop letting each service pick its own sharding key! </Callout>
+
 	Standardize on one routing key across services. This is the turning-point! By now you should have atleast 3-5 sharded services, and each picked the key that was easiest for them.
 	For Example: One uses `orgId`, another uses `workspaceId` while the third uses `customerId`. 
 	
@@ -344,15 +346,18 @@ TL;DR : The cost of "cell-ready" design is small, The cost of retrofitting a sys
 	Atlassian learned this the hard way. After years of sharding , services had drifterd into different keys, and converging them became one of the largest costs of CBA Adoption.
 	
 ### Stage 5: "It's Alive..." Your First Cell
+
 	<Callout type="info" title="Goal"> Stamp out a cell for a specific, concrete problem. </Callout>
+
 	Most of the companies stop before reaching here. But if you are able to scale upto this. Dont build cells "for the future". BUild the first cell when you have real present need:
 		- A regulated customer who needs data isolation (FedRAMP, sovereignty)
 		- A Geographic Expansion that requires a separate region
 		- A noisy enterprise customer who needs dedicated capacity
-	
+	Try to find a custom usecase (not all cell based architectures are same). It should cater to your immediate needs.
 ### Stage 6: Cell Fleet
+
 	<Callout type="info" title="Goal"> Multiple cells, progressive deployment, automated tenant placement. </Callout>
-	
+
 	Now you're at a LARGE COMPANY Problem. Build the platform: Cell Hydration, Archetype management, Tenant Placement, Service Migration Tooling, Observablity across cells.
 	This is Years of work.
 

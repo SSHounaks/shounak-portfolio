@@ -29,10 +29,12 @@ export default function Home() {
         {/* Row 2: Experience, Skills & Projects */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-6">
           <ExperienceSection />
-          <SkillsSection />
+          <div className="md:col-span-4 flex flex-col gap-6">
+            <SkillsSection />
+            <GithubSnake />
+          </div>
           <div className="md:col-span-3 flex flex-col gap-6">
             <ProjectsSection />
-            <GithubSnake />
           </div>
         </div>
 

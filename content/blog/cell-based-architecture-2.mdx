@@ -1,0 +1,37 @@
+---
+title: Cell Based Architecture 2
+date: 2026-05-24
+excerpt: How does Security Regulation
+tags: [system-design, performance, security]
+hidden: true
+---
+
+<Callout type="warn" title="WARNING">
+	In my last post we went on to answer why is `Cell Based Architecture` required and how/when to go around to actually Implement it.
+	If you missed that part, its <a href="/blog/cell-based-architecture"> highly recommended to read that first</a>.
+</Callout>
+
+# Prologue
+Now that we have answered the problems of:
+- Isolation of Tenants
+- Predictiblity in Deployment, Feature Releases
+- Uniformity of Architecture
+
+
+We move forward to the actual 🐘 elephant in the room which was hinted upon in the last post, 
+
+#### How do We Actually drive movement from Sharded service to Cell based Service.
+Remember in the last blog I warned you regarding the reason to Cell based architecture should be actual usecase.
+We will assume that a `Specific Compliance is that reason` which is to be applied withing a Specific country.
+
+This might bring the ire of your Product team, saying that its not the concern of theirs on how things will be compliant.
+They are more focussed on:
+- Future Growth areas
+- Costs
+- Trust & Compliance
+- Resiliency, Isolation and Guranteed Peformance (as compared to same shard's noisy neighbours)
+
+
+# How do we achieve Compliance
+Externalizing Cell Configuration (into an Artifact Config) provides more control on having multiple compliance levels in same parameter/region.
+

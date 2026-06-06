@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { TerminalCard } from './terminal-card';
 
 interface ExperienceItem {
@@ -54,31 +53,22 @@ const experiences: ExperienceItem[] = [
   },
 ];
 
+const hash = (s: string) => {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return Math.abs(h).toString(16).slice(0, 7).padStart(7, '0');
+};
+
 export function ExperienceSection() {
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-
-  const hash = (s: string) => {
-    let h = 0;
-    for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
-    return Math.abs(h).toString(16).slice(0, 7).padStart(7, '0');
-  };
-
-  const toggleExpand = (index: number) => {
-    setExpandedIndex(expandedIndex === index ? null : index);
-  };
-
   return (
     <TerminalCard title="Work Experience.sh" icon="history_edu" variant="secondary" className="md:col-span-5">
       <div className="font-mono text-[12px] p-6 space-y-0 flex flex-col flex-1 overflow-hidden">
-        <div className="border border-white/5 rounded overflow-hidden divide-y divide-white/5 overflow-y-auto flex-1 max-h-[520px]">
+        <div className="border border-white/5 rounded overflow-hidden overflow-y-auto flex-1 max-h-[520px]">
           {experiences.map((exp, index) => (
-            <div key={index}>
-              <div
-                className={`relative p-4 cursor-pointer transition-colors ${
-                  exp.isCurrent ? 'bg-secondary/[0.03]' : 'hover:bg-emerald-500/[0.02]'
-                }`}
-                onClick={() => toggleExpand(index)}
-              >
+            <details key={index} name="work" className={`group ${index > 0 ? 'border-t border-white/5' : ''}`}>
+              <summary className={`relative p-4 cursor-pointer transition-colors list-none [&::-webkit-details-marker]:hidden ${
+                exp.isCurrent ? 'bg-secondary/[0.03]' : 'hover:bg-emerald-500/[0.02]'
+              }`}>
                 <div className="flex items-start gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
@@ -91,7 +81,7 @@ export function ExperienceSection() {
                           ACTIVE
                         </span>
                       )}
-                      <span className={`text-[10px] ml-auto transition-transform duration-200 ${expandedIndex === index ? 'rotate-90' : ''}`}>
+                      <span className="text-[10px] ml-auto transition-transform duration-200 group-open:rotate-90">
                         <span className="material-symbols-outlined text-emerald-400/60 text-[12px]">chevron_right</span>
                       </span>
                     </div>
@@ -100,29 +90,27 @@ export function ExperienceSection() {
                     </p>
                   </div>
                 </div>
-              </div>
-              {expandedIndex === index && (
-                <div className={`px-3 pb-4 pt-0 border-t ${exp.isCurrent ? 'border-secondary/10' : 'border-emerald-500/10'} mx-3`}>
-                  <div className="pt-3 space-y-2 text-[10px]">
-                    <div className="flex items-center gap-2 px-1 py-1 bg-white/[0.02] rounded border border-white/5">
-                      <span className="text-emerald-400/60 text-[9px] flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[10px]">deployed_code</span>
-                      </span>
-                      <span className="text-white/40 text-[9px]">stack:</span>
-                      <span className="text-amber-400/80 text-[10px] font-medium">{exp.tech}</span>
-                    </div>
-                    <div className="space-y-0">
-                      {exp.highlights.map((h, i) => (
-                        <div key={i} className="flex items-start gap-2 py-1 px-1 border-b border-white/[0.02] last:border-b-0 hover:bg-white/[0.02] transition-colors">
-                          <span className="text-emerald-500/50 text-[9px] font-mono w-16 shrink-0 leading-relaxed">{hash(h)}</span>
-                          <span className="text-white/50 text-[10px] leading-relaxed flex-1">{h}</span>
-                        </div>
-                      ))}
-                    </div>
+              </summary>
+              <div className={`px-3 pb-4 pt-0 border-t ${exp.isCurrent ? 'border-secondary/10' : 'border-emerald-500/10'} mx-3`}>
+                <div className="pt-3 space-y-2 text-[10px]">
+                  <div className="flex items-center gap-2 px-1 py-1 bg-white/[0.02] rounded border border-white/5">
+                    <span className="text-emerald-400/60 text-[9px] flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[10px]">deployed_code</span>
+                    </span>
+                    <span className="text-white/40 text-[9px]">stack:</span>
+                    <span className="text-amber-400/80 text-[10px] font-medium">{exp.tech}</span>
+                  </div>
+                  <div className="space-y-0">
+                    {exp.highlights.map((h, i) => (
+                      <div key={i} className="flex items-start gap-2 py-1 px-1 border-b border-white/[0.02] last:border-b-0 hover:bg-white/[0.02] transition-colors">
+                        <span className="text-emerald-500/50 text-[9px] font-mono w-16 shrink-0 leading-relaxed">{hash(h)}</span>
+                        <span className="text-white/50 text-[10px] leading-relaxed flex-1">{h}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            </details>
           ))}
         </div>
       </div>

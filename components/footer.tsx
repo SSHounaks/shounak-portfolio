@@ -2,7 +2,7 @@ export function Footer() {
   return (
     <footer className="w-full px-6 md:px-8 flex flex-col md:flex-row justify-between items-center bg-black/40 border-t border-white/5 relative z-10 py-6">
       <div className="font-mono text-[10px] text-on-surface-variant tracking-widest opacity-60">
-        © 2026 SHOUNAK BHALERAO // BUILD_ID: 89X-FF2
+        © 2026 SHOUNAK BHALERAO {'//'} BUILD_ID: 89X-FF2
       </div>
       <div className="flex gap-8 mt-4 md:mt-0">
         <a

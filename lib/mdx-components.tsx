@@ -8,6 +8,7 @@ import { Grid, GridItem } from '@/components/mdx/grid';
 import { ColorPalette } from '@/components/mdx/color-palette';
 import { Table } from '@/components/mdx/table';
 import { TreeTable } from '@/components/mdx/tree-table';
+import { TreeTableArch } from '@/components/mdx/tree-table-arch';
 import { Tooltip } from '@/components/mdx/tooltip';
 import { StatusPill } from '@/components/mdx/status-pill';
 import { TableCSV } from '@/components/mdx/table-csv';
@@ -16,6 +17,8 @@ import { Quote } from '@/components/mdx/quote';
 import { Tip } from '@/components/mdx/tip';
 import { Columns } from '@/components/mdx/columns';
 import { HighlightSpan } from '@/components/mdx/highlight';
+import { Sparkline } from '@/components/charts/sparkline';
+import { SparklineSpike, SparklineStep, SparklineCreep } from '@/components/charts/sparkline-patterns';
 
 export const mdxComponents = {
   TerminalCard,
@@ -29,6 +32,7 @@ export const mdxComponents = {
   ColorPalette,
   Table,
   TreeTable,
+  TreeTableArch,
   Tooltip,
   StatusPill,
   TableCSV,
@@ -37,4 +41,8 @@ export const mdxComponents = {
   Tip,
   Columns,
   HighlightSpan,
+  Sparkline,
+  SparklineSpike,
+  SparklineStep,
+  SparklineCreep,
 };

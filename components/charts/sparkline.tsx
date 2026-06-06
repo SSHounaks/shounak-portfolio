@@ -11,12 +11,13 @@ interface SparklineProps {
 }
 
 export function Sparkline({
-  data,
+  data = [],
   color = '#34d399',
   className,
   height = 60,
   showDots = true,
 }: SparklineProps) {
+  if (!data.length) return null;
   const w = 200;
   const max = Math.max(...data);
   const min = Math.min(...data);

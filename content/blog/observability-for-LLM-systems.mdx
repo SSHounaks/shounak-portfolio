@@ -1,0 +1,308 @@
+---
+title: "Observability for LLM Systems"
+date: 2026-06-06
+excerpt: "How observability changes when your service calls a language model — token-level cost tracking, streaming health, agentic metrics, and multi-provider resilience."
+hidden: false
+tags: [system-design, observability]
+---
+
+<Callout type="warn" title="Read Part 1 First">
+  This is **Part 2** of a two-part series. It assumes familiarity with general observability concepts — the three pillars (metrics, logs, traces), SLOs, error budgets, and the burn rate model. If those concepts are new to you, start with **[Part 1: Observability at Massive Scale](/blog/observability-at-scale)** before continuing here.
+</Callout>
+
+LLM-backed systems break a comfortable set of assumptions that traditional web service observability was built on. A conventional API call takes milliseconds or low seconds. An LLM call takes seconds to tens of seconds, may stream a partial response that stalls mid-generation, consumes a variable number of tokens that translate directly to cost, and can produce output that is syntactically valid but semantically wrong — a failure mode that produces no HTTP 500 and no error rate spike.
+
+This guide addresses the observability gaps that open up when you add language models to a production system. It is not a repeat of Part 1. It builds on those foundations and adds the layer-specific signals, tracing patterns, resilience concerns, and logging schemas that LLM systems require.
+
+---
+
+## Part I: Why LLMs Break Traditional Observability
+
+Four properties of LLMs make standard observability strategies insufficient:
+
+**Non-determinism.** The same prompt can produce different outputs across invocations. There is no canonical "correct" response to diff against. Quality is fuzzy and cannot be measured with a simple equality check. This means your alerting cannot rely on output validation — it must rely on proxy metrics like user feedback signals and automated evaluation scores.
+
+**Token-based pricing.** LLM inference is not priced per request. It is priced per token. A service with a healthy error rate and acceptable latency might be generating 10× more tokens per request than expected due to a prompt regression. The cost implications are immediate; the budget implications can be catastrophic at scale. Token usage is not a billing footnote — it is a first-class operational metric.
+
+**Fuzzy, slow quality degradation.** Small prompt changes or retrieval issues can have outsized impact on response quality without changing latency or error rate at all. A model that started hallucinating facts last Tuesday is not detectable by p99 latency or burn rate alone. You need quality metrics, and those metrics are harder to define and instrument than request success rates.
+
+**Multi-step agentic behavior.** When the LLM is an orchestrator — invoking tools, making decisions across multiple turns, managing context across a conversation — a single user action may produce dozens of internal LLM calls, tool invocations, and retrieval operations. The trace for a single user message in an agentic system can be as complex as the trace for an entire multi-service workflow in a conventional system.
+
+These four properties demand a separate observability layer on top of the standard infrastructure. That layer is what this guide describes.
+
+---
+
+## Part II: LLM-Specific Signals
+
+### Token Usage and Cost
+
+Track token usage as a first-class operational metric, not just a billing artifact.
+
+**Per-request metrics:**
+- `input_tokens` — tokens in the prompt (including system prompt, conversation history, retrieved context)
+- `output_tokens` — tokens in the completion
+- `total_tokens` — sum of both
+- `estimated_cost_usd` — derived from token counts and per-model pricing
+
+**Aggregate metrics (the ones that matter for alerting):**
+- Token consumption per capability, per tenant tier, per model version
+- Cost per 1,000 requests — a rising cost-per-request at stable traffic is a prompt regression signal
+- Context utilization — what fraction of the model's context window is the prompt consuming? High context utilization correlates with both cost increases and latency increases
+
+<Callout type="info" title="Cost vs. Quality vs. Latency">
+  The tradeoff between these three must be visible in your dashboards. It is often acceptable to spend more tokens for higher quality on complex tasks — a thorough analysis is worth the cost. But not for every autocomplete keystroke. Observability must show you *which capabilities* are expensive and let you decide whether the quality justifies it.
+</Callout>
+
+Aggregate token and cost metrics by capability and tenant tier. This enables cost SLOs and anomaly detection: if a specific tenant's token consumption spikes 5× overnight, that is either a runaway agent, a change in usage pattern, or an abuse scenario — all of which require different responses, but all of which need the same detection.
+
+### Streaming Health
+
+For token-streaming endpoints, batch latency metrics are insufficient. A streaming response has failure modes that aggregate latency cannot capture.
+
+**Time to first token (TTFT)** — how long from prompt submission to receiving the first token of output. This is what users feel as "responsiveness." A system can have acceptable p99 total latency while TTFT is consistently high, making every response feel sluggish even though it completes on time.
+
+**Inter-token latency** — time between consecutive tokens. Spikes in inter-token latency appear to users as the stream "stalling" mid-sentence — a jarring experience that often causes abandonment before the response completes.
+
+**Stream completion rate vs. abandonment rate** — what fraction of started streams reach their natural end? High abandonment can signal latency problems (users giving up), client-side errors, or streams that complete delivery but hit errors during post-processing.
+
+**Partial response delivery** — a stream that starts but never delivers the first token, or delivers the first token then hangs, is a different failure mode from a stream with high total latency. Monitor these failure patterns separately.
+
+For systems that use Redis streams as the transport layer between generation services and the client browser, monitor all stream-level metrics: consumer lag, message publish rate, consumer group health, and connection pool usage. Redis stream health degradation shows up as partial responses and frozen output — failures that look nothing like a standard HTTP 500.
+
+### Tool Call and Agent Metrics
+
+In agentic systems where the model invokes external tools and makes multi-step decisions, observability extends to the agent's internal behavior.
+
+**Tool call success and failure rate** — which tools are failing most frequently? A tool failing 30% of the time is both a reliability problem and a user experience problem. The agent may retry in ways that increase latency and cost, or may produce degraded output when it cannot complete the tool call.
+
+**Orchestrator failure rate** — when the agent's planning loop fails, what is the failure mode? Did the model produce malformed tool call JSON? Did a tool invocation time out? Did the agent hit a maximum iteration limit without completing the task? Each failure mode has a different root cause and a different remediation.
+
+**Token usage per workflow step** — agents that spiral into unexpected reasoning loops can consume enormous token budgets before failing. Per-step token tracking lets you detect runaway agents early. An agent that is processing a request and has consumed 50,000 tokens across 12 steps on a task that normally takes 3 steps and 8,000 tokens is an alert, not just a log entry.
+
+**Orchestration depth and branching** — how many tool calls is the agent making per user request? Increasing orchestration depth over time may indicate prompt drift, tool reliability degradation, or users asking increasingly complex questions that the system's tool set is not equipped to answer efficiently.
+
+### Knowledge Base and Retrieval Metrics (RAG)
+
+For Retrieval-Augmented Generation systems, retrieval quality is often the primary determinant of response quality — and it changes over time.
+
+- **Knowledge base hit rate** — what fraction of queries retrieve relevant context?
+- **Chunk relevance scores** — how well do retrieved chunks match the query?
+- **Retrieval latency** — p95/p99 time to complete the retrieval step, separate from the LLM call latency
+- **Miss rate over time** — a knowledge base miss rate that rises over time indicates one of three things: the document corpus is becoming stale, new user query patterns have moved outside the coverage of indexed content, or the embedding model is diverging from production query patterns
+
+Missing or stale retrieval is a silent quality killer. The LLM will produce a response regardless — it just generates it from parametric knowledge rather than retrieved context, which often means it hallucinates details or confidently states outdated information.
+
+### Batch Evaluation Health
+
+LLM systems often have offline batch evaluation pipelines that periodically assess model quality against golden datasets. These pipelines are not user-facing but are critical for detecting model regressions.
+
+Monitor: job success rate, queue depth (are jobs being processed or backing up?), worker error rate, AI gateway errors from the evaluation pipeline. A batch evaluation system that fails silently leaves you blind to model quality regression. You will not know that response quality has dropped until users start complaining — or until your next manual review.
+
+---
+
+## Part III: LLM-Specific SLOs
+
+LLM features violate many comfortable assumptions: they are non-deterministic, often slow, expensive, and quality is fuzzy. Standard SLOs need to be extended.
+
+A mature LLM observability setup should monitor three SLO dimensions:
+
+**Reliability SLOs** — same structure as standard capability SLOs:
+- *"AI Issue Summarization returns a completion (non-error) within 8 seconds for 99% of valid requests over 28 days"*
+
+**Cost Efficiency SLOs** — new for LLM:
+- *"Average token cost per AI Summary request must not exceed $0.02 per request over a 7-day rolling window"*
+- Alerts when prompt regressions, context window bloat, or model routing changes cause cost to spike
+
+**Quality and Safety SLOs** — the hardest to define:
+- *"Guardrail violation rate must stay below 0.5% of requests"*
+- *"User thumbs-down rate for AI responses must stay below 3% over 7 days"*
+- *"Online evaluation score (automated quality assessment) must remain above 0.85 on a 1.0 scale"*
+
+Quality SLOs require proxy metrics because ground truth quality is not measurable in real-time. The proxies — user feedback signals, guardrail trigger rates, automated eval scores — are imperfect but necessary. A quality regression that moves the needle on all three proxies simultaneously is a meaningful signal.
+
+<HighlightSpan type="warn">Token usage and context utilization must be first-class metrics, not billing footnotes. Additionally, LLM traces should capture internal chain-of-thought steps, tool call sequences, and retrieval results — not just the final request and response.</HighlightSpan>
+
+---
+
+## Part IV: Provider Resilience and Circuit Breakers
+
+One of the most operationally important — and frequently underspecified — areas of LLM observability is provider resilience. LLM providers have incidents. Models become unavailable. Rate limits get hit. Latency degrades on specific model versions.
+
+I have seen incidents where Claude Opus was unavailable via Google Vertex AI but fully available via AWS Bedrock. Without proactive observability and circuit-breaking infrastructure, that incident becomes a user-facing outage. With the right setup, it becomes a routine traffic shift.
+
+**Circuit breakers for model providers**
+
+Circuit breakers must be applied at the provider level, not just the service level. After a threshold of consecutive failures from a specific provider endpoint, the circuit should open and requests should route to an alternate provider or model. Track circuit breaker state transitions as events and as metrics — a circuit that opens and closes repeatedly is a signal that something is intermittently failing upstream.
+
+**Multi-provider failover**
+
+Model access should be switchable: traffic knobs to divert percentage-based load from one provider to another should be operable without a code deployment. Ideally, this is integrated with your feature flag system so that an on-call engineer can shift 100% of traffic from Provider A to Provider B in 30 seconds.
+
+**Per-provider, per-model metrics**
+
+Aggregate metrics across providers are insufficient. Track separately:
+- Provider availability and error rate (4xx, 5xx, timeouts) per provider and per model
+- Provider latency (p50/p95/p99) per provider and per model version
+- Rate limit consumption and quota utilization per provider
+- Cost per provider (same volume at different providers can have different pricing)
+
+**Model drift and provider incidents**
+
+Quality and reliability can change abruptly when providers update models or silently change behavior. LLM observability must include baseline tests and online evaluations that alert when quality metrics drop even when infrastructure metrics are healthy. An incident where the model returns 200s but the output quality has regressed is invisible without quality monitoring.
+
+---
+
+## Part V: Quality and Safety Observability
+
+Quality monitoring is where LLM observability diverges most sharply from traditional web service observability. The signals are noisier, the ground truth is harder to establish, and the failure modes are subtler.
+
+**Guardrail trigger rate** — what fraction of requests are being caught by safety or quality guardrails? A sudden spike in guardrail violations may indicate a prompt injection attack, a change in user behavior, or a prompt regression that is generating policy-violating content.
+
+**User feedback signals** — thumbs up/down rates, explicit feedback submissions, regeneration requests. These are the closest thing to ground-truth quality measurement available in real-time production. Segment by capability, tenant tier, and model version to detect regressions in specific contexts.
+
+**Online evaluation scores** — automated quality assessment run on a sample of live traffic. These can use a separate LLM-as-evaluator pattern or rule-based scoring. They are slower and more expensive than other metrics but provide a quality signal that correlates with human judgment better than any proxy.
+
+**Failure mode taxonomy** — not all LLM failures are equal. Distinguish between:
+- Hard failures (error rate, timeouts) — caught by standard SLO monitoring
+- Soft failures (guardrail violations, low eval scores) — caught by quality SLOs
+- Silent failures (confident but wrong answers) — the hardest category, requiring human review samples and evaluation pipelines
+
+---
+
+## Part VI: The LLM Observability Stack in Practice
+
+### Where LLM Calls Live in Traces
+
+LLM calls must appear as spans inside service-level request traces. Without this, you cannot answer the question: *"Was that slow page load caused by the LLM call, the database query, or the retrieval step?"*
+
+Each LLM span should be tagged with:
+
+- `model_id` — which model handled the call
+- `provider` — which provider was used (Anthropic, Google, AWS Bedrock, Azure OpenAI, etc.)
+- `input_token_count` and `output_token_count`
+- `prompt_length` — character count of the prompt
+- `streaming_enabled` — boolean
+- `temperature` and other inference parameters
+- `tool_calls_made` — count of tool invocations within this span
+- `retrieval_chunks_used` — count of retrieved context chunks
+- `guardrail_triggered` — boolean, with guardrail type if triggered
+
+For agentic workflows, the trace tree should make the internal structure visible:
+
+```
+Request (user message)
+  └── Agent Orchestration Loop
+        ├── LLM Call: Planning (1.2s, 850 tokens)
+        ├── Tool Call: SearchKnowledgeBase (0.3s)
+        │     └── Vector DB Query (0.28s)
+        ├── LLM Call: Synthesis (3.1s, 2400 tokens)
+        └── Tool Call: SendEmail (0.1s)
+```
+
+Without this trace structure, a slow agent response is a black box. With it, you can immediately see whether the bottleneck is the LLM calls, the tool calls, or the retrieval step.
+
+### Domain-Specific Dashboards
+
+For LLM systems, domain-specific dashboards should be built separately from the general service dashboards:
+
+**Agent Operations Dashboard** — orchestration depth per workflow, tool call success rates by tool name, token usage per orchestration step, orchestrator failure modes
+
+**Streaming Health Dashboard** — TTFT p50/p95/p99, inter-token latency percentiles, stream completion vs. abandonment rate, Redis stream consumer lag
+
+**Cost and Token Dashboard** — cost per capability per 1,000 requests (trended), token usage by model, context utilization distribution, per-tenant cost breakdown
+
+**Quality and Safety Dashboard** — guardrail violation rate trended over time, online eval scores by capability, user feedback rates, model version quality comparison
+
+**Knowledge Base Health Dashboard** — retrieval hit rate, chunk relevance scores, miss rate over time, retrieval latency percentiles
+
+---
+
+## Part VII: Structured Logging for LLM Systems
+
+The minimum viable log schema from Part 1 extended for LLM contexts:
+
+**Standard fields** (from Part 1): `requestId`, `traceId`, `spanId`, `tenantId`, `userId`, `shardId`, `httpStatus`, `latencyMs`
+
+**LLM-specific additions:**
+
+```json
+{
+  "modelId": "claude-sonnet-4-6",
+  "provider": "anthropic",
+  "inputTokens": 1240,
+  "outputTokens": 487,
+  "totalTokens": 1727,
+  "estimatedCostUsd": 0.0089,
+  "streamingEnabled": true,
+  "timeToFirstTokenMs": 820,
+  "guardrailTriggered": false,
+  "toolCallsCount": 2,
+  "retrievalChunksUsed": 4,
+  "contextUtilizationPct": 61,
+  "evalScore": 0.91
+}
+```
+
+**Privacy note:** Avoid logging raw prompt content or user-generated content in production unless explicitly required by compliance requirements and scoped to the minimum necessary retention period. Log token counts and metadata, not the text itself.
+
+The principle is the same as in Part 1: every meaningful dimension of the LLM interaction — model identity, cost, streaming behavior, tool usage, retrieval context, and quality signals — should be available for filtering and grouping when you are diagnosing an incident.
+
+---
+
+## Part VIII: Resilience Patterns and Their LLM Observability Implications
+
+### Rate Limiting for LLM
+
+Rate limiting in LLM systems has a dual purpose: protecting cost and protecting quality. A runaway agent, misconfigured automation, or abusive tenant can exhaust provider quotas and cause service-wide LLM unavailability.
+
+Monitor rate limiting decisions as metrics: requests rate-limited per tenant, per capability, and per bot. A sudden spike in rate limiting on a specific tenant indicates a runaway agent or legitimate-but-unexpected traffic surge that requires capacity adjustment.
+
+### Circuit Breaker State Visibility
+
+Circuit breakers for LLM providers must be tracked explicitly. Track:
+
+- Circuit breaker state (CLOSED / OPEN / HALF-OPEN) per provider per model as a gauge
+- State transitions as events
+- Time spent in OPEN state per provider
+
+A circuit that opens and closes repeatedly is a diagnostic signal — something is intermittently failing upstream. A circuit that opens and stays open is a P1. Without circuit breaker state visibility, you see elevated latency and errors without knowing whether a mitigation (the circuit breaker opening) is already in effect.
+
+---
+
+## Part IX: Implementation Checklist for LLM Systems
+
+This checklist builds on the general implementation checklist in Part 1. Complete that first.
+
+1. **Add LLM-specific metric instrumentation** — token counters (input/output/total), cost estimation, TTFT timer, inter-token latency, streaming health metrics, tool call success/failure rates.
+2. **Instrument LLM calls as trace spans** — every LLM call should produce a span inside the service trace, tagged with model ID, provider, token counts, and streaming flag.
+3. **Build LLM domain dashboards** — agent operations, streaming health, cost and token usage, quality and safety, knowledge base health. Keep these separate from general service dashboards.
+4. **Configure cost and token SLOs** — define what "acceptable cost per request" looks like for each capability, and alert when it is exceeded.
+5. **Configure quality SLOs** — pick your quality proxies (guardrail rate, user feedback, eval scores) and configure burn rate alerting for them.
+6. **Set up per-provider circuit breakers** — with metrics for state transitions and time-in-open-state.
+7. **Build provider failover capability** — traffic routing knobs that can be activated without a code deploy, ideally integrated with your feature flag system.
+8. **Instrument RAG retrieval separately** — retrieval latency and hit rate should be visible as their own spans in traces and as standalone metrics.
+9. **Set up batch evaluation health monitoring** — job success rate, queue depth, worker error rate. A silent evaluation pipeline failure leaves you blind to quality regressions.
+10. **Verify alerting for the LLM failure modes** — explicitly test: provider outage, token cost spike, guardrail rate spike, streaming stall, agent orchestrator failure. Each should trigger an appropriate alert.
+
+---
+
+## Closing: The Hard Part
+
+The hard part of LLM observability is not the infrastructure. It is accepting that a system can return HTTP 200 on every request, have healthy p99 latency, and a clean error rate — and still be completely failing its users by generating confidently wrong, irrelevant, or harmful output.
+
+Traditional observability was built for systems where correctness is binary: the request either succeeded or it failed. LLMs operate in a space where success is a spectrum. The observability discipline for this space is younger, the tooling is less mature, and the metrics are fuzzier. But the stakes are the same: users depending on your system to work.
+
+The signals in this guide — token usage, streaming health, quality proxies, provider circuit breakers, agentic tracing — are the best available instruments for that fuzzier space. They will not give you the certainty of a 500 error rate. But they will tell you, with enough lead time, when something is going wrong.
+
+Build quality SLOs like you build reliability SLOs: with budget, with burn rates, and with the assumption that you will be the one on call when they fire.
+
+---
+
+**Key Takeaways:**
+
+1. LLMs introduce four observability challenges traditional monitoring was not built for: non-determinism, token-based cost, fuzzy quality, and multi-step agentic behavior.
+2. Token usage and cost must be first-class metrics — a functionally healthy LLM service can be generating catastrophic spend silently.
+3. Streaming health requires separate metrics from batch latency: time-to-first-token and inter-token latency are what users actually experience.
+4. LLM calls must appear as spans inside service traces, tagged with model, provider, token counts, and tool call metadata.
+5. Quality SLOs — guardrail rate, user feedback, automated eval scores — are the only way to detect the most insidious LLM failure mode: the confident wrong answer.
+6. Provider resilience requires per-provider circuit breakers, multi-provider failover capability, and per-provider, per-model metrics — not just aggregate provider health.

@@ -33,6 +33,7 @@ export function GithubSnake() {
     let dir: Pos = { x: 1, y: 0 };
     let gameOver = false;
     let frame: number;
+    let restartTimer: number | undefined;
 
     function placeFood() {
       const occupied = new Set(snake.map((p) => `${p.x},${p.y}`));
@@ -64,8 +65,31 @@ export function GithubSnake() {
       dir = valid[0];
     }
 
+    function resetGame() {
+      clearTimeout(frame);
+      clearTimeout(restartTimer);
+      restartTimer = undefined;
+      snake = [{ x: 8, y: 2 }, { x: 7, y: 2 }, { x: 6, y: 2 }];
+      food = { x: 20, y: 2 };
+      dir = { x: 1, y: 0 };
+      gameOver = false;
+    }
+
+    function scheduleRestart() {
+      clearTimeout(restartTimer);
+      restartTimer = window.setTimeout(() => {
+        resetGame();
+        draw();
+        tick();
+      }, 5000);
+    }
+
     function tick() {
-      if (gameOver) { frame = requestAnimationFrame(tick); return; }
+      if (gameOver) {
+        draw();
+        if (restartTimer === undefined) scheduleRestart();
+        return;
+      }
 
       aiMove();
 
@@ -73,17 +97,20 @@ export function GithubSnake() {
       if (head.x < 0 || head.x >= colsRef.current || head.y < 0 || head.y >= ROWS ||
           snake.some((s) => s.x === head.x && s.y === head.y)) {
         gameOver = true;
+        draw();
+        scheduleRestart();
+        return;
+      }
+
+      snake.unshift(head);
+      if (head.x === food.x && head.y === food.y) {
+        placeFood();
       } else {
-        snake.unshift(head);
-        if (head.x === food.x && head.y === food.y) {
-          placeFood();
-        } else {
-          snake.pop();
-        }
+        snake.pop();
       }
 
       draw();
-      frame = setTimeout(tick, TICK) as unknown as number;
+      frame = window.setTimeout(tick, TICK);
     }
 
     const greens = ['#0d4429', '#0f6b31', '#189e4a', '#27d545'];
@@ -122,10 +149,21 @@ export function GithubSnake() {
       }
     }
 
+    function restart() {
+      resetGame();
+      draw();
+      tick();
+    }
+
+    window.addEventListener('pageshow', restart);
     draw();
     tick();
 
-    return () => clearTimeout(frame);
+    return () => {
+      clearTimeout(frame);
+      clearTimeout(restartTimer);
+      window.removeEventListener('pageshow', restart);
+    };
   }, []);
 
   return (
