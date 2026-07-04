@@ -1,0 +1,119 @@
+---
+title: On Self-Service Provisioning and Lifecycle of SaaS
+date: 2026-06-17
+excerpt: Desigining and Operating Self Service provisioning for a multi-tenant multi-SaaS application with tiered Subscription
+hidden: true
+tags: [system-design]
+---
+
+The best customer experience of any of our products is when, a customer logs into our site, and selects the products and subscriptions based on their needs and requirements; Once done should
+automatically transfer into usage of the said applications seamlessly. This doesnt sound like much, but the technology, automation and processes happening on background and the sheer scale of 
+these items is something which is hardly talked about.
+
+# Components
+A robust self-service experience starts with `provisioning` that turns customer's intent ("Create a PREMIUM site in EU") into concrete infrastructure, configuration, metadata without human intervention.
+To achieve this we should have a solid `Control Plane` which consists of the following parts:
+
+|Component | Role|
+|----------|-----|
+| Lifecycle Service| Normalizes External Events (sign-up, upgrade, cancel) into standard canonical lifecycle events |
+| Provisioning Orchestrator | Executes multi-step workflow for each lifecycle event; calling product/platform providers |
+| Tenant Catalogue | Versioned, Authoritative Tenant Record which stores configurations, entitlements (basically what the tenant will get based on current plan, subscription, config, etc), cell placement, and history) |
+| Runtime Metadata Service| Read-Optimized, Tenant-Keyed Metadata lookup used by data plane services, which act as a source of truth for that tenant as well as subsequent cells |
+| Management Plane | Operational Front door for Our Company Staff (SRE, On-call, Support, Admins) to inspect and intervene under strong controls (PII Protection, on-time role allocation, zero-trust, etc)|
+
+# Example Flow: Creating a Tenant based on user request
+This pipeline typically starts when a customer interacts with:
+- A commerce/ordering system (try-now, buy, renew, cancel, tier-changes).
+- A self-service signup UI/API (regardless of surface, Web, CLI, etc) for (Create ORG, SITE, WORKSPACE, tier selection, region selection)
+- A Partner Channel (marketplace, reseller) which generate subscription events. (THIS CAN BE A BIT TRICKY!!!)
+
+These external system call the Lifecycle Service via APIs for:
+- POST CREATE_TENANT / ACTIVATE_PRODUCT
+- POST CHANGE_EDITION (with info about requested edition)
+- POST SUSPEND / UNSUSPEND
+- SOFT_DELETE / HARD_DELETE 
+- MIGRATE_TENANT (to another cell/region)
+
+In the cell based architecture briefly touched over the tenant creation, lets now understand how we can actually make this happen. A Typical CREATE_TENANT workflow might look like:
+1. Allocate Tenant Identity & Cell Placement
+	- Generate Org/site/tenant ids
+	- Ask the tenant placement / sharding service to choose a cell based on constraints (either by tenant preference, or based on Load, REGION, isolation constraints)
+2. Provision Platform Resources
+	- Create DB Partitions, Shards, Queues, Search indices, Storage buckets, etc
+	- Register tenant in global identity, authorization, entitlement systems.
+	- Register tenant path(URL) in routing systems
+3. Provision Product Instances
+	- Call Product Specific Providers (E.G. your different SaaS applications) to create tenant-specific configuration for that software/s, and seed default data.
+4. Write/Update Tenant Record
+	- Post Provisioning of Platform, and Product, update Tenant Record with new entries
+5. Transform & Publish Runtime Metadata
+	- Update Source of Truth (Runtime Metadata Service)
+	- Update other Data plane services (if required)
+	
+## Error Handelling 
+At self service scale, provisioning can fail, due to one of these issues:
+	- Downstream outages
+	- Transient timeouts
+	- subtle data issues (serialization/deserialization)
+In that case, we should:
+- have explicit state of provisioning, which will allow the service to allow pick-up once the problem is resolved
+- Have Retry with Exponential Backoff
+- DLQs for recovery
+- Logs/Metrics showcasing falures, and other Fail Transparent Mechanisms
+
+A good pattern is to treat each provisioning workflow as a finite-state-machine with explicit states:
+	START -> initiated -> platform_provisioned -> token_fetch_success -> productA_provisioned / product_A_status_changed -> configuration_uploaded / configurations_updated -> onboarded /updated -> END
+
+Secondly a generalized solution for these failure types:
+
+|Failure Type|Pipeline Behaviour|Notes|
+|------------|------------------|-----|
+|Transient Infra/ Network Errors| Automatic retries with exponential backoff, often via message re-enquire| Use idempotent provider APIs|
+| Downstream service Degraded| Circuit Breaker/ retry; if exhausted, mark as failed and push event to DLQ for Human Triage| DLQ is central to SRE work|
+| Validation / Contract Errors| Fail FAST!!! log structured diagnostic, mark workflow failed, do not retry automatically|Typically misconfiguration or bad input (perhaps create a validation service for configuration)|
+| Partial Success| Either apply compensation action (rollback) or leave in partial state but mark tenant explicitly as needing remidiation| depends on business impact|
+
+Two Design Principles allow use make this pipeline behaviour consistent:
+
+- Idempotency everywhere:
+	Every provider API and internal step should be safe to call multiple times with the same inputs.
+	This makes automatic replay and operator-driven retriggering possible without custom logic per-failure
+- Seperation of "Soft Failures" from user visible state:
+	- Internally a workflow may fail several times and be retried; externally all the customer sees is their site is "being created" until the state machine reaches `onboarded` or clear `failed` state.
+
+Rollback is perticularly tricky in multi-service architectures. Rather than trying to undo everything synchronously on failure, we can soft delete, so that recovery requests can be respected provided they are withing the stipulated window.
+
+- prefer soft deletion (mark as inactive, revoke access) to hard deletion, delay destrictive data removal.
+- Keep recovery metadata (IDs, shard location, external keys) in dedicated service.
+- For critical flows (bills, etc) design a 2-phase operation:
+	- First, change entitlements and access
+	- Second, only when stable enquire irreversable cleanup!
+
+By modelling workflows explicitly and centralizing error information in DLQs, and tenant-aware logs, you can give SREs and support engineers the tools they need to fix issues quickly without ad-hoc scripting or direct data plane access.
+
+
+# Disaster Recovery and Data Safety
+- DR in a cell-based multi-tenant SaaS is about 2 overlapping concerns.
+- Per-tenant recoverablity (accidental deletion, misconfiguration, partial provisioning)
+- Per-cell and cross-cell resilience (regional outages, cell corruption, migration and rebalancing)
+
+Based on Experience, pushing all tenant lifecycle decisions into the control plane and to keep data plane DR focussed on cells as the failure domain, is the best way to do it (I can be wrong!).
+
+Each cell (or customer data plane) hosts a full, self-contained stack - compute, storage, search, queues, like discussed, in previous post.
+
+For tenant level safety: 
+- Versoning  the tenant Records: we need to version every change in tenant-configuration , so that the rollback to last stable deployment is seamless when in an incident/disaster. 
+- Soft Depetion with recovery: as discussed before, this ensures that there is a delebrate delay between irreversable actions.
+- Periodic reconciliation Jobs: Automated Jobs periodically scan for tenants struck in intermediate lifecycle states (`initiated` more than 60 minutes), re-trigger these workflows, or flag them for operator attention.
+	- Alternatively they can be sent to DLQ for custom retry and pings to support.
+
+# Cell Level Disaster Recovery and Safety
+There are 3 main concerns at this level:
+	- Regional Failure: Deploy each cell across multiple AZs; maintain DR runbooks to recreate cells in another cells in another region if needed.
+	- Cell Corruption / Upgrade: Use immutable infra + GitOps style cell hydration from a declarative environmental model. Rebuild and dont patch.
+	- Tenant Migration between cells: Provide a tenant placement service and migration workflow that can move a tenant's allocations.
+
+# Good To Haves:
+As someone who loves to have an eye on the data being change, and the state of the change. There should be a tooling for Observablity of the state.
+as this will not only allow us to quickly query the data but also help us to identify and 
