@@ -223,4 +223,13 @@ section.terminal-card:hover::before {
   animation: vertical-progress 5s linear infinite;
 }
 
+@keyframes glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 3px currentColor); }
+  50% { filter: drop-shadow(0 0 10px currentColor); }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
 

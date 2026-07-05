@@ -29,6 +29,12 @@ const broadcasts = [
   //   body: 'Published three new open-source tools for terminal UI enthusiasts. Check out terminal-log, react-glitch-text, and use-typewriter hooks.',
   // },
   {
+    date: '2026-07-05',
+    type: 'RELEASE',
+    title: 'Bookshelf: Curated Reading Collection Live',
+    body: 'Launched a terminal-styled /bookshelf page featuring 10 curated titles with cover images, search & category filter, card grid and table views, and a READ / READING / PLANNED / RECOMMENDED status system.',
+  },
+  {
     date: '2026-05-25',
     type: 'BROADCAST',
     title: 'LLM Skills Setup: Agentic Toolkit Installed',

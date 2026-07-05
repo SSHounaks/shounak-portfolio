@@ -7,6 +7,7 @@ const links = [
   { label: '_root', href: '/' },
   { label: '_logs', href: '/blog' },
   { label: '_broadcast', href: '/news' },
+  { label: '_books', href: '/bookshelf' },
 ];
 
 export function Header() {
@@ -34,12 +35,16 @@ export function Header() {
                         ? 'text-black bg-emerald-400 font-bold'
                         : idx === 1
                         ? 'text-black bg-amber-400 font-bold'
-                        : 'text-black bg-purple-400 font-bold'
+                        : idx === 2
+                        ? 'text-black bg-purple-400 font-bold'
+                        : 'text-black bg-sky-400 font-bold'
                       : idx === 0
                       ? 'text-emerald-400/70 hover:text-black hover:bg-emerald-400'
                       : idx === 1
                       ? 'text-amber-400/70 hover:text-black hover:bg-amber-400'
-                      : 'text-purple-400/70 hover:text-black hover:bg-purple-400'
+                      : idx === 2
+                      ? 'text-purple-400/70 hover:text-black hover:bg-purple-400'
+                      : 'text-sky-400/70 hover:text-black hover:bg-sky-400'
                   }`}
                 >
                   {item.label}

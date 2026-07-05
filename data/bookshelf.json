@@ -1,0 +1,52 @@
+[
+  {
+    "title": "Designing Data-Intensive Applications",
+    "author": "Martin Kleppmann",
+    "date": "2017-03-16",
+    "url": "https://dataintensive.net",
+    "image": "/books/ddia.jpg",
+    "type": "book",
+    "description": "The big ideas behind reliable, scalable, and maintainable systems.",
+    "tags": ["distributed-systems", "architecture"]
+  },
+  {
+    "title": "System Design Interview — An Insider's Guide",
+    "author": "Alex Xu",
+    "date": "2020-06-12",
+    "url": "",
+    "image": "",
+    "type": "book",
+    "description": "A framework for tackling system design interviews with real-world examples.",
+    "tags": ["system-design", "interviews"]
+  },
+  {
+    "title": "Crafting Interpreters",
+    "author": "Robert Nystrom",
+    "date": "2021-07-27",
+    "url": "https://craftinginterpreters.com",
+    "image": "",
+    "type": "book",
+    "description": "A hands-on guide to building your own programming language from scratch.",
+    "tags": ["compilers", "pl"]
+  },
+  {
+    "title": "Atomic Habits",
+    "author": "James Clear",
+    "date": "2018-10-16",
+    "url": "",
+    "image": "",
+    "type": "book",
+    "description": "An easy and proven way to build good habits and break bad ones.",
+    "tags": ["self-improvement"]
+  },
+  {
+    "title": "Observability at Massive Scale",
+    "author": "Shounak Bhalerao",
+    "date": "2026-01-15",
+    "url": "/blog/observability-in-massively-scaled-ml-systems",
+    "image": "",
+    "type": "paper",
+    "description": "Designing observability pipelines for large-scale ML systems.",
+    "tags": ["observability", "ml-systems", "sre"]
+  }
+]
