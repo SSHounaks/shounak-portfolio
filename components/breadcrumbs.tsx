@@ -51,6 +51,7 @@ function getCrumbs(pathname: string): Crumb[] {
     ];
   }
   if (pathname === '/news') return [{ label: '~/', href: '/', ...base }, { label: '/dev/null', ...news }];
+  if (pathname === '/bookshelf') return [{ label: '~/', href: '/', ...base }, { label: '/usr/share/doc', bg: 'rgb(40,50,30)', hoverBg: 'rgb(70,90,55)', chevronColor: 'rgb(40,50,30)', hoverChevron: 'rgb(70,90,55)' }];
   return [{ label: '~/', ...base }];
 }
 

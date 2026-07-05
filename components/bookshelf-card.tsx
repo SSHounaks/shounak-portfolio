@@ -9,6 +9,7 @@ export interface BookEntry {
   type: 'book' | 'paper' | 'article';
   category: string;
   image?: string;
+  url?: string;
   description?: string;
   tags?: string[];
   status?: 'READ' | 'READING' | 'PLANNED' | 'RECOMMENDED';
@@ -81,7 +82,7 @@ const typeBadge: Record<string, string> = {
 };
 
 export function BookshelfCard({ entry }: { entry: BookEntry }) {
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLAnchorElement>(null);
   const [imgError, setImgError] = useState(false);
   const showPlaceholder = !entry.image || imgError;
   const cc = catStyle(entry.category);
@@ -99,12 +100,16 @@ export function BookshelfCard({ entry }: { entry: BookEntry }) {
   }, []);
 
   return (
-    <div
+    <a
+      href={entry.url}
+      target="_blank"
+      rel="noopener noreferrer"
       ref={cardRef}
       className={cn(
-        'group/card relative rounded-lg border overflow-hidden flex flex-col h-full transition-all duration-300',
+        'group/card relative rounded-lg border overflow-hidden flex flex-col h-full transition-all duration-300 block cursor-pointer',
         cc.border,
         cc.bg,
+        entry.url ? 'hover:border-emerald-500/30' : '',
       )}
     >
       <div
@@ -198,6 +203,6 @@ export function BookshelfCard({ entry }: { entry: BookEntry }) {
         </div>
 
       </div>
-    </div>
+    </a>
   );
 }

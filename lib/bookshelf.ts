@@ -4,6 +4,7 @@ export interface BookEntry {
   type: 'book' | 'paper' | 'article';
   category: string;
   image?: string;
+  url?: string;
   description?: string;
   tags?: string[];
   status?: 'READ' | 'READING' | 'PLANNED' | 'RECOMMENDED';
@@ -16,12 +17,14 @@ export const books: BookEntry[] = [
     type: "book",
     category: "distributed-systems",
     image: "/static/books/ddia.png",
+    url: "https://dataintensive.net/",
     status: "RECOMMENDED",
     description: "The definitive guide to reliable, scalable, and maintainable systems.",
     tags: ["distributed-systems", "architecture"],
   },
   {
     image: "/static/books/sah.webp",
+    url: "https://www.amazon.in/Solutions-Architects-Handbook-Kick-start-architecture/dp/1835084230",
     title: "Solutions Architect's Handbook",
     author: "Saurabh Shrivastava",
     type: "book",
@@ -32,6 +35,7 @@ export const books: BookEntry[] = [
   },
   {
     image: "/static/books/upanishads.webp",
+    url: "https://www.amazon.in/Principal-Upanisads-Prof-S-Radhakrishnan/dp/8172231245",
     title: "Principal Upanishads",
     author: "Swami Sivananda",
     type: "book",
@@ -42,6 +46,7 @@ export const books: BookEntry[] = [
   },
   {
     image: "/static/books/kizumonogatari.webp",
+    url: "https://www.amazon.in/KIZUMONOGATARI-Wound-Tale-NISIOISIN/dp/1941220975",
     title: "Kizumonogatari",
     author: "Nisio Isin",
     type: "book",
@@ -52,6 +57,7 @@ export const books: BookEntry[] = [
   },
   {
     image: "/static/books/attention.png",
+    url: "https://arxiv.org/abs/1706.03762",
     title: "Attention Is All You Need",
     author: "Vaswani et al.",
     type: "paper",
@@ -62,6 +68,7 @@ export const books: BookEntry[] = [
   },
   {
     image: "/static/books/hands-on-ml.jpg",
+    url: "https://www.amazon.in/Hands-Machine-Learning-Scikit-Learn-TensorFlow/dp/9355421982",
     title: "Hands-On Machine Learning",
     author: "Aurélien Géron",
     type: "book",
@@ -72,6 +79,7 @@ export const books: BookEntry[] = [
   },
   {
     image: "/static/books/koimonogatari.webp",
+    url: "https://www.amazon.in/KOIMONOGATARI-Love-Tale-NISIOISIN/dp/194719433X",
     title: "Koimonogatari",
     author: "Nisio Isin",
     type: "book",
@@ -82,6 +90,7 @@ export const books: BookEntry[] = [
   },
   {
     image: "/static/books/multi-tenant-saas.jpg",
+    url: "https://www.amazon.in/Building-Multi-Tenant-SaaS-Architectures-Principles/dp/9355427395",
     title: "Building Multi-Tenant SaaS Architectures: Principles, Practices, and Patterns Using AWS",
     author: "Tod Golding",
     type: "book",
@@ -92,6 +101,7 @@ export const books: BookEntry[] = [
   },
   {
     image: "/static/books/zarathustra.webp",
+    url: "https://www.amazon.in/Thus-Spoke-Zarathustra-Penguin-Classics/dp/0140441182",
     title: "Thus Spoke Zarathustra",
     author: "Friedrich Nietzsche",
     type: "book",
@@ -102,6 +112,7 @@ export const books: BookEntry[] = [
   },
   {
     image: "/static/books/platform-engineering.webp",
+    url: "https://www.amazon.in/Platform-Engineering-Technical-Product-Leaders/dp/1098153642",
     title: "Platform Engineering: A Guide for Technical, Product, and People Leaders",
     author: "Camille Fournier",
     type: "book",
