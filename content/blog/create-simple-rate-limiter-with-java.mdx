@@ -1,0 +1,99 @@
+---
+title: The Art of Rate Limiting and its Implementation
+date: 2026-07-15
+excerpt: Learn the Art of creating a simple Rate Limiter
+hidden: false
+tags: [system-design,java]
+---
+
+## What is Rate Limiting?
+
+Glassmorphism is the design trend that creates a frosted-glass effect — translucent backgrounds with blur, layered over vibrant backdrops.
+
+## Algorithms
+
+
+### 2.1 - Sliding Window Rate Limiter
+The Sliding Window Log algorithm is the most accurate way to implement rate limiting because it tracks the exact timestamp of every request. This prevents traffic bursts at the boundaries of fixed time windows.
+In Java, we can elegantly implement this using a TreeSet (to maintain sorted timestamps) or a Deque (like ArrayDeque or LinkedList) if we are just appending new timestamps to the end.
+Here is a clean, object-oriented implementation of a Sliding Window Log Rate Limiter using LinkedList and thread-safe synchronization.
+
+```java
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class SlidingWindowRateLimiter {
+
+    // Structure to hold request timestamps for a single user
+    private static class UserRequestLog {
+        private final Queue<Long> requestTimestamps = new LinkedList<>();
+    }
+
+    private final ConcurrentHashMap<String, UserRequestLog> userLogs = new ConcurrentHashMap<>();
+    private final int maxRequests;
+    private final long windowSizeInMs;
+
+    /**
+     * @param maxRequests   Maximum number of requests allowed within the window.
+     * @param windowSizeInSec Time window size in seconds.
+     */
+    public SlidingWindowRateLimiter(int maxRequests, int windowSizeInSec) {
+        this.maxRequests = maxRequests;
+        this.windowSizeInMs = windowSizeInSec * 1000L;
+    }
+
+    /**
+     * Evaluates if a request from a specific user is allowed.
+     * @param userId Unique identifier for the client.
+     * @return true if the request is allowed, false if rate-limited.
+     */
+    public boolean allowRequest(String userId) {
+        long currentTime = System.currentTimeMillis();
+        
+        // Fetch or create the request log for the user safely
+        UserRequestLog userLog = userLogs.computeIfAbsent(userId, k -> new UserRequestLog());
+
+        // Synchronize on the individual user's log to handle concurrency per user
+        synchronized (userLog) {
+            Queue<Long> timestamps = userLog.requestTimestamps;
+            long windowStartTime = currentTime - windowSizeInMs;
+
+            // Step 1: Remove all timestamps that fall outside the current sliding window
+            while (!timestamps.isEmpty() && timestamps.peek() < windowStartTime) {
+                timestamps.poll();
+            }
+
+            // Step 2: Check if the user has capacity left
+            if (timestamps.size() < maxRequests) {
+                timestamps.add(currentTime);
+                return true; // Request allowed
+            }
+
+            return false; // Rate limit exceeded
+        }
+    }
+
+    // Quick test simulation
+    public static void main(String[] args) throws InterruptedException {
+        // Allow 3 requests per 2 seconds
+        SlidingWindowRateLimiter rateLimiter = new SlidingWindowRateLimiter(3, 2);
+        String user = "user_123";
+
+        for (int i = 1; i <= 5; i++) {
+            boolean allowed = rateLimiter.allowRequest(user);
+            System.out.println("Request " + i + ": " + (allowed ? "ALLOWED" : "DENIED (429)"));
+            Thread.sleep(300); // Wait 300ms between requests
+        }
+
+        System.out.println("Sleeping for 1.5 seconds to let window slide...");
+        Thread.sleep(1500);
+
+        System.out.println("Request 6: " + (rateLimiter.allowRequest(user) ? "ALLOWED" : "DENIED (429)"));
+    }
+}
+```
+#### Phases 
+- **Eviction Phase**: Every time allowRequest() is invoked, the algorithm calculates the threshold (currentTime - windowSizeInMs). It looks at the oldest elements at the front of the queue and evicts them if they are older than the threshold.
+- **Evaluation Phase**: After clearing out dead weight, it checks timestamps.size(). If it is strictly less than maxRequests, the current timestamp is pushed to the back of the queue, and the request succeeds.
+- **Concurrency Control**: Instead of synchronizing the entire allowRequest method (which would create a massive bottleneck across all users), we synchronize only on the specific userLog object. This allows different users to hit the rate limiter concurrently without blocking each other.
