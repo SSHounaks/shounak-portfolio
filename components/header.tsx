@@ -4,11 +4,32 @@ import { usePathname } from 'next/navigation';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 
 const links = [
-  { label: '_root', href: '/' },
-  { label: '_logs', href: '/blog' },
-  { label: '_broadcast', href: '/news' },
-  { label: '_books', href: '/bookshelf' },
+  { label: '_root', href: '/', color: 'emerald' },
+  { label: '_logs', href: '/blog', color: 'amber' },
+  { label: '_broadcast', href: '/news', color: 'purple' },
+  { label: '_books', href: '/bookshelf', color: 'sky' },
+
 ];
+
+const colorMap: Record<string, { active: string; inactive: string }> = {
+  emerald: {
+    active: 'text-black bg-emerald-400 font-bold',
+    inactive: 'text-emerald-400/70 hover:text-black hover:bg-emerald-400',
+  },
+  amber: {
+    active: 'text-black bg-amber-400 font-bold',
+    inactive: 'text-amber-400/70 hover:text-black hover:bg-amber-400',
+  },
+  purple: {
+    active: 'text-black bg-purple-400 font-bold',
+    inactive: 'text-purple-400/70 hover:text-black hover:bg-purple-400',
+  },
+  sky: {
+    active: 'text-black bg-sky-400 font-bold',
+    inactive: 'text-sky-400/70 hover:text-black hover:bg-sky-400',
+  },
+
+};
 
 export function Header() {
   const pathname = usePathname();
@@ -24,27 +45,13 @@ export function Header() {
           <nav className="flex items-stretch h-full ml-auto">
             {links.map((item) => {
               const isActive = pathname === item.href;
-              const idx = links.indexOf(item);
+              const colors = colorMap[item.color];
               return (
                 <a
                   key={item.label}
                   href={item.href}
                   className={`flex items-center px-3 text-[10px] font-mono font-bold uppercase tracking-widest transition-all ${
-                    isActive
-                      ? idx === 0
-                        ? 'text-black bg-emerald-400 font-bold'
-                        : idx === 1
-                        ? 'text-black bg-amber-400 font-bold'
-                        : idx === 2
-                        ? 'text-black bg-purple-400 font-bold'
-                        : 'text-black bg-sky-400 font-bold'
-                      : idx === 0
-                      ? 'text-emerald-400/70 hover:text-black hover:bg-emerald-400'
-                      : idx === 1
-                      ? 'text-amber-400/70 hover:text-black hover:bg-amber-400'
-                      : idx === 2
-                      ? 'text-purple-400/70 hover:text-black hover:bg-purple-400'
-                      : 'text-sky-400/70 hover:text-black hover:bg-sky-400'
+                    isActive ? colors.active : colors.inactive
                   }`}
                 >
                   {item.label}

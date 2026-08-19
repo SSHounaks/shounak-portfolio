@@ -32,6 +32,10 @@ import { TerminalChat } from '@/components/demos/terminal-chat';
 import { TerminalTable } from '@/components/demos/terminal-table';
 import { ChangelogView } from '@/components/demos/changelog-view';
 import { CodeDiffView } from '@/components/demos/code-diff-view';
+import { XpBar } from '@/components/quests/xp-bar';
+import { DifficultyBadge } from '@/components/quests/difficulty-badge';
+import { SkillTag } from '@/components/quests/skill-tag';
+import { StreakBadge } from '@/components/quests/streak-badge';
 import { cn } from '@/lib/utils';
 import { HighlightSpan } from '@/components/mdx/highlight';
 
@@ -45,6 +49,7 @@ const sections = [
   { id: 'charts', label: 'Charts', icon: 'monitoring' },
   { id: 'effects', label: 'Effects' },
   { id: 'demos', label: 'Interactive', icon: 'play_circle' },
+  { id: 'quests', label: 'Quests', icon: 'flag' },
 ];
 
 const codeStyles = 'bg-zinc-900/50 border border-zinc-800 rounded p-3 text-[11px] font-mono text-zinc-400 overflow-x-auto';
@@ -1168,6 +1173,106 @@ auth-service|DEGRADED|98.50" />`}</Code>
 ];
 
 <CodeDiffView files={files} />`}</Code>
+            </section>
+
+            {/* Quests Section */}
+            <section id="quests" className="mb-16 scroll-mt-24" onMouseEnter={() => setActiveSection('quests')}>
+              <div className="flex items-center gap-3 mb-6">
+                <span className="material-symbols-outlined text-emerald-400/60 text-[20px]">flag</span>
+                <h2 className="font-display-lg text-[24px] text-white font-bold">Quests</h2>
+                <span className="h-px flex-1 bg-zinc-800" />
+              </div>
+
+              {/* XpBar */}
+              <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 flex items-center gap-2">
+                <span className="text-emerald-500/60">&gt;</span>
+                XpBar
+                <span className="text-[9px] text-zinc-600 font-mono">— ASCII progress bar for XP</span>
+              </h3>
+              <PropTable props={[
+                { name: 'current', type: 'number', description: 'Current XP value' },
+                { name: 'max', type: 'number', description: 'Maximum XP for this level' },
+                { name: 'size', type: "'sm' | 'md'", default: "'md'", description: 'Bar size' },
+                { name: 'color', type: 'string', default: "'#34d399'", description: 'Bar fill color' },
+              ]} />
+              <div className="mb-4">
+                <TerminalCard title="Demo.sh" icon="bar_chart">
+                  <div className="p-4 space-y-3">
+                    <XpBar current={4250} max={5000} />
+                    <XpBar current={200} max={1000} size="sm" color="#fbbf24" />
+                    <XpBar current={800} max={1000} color="#c084fc" />
+                  </div>
+                </TerminalCard>
+              </div>
+              <Code>{`<XpBar current={4250} max={5000} />
+<XpBar current={200} max={1000} size="sm" color="#fbbf24" />
+<XpBar current={800} max={1000} color="#c084fc" />`}</Code>
+
+              {/* DifficultyBadge */}
+              <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
+                <span className="text-emerald-500/60">&gt;</span>
+                DifficultyBadge
+                <span className="text-[9px] text-zinc-600 font-mono">— Color-coded difficulty level</span>
+              </h3>
+              <PropTable props={[
+                { name: 'difficulty', type: "'easy' | 'medium' | 'hard' | 'legendary'", description: 'Quest difficulty' },
+              ]} />
+              <div className="mb-4">
+                <TerminalCard title="Demo.sh" icon="label">
+                  <div className="p-4 flex flex-wrap gap-2">
+                    <DifficultyBadge difficulty="easy" />
+                    <DifficultyBadge difficulty="medium" />
+                    <DifficultyBadge difficulty="hard" />
+                    <DifficultyBadge difficulty="legendary" />
+                  </div>
+                </TerminalCard>
+              </div>
+              <Code>{`<DifficultyBadge difficulty="easy" />
+<DifficultyBadge difficulty="medium" />
+<DifficultyBadge difficulty="hard" />
+<DifficultyBadge difficulty="legendary" />`}</Code>
+
+              {/* SkillTag */}
+              <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
+                <span className="text-emerald-500/60">&gt;</span>
+                SkillTag
+                <span className="text-[9px] text-zinc-600 font-mono">— Skill pill badge</span>
+              </h3>
+              <PropTable props={[
+                { name: 'skill', type: 'string', description: 'Skill label' },
+              ]} />
+              <div className="mb-4">
+                <TerminalCard title="Demo.sh" icon="label">
+                  <div className="p-4 flex flex-wrap gap-2">
+                    <SkillTag skill="rust" />
+                    <SkillTag skill="distributed-systems" />
+                    <SkillTag skill="next.js" />
+                    <SkillTag skill="cooking" />
+                  </div>
+                </TerminalCard>
+              </div>
+              <Code>{`<SkillTag skill="rust" />
+<SkillTag skill="distributed-systems" />`}</Code>
+
+              {/* StreakBadge */}
+              <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
+                <span className="text-emerald-500/60">&gt;</span>
+                StreakBadge
+                <span className="text-[9px] text-zinc-600 font-mono">— Daily streak counter</span>
+              </h3>
+              <PropTable props={[
+                { name: 'current', type: 'number', description: 'Current streak count' },
+                { name: 'longest', type: 'number', description: 'Longest streak ever' },
+              ]} />
+              <div className="mb-4">
+                <TerminalCard title="Demo.sh" icon="local_fire_department">
+                  <div className="p-4 space-y-3">
+                    <StreakBadge current={14} longest={23} />
+                    <StreakBadge current={0} longest={5} />
+                  </div>
+                </TerminalCard>
+              </div>
+              <Code>{`<StreakBadge current={14} longest={23} />`}</Code>
             </section>
           </main>
         </div>
