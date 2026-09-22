@@ -7,6 +7,7 @@ const links = [
   { label: '_root', href: '/', color: 'emerald' },
   { label: '_logs', href: '/blog', color: 'amber' },
   { label: '_broadcast', href: '/news', color: 'purple' },
+  { label: '_projects', href: '/projects', color: 'cyan' },
   { label: '_books', href: '/bookshelf', color: 'sky' },
 
 ];
@@ -27,6 +28,10 @@ const colorMap: Record<string, { active: string; inactive: string }> = {
   sky: {
     active: 'text-black bg-sky-400 font-bold',
     inactive: 'text-sky-400/70 hover:text-black hover:bg-sky-400',
+  },
+  cyan: {
+    active: 'text-black bg-cyan-400 font-bold',
+    inactive: 'text-cyan-400/70 hover:text-black hover:bg-cyan-400',
   },
 
 };
