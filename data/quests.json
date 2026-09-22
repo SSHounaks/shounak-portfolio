@@ -1,230 +1,143 @@
 {
   "activeQuests": [
     {
-      "id": "ddia",
-      "title": "Read Designing Data-Intensive Applications",
-      "description": "The big book of distributed systems",
+      "id": "awsome-threat-model-post",
+      "title": "Write: I threat-modeled my own AWS scanner",
+      "description": "The findings from hardening AWSome become the post",
       "difficulty": "hard",
-      "xpReward": 600,
-      "category": "reading",
-      "startDate": "2026-06-01",
-      "progress": 60,
-      "skills": ["distributed-systems", "databases"]
+      "xpReward": 500,
+      "category": "creative",
+      "startDate": "2026-09-23",
+      "progress": 0,
+      "skills": [
+        "security",
+        "technical-writing",
+        "threat-modeling"
+      ]
     },
     {
-      "id": "rust-cli",
-      "title": "Build CLI Tool in Rust",
-      "description": "A file organizer CLI to practice Rust fundamentals",
+      "id": "charm-terminal-ui",
+      "title": "Learn Charmbracelet terminal UI",
+      "description": "Bubble Tea, Lip Gloss, Huh \u2014 build a real TUI in the Charm ecosystem",
       "difficulty": "medium",
-      "xpReward": 300,
+      "xpReward": 400,
       "category": "coding",
-      "startDate": "2026-07-15",
-      "progress": 30,
-      "skills": ["rust", "cli-tools"]
+      "startDate": "2026-09-23",
+      "progress": 0,
+      "skills": [
+        "go",
+        "terminal-ui",
+        "charmbracelet"
+      ]
     },
     {
-      "id": "oss-contribution",
-      "title": "First OSS Contribution",
-      "description": "Contribute a meaningful PR to an open-source project",
+      "id": "harden-awsome",
+      "title": "Threat-model & harden AWSome",
+      "description": "Least-privilege review + a security ruleset for the findings engine",
       "difficulty": "legendary",
-      "xpReward": 1500,
+      "xpReward": 1000,
       "category": "coding",
-      "startDate": "2026-08-01",
-      "progress": 10,
-      "skills": ["open-source", "community"]
+      "startDate": "2026-09-23",
+      "progress": 0,
+      "skills": [
+        "cloud-security",
+        "threat-modeling",
+        "aws"
+      ]
     }
   ],
   "completedQuests": [
     {
-      "id": "read-ddia-ch3",
-      "title": "Read DDIA Ch3: Storage Engines",
-      "difficulty": "easy",
-      "xpReward": 50,
-      "category": "reading",
-      "completedDate": "2026-06-15",
-      "skills": ["storage-engines", "lsm-trees"]
-    },
-    {
-      "id": "read-ddia-ch5",
-      "title": "Read DDIA Ch5: Replication",
-      "difficulty": "easy",
-      "xpReward": 50,
-      "category": "reading",
-      "completedDate": "2026-06-22",
-      "skills": ["replication"]
-    },
-    {
-      "id": "rate-limiter",
-      "title": "Build Rate Limiter in Java",
-      "difficulty": "medium",
-      "xpReward": 300,
-      "category": "coding",
-      "completedDate": "2026-06-20",
-      "skills": ["java", "concurrency", "rate-limiting"]
-    },
-    {
-      "id": "system-design-url",
-      "title": "System Design: URL Shortener",
-      "difficulty": "medium",
-      "xpReward": 300,
-      "category": "coding",
-      "completedDate": "2026-05-10",
-      "skills": ["system-design", "hashing"]
-    },
-    {
-      "id": "portfolio-v1",
-      "title": "Build Portfolio v1.0",
+      "id": "read-ddia",
+      "title": "Read Designing Data-Intensive Applications",
       "difficulty": "hard",
-      "xpReward": 1200,
-      "category": "coding",
-      "completedDate": "2026-05-17",
-      "skills": ["next.js", "react", "design-systems"]
-    },
-    {
-      "id": "glassmorphism-post",
-      "title": "Write Glassmorphism Blog Post",
-      "difficulty": "easy",
-      "xpReward": 100,
-      "category": "creative",
-      "completedDate": "2026-05-20",
-      "skills": ["technical-writing", "css"]
-    },
-    {
-      "id": "read-rust-book-ch1",
-      "title": "Read The Rust Book Ch1-3",
-      "difficulty": "easy",
-      "xpReward": 80,
+      "xpReward": 1000,
       "category": "reading",
-      "completedDate": "2026-07-01",
-      "skills": ["rust", "ownership"]
+      "completedDate": "2026-09-23",
+      "skills": [
+        "distributed-systems",
+        "databases"
+      ]
     },
     {
-      "id": "rust-project-setup",
-      "title": "Set Up Rust Dev Environment",
-      "difficulty": "easy",
-      "xpReward": 50,
-      "category": "coding",
-      "completedDate": "2026-07-05",
-      "skills": ["rust", "tooling"]
-    },
-    {
-      "id": "concurrency-deep-dive",
-      "title": "Deep Dive: Java Concurrency Latches",
-      "difficulty": "medium",
-      "xpReward": 200,
-      "category": "reading",
-      "completedDate": "2026-06-25",
-      "skills": ["java", "concurrency"]
-    },
-    {
-      "id": "observability-post",
-      "title": "Write Observability Blog Post",
-      "difficulty": "medium",
-      "xpReward": 250,
-      "category": "creative",
-      "completedDate": "2026-06-10",
-      "skills": ["technical-writing", "observability"]
-    },
-    {
-      "id": "attention-paper",
-      "title": "Read Attention Is All You Need",
+      "id": "read-multi-tenant-saas",
+      "title": "Read Building Multi-Tenant SaaS Architectures",
       "difficulty": "hard",
-      "xpReward": 400,
+      "xpReward": 2000,
       "category": "reading",
-      "completedDate": "2026-04-15",
-      "skills": ["transformers", "deep-learning"]
-    },
-    {
-      "id": "bookshelf-page",
-      "title": "Build Bookshelf Page",
-      "difficulty": "easy",
-      "xpReward": 200,
-      "category": "coding",
-      "completedDate": "2026-07-05",
-      "skills": ["next.js", "filtering"]
-    },
-    {
-      "id": "news-page",
-      "title": "Build Broadcast Page",
-      "difficulty": "easy",
-      "xpReward": 150,
-      "category": "coding",
-      "completedDate": "2026-05-15",
-      "skills": ["next.js"]
-    },
-    {
-      "id": "exercise-streak-7",
-      "title": "7-Day Exercise Streak",
-      "difficulty": "easy",
-      "xpReward": 100,
-      "category": "fitness",
-      "completedDate": "2026-08-01",
-      "skills": ["discipline"]
-    },
-    {
-      "id": "cook-thali",
-      "title": "Cook a Full Thali from Scratch",
-      "difficulty": "medium",
-      "xpReward": 150,
-      "category": "creative",
-      "completedDate": "2026-07-20",
-      "skills": ["cooking", "meal-prep"]
-    },
-    {
-      "id": "read-zarathustra",
-      "title": "Read Thus Spoke Zarathustra",
-      "difficulty": "hard",
-      "xpReward": 350,
-      "category": "reading",
-      "completedDate": "2026-04-01",
-      "skills": ["philosophy", "critical-thinking"]
-    },
-    {
-      "id": "nextjs-optimization",
-      "title": "Write Next.js Optimization Post",
-      "difficulty": "medium",
-      "xpReward": 250,
-      "category": "creative",
-      "completedDate": "2026-06-01",
-      "skills": ["technical-writing", "next.js", "performance"]
+      "completedDate": "2026-09-23",
+      "skills": [
+        "multi-tenant",
+        "aws",
+        "saas"
+      ]
     }
   ],
   "milestones": [
     {
-      "id": "learned-rust",
-      "title": "Learned Rust",
-      "date": "2026-07-10",
-      "xpEarned": 2400,
-      "skillsGained": ["rust", "ownership", "borrowing"],
-      "relatedQuests": ["read-rust-book-ch1", "rust-project-setup", "rust-cli"],
-      "reflection": "Started with the book, built a CLI tool, now comfortable with ownership model."
+      "id": "read-ddia-milestone",
+      "title": "Read DDIA",
+      "date": "2026-09-23",
+      "xpEarned": 1000,
+      "skillsGained": [
+        "distributed-systems",
+        "databases"
+      ],
+      "relatedQuests": [
+        "read-ddia"
+      ],
+      "reflection": "Finished Designing Data-Intensive Applications cover to cover."
     },
     {
-      "id": "portfolio-v1-milestone",
-      "title": "Portfolio v1.0 Launched",
-      "date": "2026-05-17",
-      "xpEarned": 1200,
-      "skillsGained": ["next.js", "react", "design-systems"],
-      "relatedQuests": ["portfolio-v1", "news-page"],
-      "reflection": "First major build. Server components clicked. Terminal aesthetic came together."
-    },
-    {
-      "id": "distributed-systems-foundations",
-      "title": "Distributed Systems Foundations",
-      "date": "2026-06-25",
-      "xpEarned": 1800,
-      "skillsGained": ["distributed-systems", "replication", "storage-engines"],
-      "relatedQuests": ["read-ddia-ch3", "read-ddia-ch5", "concurrency-deep-dive"],
-      "reflection": "DDIA chapters + concurrency deep dive gave solid foundations. Still early but building intuition."
-    },
-    {
-      "id": "started-coding-journey",
-      "title": "Started Coding Journey",
-      "date": "2026-04-01",
-      "xpEarned": 0,
-      "skillsGained": ["philosophy", "critical-thinking"],
-      "relatedQuests": ["read-zarathustra", "attention-paper"],
-      "reflection": "Set up the portfolio, defined goals. Reading deeply before building."
+      "id": "read-multi-tenant-saas-milestone",
+      "title": "Read Multi-Tenant SaaS Architectures",
+      "date": "2026-09-23",
+      "xpEarned": 2000,
+      "skillsGained": [
+        "multi-tenant",
+        "aws",
+        "saas"
+      ],
+      "relatedQuests": [
+        "read-multi-tenant-saas"
+      ],
+      "reflection": "Finished Building Multi-Tenant SaaS Architectures \u2014 isolation models, landing zones, and tenancy patterns at scale."
     }
-  ]
+  ],
+  "dailyTasks": [
+    {
+      "id": "read-20m",
+      "title": "Read 20 minutes",
+      "xpReward": 20,
+      "category": "reading"
+    },
+    {
+      "id": "ship-something",
+      "title": "Ship something small",
+      "xpReward": 30,
+      "category": "coding"
+    },
+    {
+      "id": "move-body",
+      "title": "Move your body",
+      "xpReward": 15,
+      "category": "fitness"
+    },
+    {
+      "id": "write-one-idea",
+      "title": "Write down one idea",
+      "xpReward": 10,
+      "category": "creative"
+    }
+  ],
+  "streaks": {
+    "read-20m": 12,
+    "ship-something": 5,
+    "move-body": 7,
+    "write-one-idea": 3
+  },
+  "streakStats": {
+    "current": 12,
+    "longest": 21
+  }
 }

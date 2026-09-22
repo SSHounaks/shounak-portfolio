@@ -24,23 +24,19 @@ export function CompletedQuestsList({ completedQuests }: CompletedQuestsListProp
     (currentPage + 1) * ITEMS_PER_PAGE,
   );
 
+  if (allItems.length === 0) {
+    return (
+      <div className="bg-black/40 backdrop-blur-sm border border-white/[0.07] rounded-lg p-6 font-mono text-[11px] space-y-1.5">
+        <p className="text-white/45">{'> tail cleared.log'}</p>
+        <p className="text-white/25">log is empty. clear a quest to make history.</p>
+        <p className="text-white/15 animate-pulse">_</p>
+      </div>
+    );
+  }
+
   return (
-    <details open className="bg-black/40 backdrop-blur-sm border border-white/[0.06] rounded-lg group/completed">
-      <summary className="flex flex-wrap items-center justify-between gap-3 p-2.5 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-        <span className="font-mono text-[9px] uppercase tracking-widest text-white/30">completed</span>
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-[9px] text-white/25">
-            {allItems.length} entries
-          </span>
-          <span className="material-symbols-outlined text-[12px] text-white/20 group-open/completed:rotate-90 transition-transform duration-200">
-            chevron_right
-          </span>
-        </div>
-      </summary>
-
-      <div className="mx-2.5 h-px bg-white/[0.06]" />
-
-      <div className="px-2.5 pb-2.5 pt-1">
+    <div className="bg-black/40 backdrop-blur-sm border border-white/[0.07] rounded-lg">
+      <div className="px-2.5 pt-1.5 pb-1">
         <div className="space-y-0">
           {pagedItems.map((item) => (
             <QuestRow key={item.id} quest={item} />
@@ -52,26 +48,28 @@ export function CompletedQuestsList({ completedQuests }: CompletedQuestsListProp
             <button
               onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
               disabled={currentPage === 0}
+              aria-label="Previous page"
               className={cn(
-                'font-mono text-[11px] px-2.5 py-1 rounded border transition-all cursor-pointer',
+                'font-mono text-[11px] px-2.5 py-1 rounded border transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-emerald-400/60',
                 currentPage === 0
-                  ? 'text-white/10 border-white/5 cursor-not-allowed'
-                  : 'text-white/50 border-white/10 hover:text-white/80 hover:bg-white/[0.04] hover:border-white/20',
+                  ? 'text-white/15 border-white/5 cursor-not-allowed'
+                  : 'text-white/55 border-white/10 hover:text-white/90 hover:bg-white/[0.04] hover:border-white/25',
               )}
             >
               {'<'}
             </button>
-            <span className="font-mono text-[10px] text-white/40 min-w-[50px] text-center">
+            <span className="font-mono text-[10px] text-white/45 min-w-[50px] text-center tabular-nums">
               {currentPage + 1} / {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
               disabled={currentPage >= totalPages - 1}
+              aria-label="Next page"
               className={cn(
-                'font-mono text-[11px] px-2.5 py-1 rounded border transition-all cursor-pointer',
+                'font-mono text-[11px] px-2.5 py-1 rounded border transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-emerald-400/60',
                 currentPage >= totalPages - 1
-                  ? 'text-white/10 border-white/5 cursor-not-allowed'
-                  : 'text-white/50 border-white/10 hover:text-white/80 hover:bg-white/[0.04] hover:border-white/20',
+                  ? 'text-white/15 border-white/5 cursor-not-allowed'
+                  : 'text-white/55 border-white/10 hover:text-white/90 hover:bg-white/[0.04] hover:border-white/25',
               )}
             >
               {'>'}
@@ -79,6 +77,6 @@ export function CompletedQuestsList({ completedQuests }: CompletedQuestsListProp
           </div>
         )}
       </div>
-    </details>
+    </div>
   );
 }

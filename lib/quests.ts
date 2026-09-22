@@ -34,10 +34,20 @@ export interface Milestone {
   reflection?: string;
 }
 
+export interface DailyTask {
+  id: string;
+  title: string;
+  xpReward: number;
+  category: string;
+}
+
 export interface QuestsData {
   activeQuests: ActiveQuest[];
   completedQuests: CompletedQuest[];
   milestones: Milestone[];
+  dailyTasks?: DailyTask[];
+  streaks?: Record<string, number>;
+  streakStats?: { current: number; longest: number };
 }
 
 export interface PlayerProfile {
@@ -65,20 +75,31 @@ function getTitle(level: number): string {
 }
 
 function computeLevel(totalXP: number): number {
-  return Math.floor(Math.sqrt(totalXP / 500)) + 1;
+  return Math.floor(Math.sqrt(totalXP / 500));
 }
 
 function computeCurrentXP(totalXP: number, level: number): number {
-  const xpForCurrentLevel = (level - 1) * (level - 1) * 500;
-  return totalXP - xpForCurrentLevel;
+  return totalXP - level * level * 500;
 }
 
 function computeXpToNextLevel(level: number): number {
-  return level * 500;
+  return (2 * level + 1) * 500;
 }
 
 export function loadQuests(): QuestsData {
   return questsData as QuestsData;
+}
+
+export function getDailyTasks(data: QuestsData): DailyTask[] {
+  return data.dailyTasks ?? [];
+}
+
+export function getStreaks(data: QuestsData): Record<string, number> {
+  return data.streaks ?? {};
+}
+
+export function getStreakStats(data: QuestsData): { current: number; longest: number } {
+  return data.streakStats ?? { current: 0, longest: 0 };
 }
 
 export function computeProfile(data: QuestsData): PlayerProfile {

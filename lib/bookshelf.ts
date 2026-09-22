@@ -95,7 +95,7 @@ export const books: BookEntry[] = [
     author: "Tod Golding",
     type: "book",
     category: "architecture",
-    status: "PLANNED",
+    status: "READ",
     description: "Architectural patterns for building multi-tenant SaaS solutions on AWS.",
     tags: ["architecture", "aws", "saas", "multi-tenant"],
   },

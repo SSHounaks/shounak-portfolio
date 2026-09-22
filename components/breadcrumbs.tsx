@@ -52,6 +52,7 @@ function getCrumbs(pathname: string): Crumb[] {
   }
   if (pathname === '/news') return [{ label: '~/', href: '/', ...base }, { label: '/dev/null', ...news }];
   if (pathname === '/projects') return [{ label: '~/', href: '/', ...base }, { label: '/opt/build', bg: 'rgb(22,48,55)', hoverBg: 'rgb(38,80,92)', chevronColor: 'rgb(22,48,55)', hoverChevron: 'rgb(38,80,92)' }];
+  if (pathname === '/quests') return [{ label: '~/', href: '/', ...base }, { label: '/var/save', bg: 'rgb(55,25,35)', hoverBg: 'rgb(95,45,60)', chevronColor: 'rgb(55,25,35)', hoverChevron: 'rgb(95,45,60)' }];
   if (pathname === '/bookshelf') return [{ label: '~/', href: '/', ...base }, { label: '/usr/share/doc', bg: 'rgb(40,50,30)', hoverBg: 'rgb(70,90,55)', chevronColor: 'rgb(40,50,30)', hoverChevron: 'rgb(70,90,55)' }];
   return [{ label: '~/', ...base }];
 }
