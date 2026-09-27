@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 const COLS = 30;
 const ROWS = 5;
@@ -12,6 +13,7 @@ type Pos = { x: number; y: number };
 export function GithubSnake() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const colsRef = useRef(COLS);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -155,16 +157,18 @@ export function GithubSnake() {
       tick();
     }
 
-    window.addEventListener('pageshow', restart);
     draw();
-    tick();
+    if (!reducedMotion) {
+      window.addEventListener('pageshow', restart);
+      tick();
+    }
 
     return () => {
       clearTimeout(frame);
       clearTimeout(restartTimer);
-      window.removeEventListener('pageshow', restart);
+      if (!reducedMotion) window.removeEventListener('pageshow', restart);
     };
-  }, []);
+  }, [reducedMotion]);
 
   return (
     <div className="rounded-lg border border-white/5 hover:border-red-500/40 bg-black/20 overflow-hidden transition-colors duration-300">

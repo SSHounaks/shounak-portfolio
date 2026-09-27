@@ -55,11 +55,11 @@ export function Popup({
           {title && (
             <DialogHeader>
               <DialogTitle className="text-emerald-400 text-sm font-bold flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 {title}
               </DialogTitle>
               {description && (
-                <DialogDescription className="text-zinc-500 text-xs">
+                <DialogDescription className="text-zinc-400 text-xs">
                   {description}
                 </DialogDescription>
               )}

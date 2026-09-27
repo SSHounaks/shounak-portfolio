@@ -56,7 +56,7 @@ export function Banner({ type = 'info', title, children, action, className }: Ba
         <div className="flex-1 min-w-0">
           {title && (
             <div className="flex items-center gap-2 mb-2">
-              <span className={cn('text-[10px] uppercase tracking-widest font-bold', style.color)}>
+              <span className={cn('text-xs uppercase tracking-widest font-bold', style.color)}>
                 // {title}
               </span>
             </div>

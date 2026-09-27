@@ -40,7 +40,7 @@ export const projects: Project[] = [
     name: 'SSHounaks/awsome',
     description:
       'Go-based AWS resource enumerator that emits versioned JSON-lines snapshots of (node, edge) records for EC2, VPC, Security Groups and more. Snapshots load idempotently into Neo4j, power a Deno-served React Flow SPA with diagram, findings, scan jobs, and Bitbucket-style snapshot drift diffs with CloudTrail attribution, plus natural-language chat and an MCP server for AI agents.',
-    technologies: ['Go', 'AWS SDK v2', 'Neo4j', 'Deno', 'React Flow', 'LocalStack', 'MCP', 'Docker'],
+    technologies: ['Go', 'AWS', 'Neo4j', 'Deno', 'MCP', 'Docker'],
     image: '/awsome.png',
     github: 'https://github.com/SSHounaks/awsome',
   },
@@ -48,7 +48,7 @@ export const projects: Project[] = [
     name: 'SSHounaks/s3-viewer',
     description:
       'A VTuber platform built on a file explorer web app with a Deno/Hono backend and Next.js frontend that browses local filesystems or S3 buckets. Browse folders with a lazy-loaded tree, virtualized file list, multi-select clipboard, undoable operations, typed search, and drag-and-drop. Media toolkit covers audio/video redaction with an ffmpeg timeline editor (waveform/filmstrip, segment cut/mask, SSE job progress), GIF making, and exports. Plus 3D model loading with animation, streaming with scene layers, and live stream storage.',
-    technologies: ['Deno', 'Hono', 'AWS SDK v3', 'Next.js', 'React 19', 'Tailwind CSS', 'FFmpeg', 'Transcription', 'Model Usage', '3D Animation', 'Streaming'],
+    technologies: ['Deno', 'Hono', 'AWS', 'Next.js', 'React 19', 'Tailwind CSS', 'FFmpeg', '3D Animation'],
     image: '/s3-viewer.jpeg',
     video: '/s3-viewer.mp4',
     github: 'https://github.com/SSHounaks/s3-viewer',
@@ -57,7 +57,7 @@ export const projects: Project[] = [
     name: 'KoLlama - Kotlin Local Harness',
     description:
       'A Kotlin harness for running Ollama local models with tool use and memory. Registers callable tools the model can invoke mid-conversation, persists conversation memory across sessions, and orchestrates streaming responses from local models — all offline, no cloud dependency.',
-    technologies: ['Kotlin', 'Ollama', 'Tool Use', 'Local LLM', 'Memory'],
+    technologies: ['Kotlin', 'Ollama'],
     image: '/ollama-harness.png',
     joke: 'Took 8 minutes to write 60 tokens. Not as good as Opus. 😂🤣',
   },

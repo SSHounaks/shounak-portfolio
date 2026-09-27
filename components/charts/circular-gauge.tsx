@@ -55,7 +55,7 @@ export function CircularGauge({
       >
         {value}%
       </span>
-      <span className="text-white/40 text-[8px] font-mono uppercase tracking-wider">
+      <span className="text-white/50 text-xs font-mono uppercase tracking-wider">
         {label}
       </span>
     </div>

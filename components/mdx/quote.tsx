@@ -17,8 +17,8 @@ export function Quote({ from, link, children, className }: QuoteProps) {
       <div className="text-zinc-300 text-sm leading-relaxed italic mb-3 space-y-2">
         {children}
       </div>
-      <footer className="text-xs text-zinc-500 flex items-center gap-2">
-        <span className="text-emerald-500/60">—</span>
+      <footer className="text-xs text-zinc-400 flex items-center gap-2">
+        <span className="text-emerald-400/70">—</span>
         {link ? (
           <a
             href={link}

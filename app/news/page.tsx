@@ -29,6 +29,24 @@ const broadcasts = [
   //   body: 'Published three new open-source tools for terminal UI enthusiasts. Check out terminal-log, react-glitch-text, and use-typewriter hooks.',
   // },
   {
+    date: '2026-09-27',
+    type: 'RELEASE',
+    title: 'Quest Log: Active Quests, Milestones & Streaks',
+    body: 'Added a quest log at /quests tracking 3 active and 2 completed quests, 2 milestones, and 4 daily tasks. Streak counters, XP totals, and a level ring all read from data/quests.json, so progress stays editable as a single source of truth.',
+  },
+  {
+    date: '2026-09-14',
+    type: 'UPDATE',
+    title: 'Projects: Six Case Studies With Tech Filtering',
+    body: 'Expanded /projects to 6 write-ups — ThothTech/OnTrack, FasterXML/Jackson-Jr, wallpapi, awsome, s3-viewer, and KoLlama. Added per-technology filtering, inline video and image previews, and tech marks drawn from official brand icon sets instead of text chips.',
+  },
+  {
+    date: '2026-08-22',
+    type: 'UPDATE',
+    title: 'Bookshelf: Search, View Modes & Reading Status',
+    body: 'Reworked /bookshelf with live search, a card/table view switch, and a READ / READING / PLANNED / RECOMMENDED status system across 10 titles spanning books, papers, and articles. Covers, category filters, and per-entry descriptions included.',
+  },
+  {
     date: '2026-07-05',
     type: 'RELEASE',
     title: 'Bookshelf: Curated Reading Collection Live',
@@ -61,31 +79,31 @@ export default function NewsPage() {
       <BackgroundCanvas />
       <Header />
       <PageTransition>
-      <div className="min-h-screen bg-background p-6 md:p-10 max-w-5xl mx-auto pt-24">
+      <div className="min-h-screen bg-background px-6 md:px-10 max-w-5xl mx-auto pt-24 pb-6 md:pb-10">
         <header className="space-y-3 border-b border-zinc-900/80 pb-8 mb-12">
-          <div className="text-xs text-emerald-500/60 tracking-wider select-none">
+          <div className="text-xs text-emerald-400/70 tracking-wider select-none">
             // BROADCAST_SIGNAL v2.0
           </div>
           <h1 className="text-4xl font-black text-emerald-400 tracking-tight flex items-center gap-1 drop-shadow-[0_0_15px_rgba(52,211,153,0.1)]">
-            <span className="text-emerald-500/40 select-none">_</span>broadcast
+            <span className="text-emerald-400/70 select-none">_</span>broadcast
           </h1>
-          <p className="text-zinc-500 text-sm">
+          <p className="text-zinc-400 text-sm">
             Announcements, releases, and updates.
           </p>
         </header>
 
         {broadcasts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="font-mono text-[9px] text-zinc-800 mb-3 tracking-widest">
+            <div className="font-mono text-xs text-zinc-400 mb-3 tracking-widest">
               // EMPTY
             </div>
-            <div className="font-mono text-zinc-600 text-[12px] leading-relaxed space-y-3">
-              <p className="text-[10px] text-zinc-700">{'> cat /var/log/broadcast.log'}</p>
-              <p className="text-[10px] text-zinc-700">{'> '}</p>
+            <div className="font-mono text-zinc-400 text-[12px] leading-relaxed space-y-3">
+              <p className="text-xs text-zinc-400">{'> cat /var/log/broadcast.log'}</p>
+              <p className="text-xs text-zinc-400">{'> '}</p>
               <p className="text-base font-bold text-red-500/30 py-3">{'[WARN]  No entries found'}</p>
               <p className="text-sm text-zinc-600/60 pb-3">{'> Coming soon...'}</p>
-              <p className="text-[10px] text-zinc-700">{'> '}</p>
-              <p className="text-[11px] text-zinc-700 animate-pulse">{'_'}</p>
+              <p className="text-xs text-zinc-400">{'> '}</p>
+              <p className="text-[11px] text-zinc-400 animate-pulse">{'_'}</p>
             </div>
           </div>
         ) : (
@@ -102,13 +120,13 @@ export default function NewsPage() {
                   </h2>
                 </div>
                 <div className="flex items-center justify-between sm:justify-end gap-6 text-xs sm:w-[220px] shrink-0 border-t border-zinc-900/50 sm:border-t-0 pt-2 sm:pt-0">
-                  <span className="text-zinc-600 sm:text-zinc-500 font-medium">{b.date}</span>
-                  <span className={`px-2 py-0.5 text-[10px] font-bold rounded border tracking-wider w-[80px] text-center select-none ${typeColors[b.type] || 'text-white/30 border-white/10 bg-white/5'}`}>
+                  <span className="text-zinc-400 sm:text-zinc-400 font-medium">{b.date}</span>
+                  <span className={`px-2 py-0.5 text-xs font-bold rounded border tracking-wider w-[80px] text-center select-none ${typeColors[b.type] || 'text-white/55 border-white/10 bg-white/5'}`}>
                     {b.type}
                   </span>
                 </div>
               </div>
-              <p className="text-zinc-500 text-sm leading-relaxed max-w-4xl pl-7">
+              <p className="text-zinc-400 text-sm leading-relaxed max-w-4xl pl-7">
                 {b.body}
               </p>
             </div>

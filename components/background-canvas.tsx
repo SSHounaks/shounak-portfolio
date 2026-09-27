@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 export function BackgroundCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -22,6 +24,7 @@ export function BackgroundCanvas() {
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      if (reducedMotion) draw();
     };
 
     const onMouseMove = (e: MouseEvent) => {
@@ -29,7 +32,7 @@ export function BackgroundCanvas() {
       mouseY = e.clientY;
     };
 
-    function draw() {
+    const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const dotSpacing = 40;
@@ -58,26 +61,32 @@ export function BackgroundCanvas() {
           ctx.fill();
         }
       }
-      animId = requestAnimationFrame(draw);
+      if (!reducedMotion) animId = requestAnimationFrame(draw);
     }
 
-    function restart() {
+    const restart = () => {
       cancelAnimationFrame(animId);
       animId = requestAnimationFrame(draw);
-    }
+    };
 
     window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('pageshow', restart);
-    animId = requestAnimationFrame(draw);
+    if (reducedMotion) {
+      draw();
+    } else {
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('pageshow', restart);
+      animId = requestAnimationFrame(draw);
+    }
 
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('pageshow', restart);
+      if (!reducedMotion) {
+        window.removeEventListener('mousemove', onMouseMove);
+        window.removeEventListener('pageshow', restart);
+      }
     };
-  }, []);
+  }, [reducedMotion]);
 
   return (
     <canvas

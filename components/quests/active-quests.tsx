@@ -9,10 +9,10 @@ export function ActiveQuests({ quests }: ActiveQuestsProps) {
   if (quests.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <div className="font-mono text-[10px] text-zinc-700 mb-2">
+        <div className="font-mono text-xs text-zinc-400 mb-2">
           {'> cat active_quests.log'}
         </div>
-        <p className="font-mono text-[11px] text-zinc-600">no active quests</p>
+        <p className="font-mono text-[11px] text-zinc-400">no active quests</p>
       </div>
     );
   }

@@ -38,7 +38,7 @@ export function GridItem({ children, className, title, icon }: GridItemProps) {
       )}
     >
       {(title || icon) && (
-        <div className="flex items-center gap-2 mb-2 text-[10px] uppercase tracking-widest text-zinc-500">
+        <div className="flex items-center gap-2 mb-2 text-xs uppercase tracking-widest text-zinc-400">
           {icon && <span className="material-symbols-outlined text-[12px]">{icon}</span>}
           {title && <span>{title}</span>}
         </div>

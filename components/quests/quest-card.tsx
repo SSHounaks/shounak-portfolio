@@ -96,11 +96,11 @@ export function QuestCard({ quest }: QuestCardProps) {
               className="w-[7px] h-[7px] rounded-full shrink-0"
               style={{ backgroundColor: rc.hex, boxShadow: `0 0 6px ${rc.hex}` }}
             />
-            <span className={cn('font-mono text-[8px] font-bold uppercase tracking-[0.2em]', rc.label)}>
+            <span className={cn('font-mono text-xs font-bold uppercase tracking-[0.2em]', rc.label)}>
               {quest.difficulty}
             </span>
-            <span className="text-white/15 font-mono text-[9px]">·</span>
-            <span className="font-mono text-[8px] uppercase tracking-widest text-white/35 truncate">
+            <span className="text-white/15 font-mono text-xs">·</span>
+            <span className="font-mono text-xs uppercase tracking-widest text-white/50 truncate">
               {quest.category}
             </span>
           </div>
@@ -115,7 +115,7 @@ export function QuestCard({ quest }: QuestCardProps) {
           {quest.title}
         </h3>
         {quest.description && (
-          <p className="font-mono text-[10px] text-white/45 leading-relaxed mb-3">{quest.description}</p>
+          <p className="font-mono text-xs text-white/50 leading-relaxed mb-3">{quest.description}</p>
         )}
 
         <div className="flex items-center gap-2 mb-1.5">
@@ -133,19 +133,19 @@ export function QuestCard({ quest }: QuestCardProps) {
               />
             ))}
           </div>
-          <span className="font-mono text-[10px] font-bold tabular-nums text-white/60 shrink-0 w-9 text-right">
+          <span className="font-mono text-xs font-bold tabular-nums text-white/60 shrink-0 w-9 text-right">
             {quest.progress}%
           </span>
         </div>
 
         <div className="flex items-center justify-between gap-2 mt-3 pt-2.5 border-t border-white/[0.05]">
           {quest.skills && quest.skills.length > 0 ? (
-            <p className="font-mono text-[9px] text-white/40 truncate">{quest.skills.join(' · ')}</p>
+            <p className="font-mono text-xs text-white/50 truncate">{quest.skills.join(' · ')}</p>
           ) : (
             <span />
           )}
           {quest.startDate && (
-            <span className="font-mono text-[8px] text-white/25 tabular-nums shrink-0">{quest.startDate}</span>
+            <span className="font-mono text-xs text-white/55 tabular-nums shrink-0">{quest.startDate}</span>
           )}
         </div>
       </div>

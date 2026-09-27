@@ -3,6 +3,8 @@
 @theme {
   --font-inter: 'Inter', sans-serif;
   --font-sora: 'Sora', sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo,
+    Monaco, Consolas, 'Liberation Mono', monospace;
   
   --spacing-bento-gap: 1.5rem;
   --spacing-margin-mobile: 1rem;
@@ -54,6 +56,35 @@
   --color-error-container: #93000a;
   --color-on-error-container: #ffdad6;
   --color-foreground: #e2e2e2;
+
+  /* shadcn primitive tokens, mapped onto the Material 3 surface scale above.
+     Dark-only: .dark is hardcoded on <html> in app/layout.tsx, so this is the
+     single source of truth. Do not add a .dark override block. */
+  --color-on-background: #e2e2e2;
+  --color-card: #1b1b1b;
+  --color-card-foreground: #e2e2e2;
+  --color-popover: #1f1f1f;
+  --color-popover-foreground: #e2e2e2;
+  --color-primary-foreground: #3c0091;
+  --color-secondary-foreground: #3c2f00;
+  --color-muted: #2a2a2a;
+  --color-muted-foreground: #cbc3d7;
+  --color-accent: #353535;
+  --color-accent-foreground: #e2e2e2;
+  --color-destructive: #ffb4ab;
+  --color-destructive-foreground: #690005;
+  --color-border: #494454;
+  --color-input: #494454;
+  --color-ring: #d0bcff;
+  --color-sidebar: #1f1f1f;
+  --color-sidebar-foreground: #e2e2e2;
+  --color-sidebar-primary: #d0bcff;
+  --color-sidebar-primary-foreground: #3c0091;
+  --color-sidebar-accent: #2a2a2a;
+  --color-sidebar-accent-foreground: #e2e2e2;
+  --color-sidebar-border: #494454;
+  --color-sidebar-ring: #d0bcff;
+  --radius: 0.5rem;
 }
 
 @utility font-display-lg {
@@ -64,9 +95,9 @@
   font-family: var(--font-inter);
 }
 
-body {
-  background-color: rgb(var(--color-background));
-}
+/* Intentionally no background-color here. This canvas is z-index:-1, so any
+   opaque body background would paint over the dot field. The page backdrop
+   comes from <html class="bg-background"> in app/layout.tsx instead. */
 
 /* Terminal Card Styling */
 .terminal-card {
@@ -178,6 +209,8 @@ body {
 }
 
 /* Interactive Dot Background */
+/* Dots are painted by canvas JS. z-index -1 keeps this behind all content;
+   it stays visible because <body> has no background of its own (see below). */
 #background-canvas {
   position: fixed;
   inset: 0;
@@ -232,4 +265,14 @@ section.terminal-card:hover::before {
   animation: glow-pulse 2.5s ease-in-out infinite;
 }
 
-
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}

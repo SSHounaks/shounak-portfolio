@@ -19,17 +19,17 @@ export function AsciiBarChart({
   className,
 }: AsciiBarChartProps) {
   return (
-    <div className={cn('font-mono text-[10px] space-y-0.5', className)}>
+    <div className={cn('font-mono text-xs space-y-0.5', className)}>
       {maxLabel && (
-        <div className="flex items-center gap-2 mb-1.5 text-emerald-500/60">
+        <div className="flex items-center gap-2 mb-1.5 text-emerald-400/70">
           <span>//</span>
-          <span className="text-white/30">{maxLabel}</span>
+          <span className="text-white/55">{maxLabel}</span>
         </div>
       )}
       {bars.map((b) => (
         <div key={b.label} className="flex items-center gap-2">
-          <span className="text-white/40 w-6 text-right">{b.label}</span>
-          <span className="text-emerald-500/30">|</span>
+          <span className="text-white/50 w-6 text-right">{b.label}</span>
+          <span className="text-emerald-400/70">|</span>
           <div className="flex items-center gap-2">
             <div className="flex gap-px">
               {Array.from({ length: barCount }).map((_, i) => (
@@ -44,7 +44,7 @@ export function AsciiBarChart({
                 />
               ))}
             </div>
-            <span className="text-white/30">{b.value}%</span>
+            <span className="text-white/55">{b.value}%</span>
           </div>
         </div>
       ))}

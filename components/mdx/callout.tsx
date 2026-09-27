@@ -61,7 +61,7 @@ function parseListItems(children: ReactNode, type: 'ol' | 'ul'): ReactNode {
     <ListTag className="list-none space-y-2 pl-0">
       {items.map((item, i) => (
         <li key={i} className="flex items-start gap-2">
-          <span className="text-emerald-500/60 shrink-0 mt-0.5">
+          <span className="text-emerald-400/70 shrink-0 mt-0.5">
             {type === 'ol' ? `${i + 1}.` : '—'}
           </span>
           <span>{item}</span>
@@ -87,7 +87,7 @@ export function Callout({ type = 'note', title, children, list, className }: Cal
         <span className={cn('font-bold text-xs', style.color)}>
           {style.prompt}
         </span>
-        <span className={cn('text-[10px] uppercase tracking-widest font-bold', style.color)}>
+        <span className={cn('text-xs uppercase tracking-widest font-bold', style.color)}>
           {title || style.label}
         </span>
         <span className={cn('font-bold text-xs', style.color)}>

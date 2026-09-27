@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 interface MatrixRainProps {
   className?: string;
@@ -15,6 +16,7 @@ export function MatrixRain({
   fadeOpacity = 0.05,
 }: MatrixRainProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -34,7 +36,8 @@ export function MatrixRain({
     const cols = Math.floor(w / fontSize);
     const drops: number[] = Array.from({ length: cols }, () => Math.floor(Math.random() * -20));
 
-    let frame = requestAnimationFrame(function draw() {
+    let frame = 0;
+    const draw = function () {
       ctx.fillStyle = `rgba(10,10,10,${fadeOpacity})`;
       ctx.fillRect(0, 0, w, h);
 
@@ -49,11 +52,14 @@ export function MatrixRain({
         if (drops[i] * fontSize > h && Math.random() > 0.975) drops[i] = 0;
         drops[i] += speed;
       }
-      frame = requestAnimationFrame(draw);
-    });
+      if (!reducedMotion) frame = requestAnimationFrame(draw);
+    };
+
+    if (reducedMotion) draw();
+    else frame = requestAnimationFrame(draw);
 
     return () => cancelAnimationFrame(frame);
-  }, [speed, fadeOpacity]);
+  }, [speed, fadeOpacity, reducedMotion]);
 
   return (
     <canvas

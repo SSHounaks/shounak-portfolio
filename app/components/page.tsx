@@ -57,7 +57,7 @@ const codeStyles = 'bg-zinc-900/50 border border-zinc-800 rounded p-3 text-[11px
 function Code({ children }: { children: string }) {
   return (
     <div className={codeStyles}>
-      <div className="flex items-center gap-2 mb-2 text-[9px] text-zinc-600 uppercase tracking-wider">
+      <div className="flex items-center gap-2 mb-2 text-xs text-zinc-400 uppercase tracking-wider">
         <span className="w-1.5 h-1.5 rounded-full bg-zinc-700" />
         <span>example.usage</span>
       </div>
@@ -69,12 +69,12 @@ function Code({ children }: { children: string }) {
 function PropTable({ props }: { props: { name: string; type: string; default?: string; description: string }[] }) {
   return (
     <div className="font-mono text-[11px] my-4 border border-zinc-800 rounded overflow-hidden">
-      <div className="bg-zinc-900/50 px-3 py-1.5 text-[9px] text-zinc-500 uppercase tracking-wider border-b border-zinc-800">
+      <div className="bg-zinc-900/50 px-3 py-1.5 text-xs text-zinc-400 uppercase tracking-wider border-b border-zinc-800">
         Props
       </div>
       <table className="w-full text-left">
         <thead>
-          <tr className="border-b border-zinc-800/50 text-[9px] text-zinc-500 uppercase tracking-wider">
+          <tr className="border-b border-zinc-800/50 text-xs text-zinc-400 uppercase tracking-wider">
             <th className="px-3 py-1.5">Name</th>
             <th className="px-3 py-1.5">Type</th>
             <th className="px-3 py-1.5">Default</th>
@@ -86,7 +86,7 @@ function PropTable({ props }: { props: { name: string; type: string; default?: s
             <tr key={p.name} className="border-b border-zinc-800/20 text-zinc-300">
               <td className="px-3 py-1.5 text-emerald-400">{p.name}</td>
               <td className="px-3 py-1.5 text-amber-400/80">{p.type}</td>
-              <td className="px-3 py-1.5 text-zinc-500">{p.default || '—'}</td>
+              <td className="px-3 py-1.5 text-zinc-400">{p.default || '—'}</td>
               <td className="px-3 py-1.5 text-zinc-400">{p.description}</td>
             </tr>
           ))}
@@ -106,7 +106,7 @@ export default function ComponentsPage() {
         <div className="min-h-screen bg-background flex pt-20">
           {/* Sticky Sidebar */}
           <nav className="hidden lg:block w-[200px] flex-shrink-0 fixed left-0 top-20 h-[calc(100vh-5rem)] overflow-y-auto border-r border-zinc-900 p-4">
-            <div className="text-[9px] text-zinc-500 uppercase tracking-widest font-mono mb-4 px-2">
+            <div className="text-xs text-zinc-400 uppercase tracking-widest font-mono mb-4 px-2">
               // COMPONENTS
             </div>
             <div className="space-y-1">
@@ -116,10 +116,10 @@ export default function ComponentsPage() {
                   href={`#${sec.id}`}
                   onClick={() => setActiveSection(sec.id)}
                   className={cn(
-                    'flex items-center gap-2 px-2 py-1.5 rounded text-[11px] font-mono transition-colors',
+                    'flex items-center gap-2 px-2 py-1.5 min-h-11 rounded text-[11px] font-mono transition-colors',
                     activeSection === sec.id
                       ? 'text-emerald-400 bg-emerald-500/[0.05]'
-                      : 'text-zinc-500 hover:text-zinc-300',
+                      : 'text-zinc-400 hover:text-zinc-300',
                   )}
                 >
                   {sec.icon && <span className="material-symbols-outlined text-[12px]">{sec.icon}</span>}
@@ -132,11 +132,11 @@ export default function ComponentsPage() {
           {/* Main Content */}
           <main className="flex-1 min-w-0 max-w-[1000px] mx-auto p-6 md:p-10 lg:ml-[220px]">
             <header className="mb-12">
-              <div className="font-mono text-[10px] text-emerald-500/60 mb-2">// DOCS v1.0</div>
+              <div className="font-mono text-xs text-emerald-400/70 mb-2">// DOCS v1.0</div>
               <h1 className="font-display-lg text-[32px] md:text-[42px] text-white font-bold mb-2">
                 <span className="text-emerald-400">Component Library</span>
               </h1>
-              <p className="font-mono text-[13px] text-zinc-500 max-w-2xl">
+              <p className="font-mono text-[13px] text-zinc-400 max-w-2xl">
                 Design system components, MDX content blocks, and UI primitives.
                 Each entry includes props, variants, and live usage examples.
               </p>
@@ -145,15 +145,15 @@ export default function ComponentsPage() {
             {/* ── Layout ── */}
             <section id="layout" className="mb-16 scroll-mt-24" onMouseEnter={() => setActiveSection('layout')}>
               <div className="flex items-center gap-3 mb-6">
-                <span className="material-symbols-outlined text-emerald-400/60 text-[20px]">grid_view</span>
+                <span className="material-symbols-outlined text-emerald-400/80 text-[20px]">grid_view</span>
                 <h2 className="font-display-lg text-[24px] text-white font-bold">Layout</h2>
                 <span className="h-px flex-1 bg-zinc-800" />
               </div>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 TerminalCard
-                <span className="text-[9px] text-zinc-600 font-mono">— Core wrapper component</span>
+                <span className="text-xs text-zinc-400 font-mono">— Core wrapper component</span>
               </h3>
               <p className="font-mono text-[12px] text-zinc-400 mb-4 leading-relaxed">
                 The foundational building block. A glassmorphic card with macOS-style traffic light dots,
@@ -185,9 +185,9 @@ export default function ComponentsPage() {
 </TerminalCard>`}</Code>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 BackgroundCanvas
-                <span className="text-[9px] text-zinc-600 font-mono">— Interactive dot grid background</span>
+                <span className="text-xs text-zinc-400 font-mono">— Interactive dot grid background</span>
               </h3>
               <p className="font-mono text-[12px] text-zinc-400 mb-4 leading-relaxed">
                 Fixed canvas with mouse-parallax dot grid. Renders behind all content at z-index -1.
@@ -196,9 +196,9 @@ export default function ComponentsPage() {
               <Code>{`<BackgroundCanvas />`}</Code>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 PageTransition
-                <span className="text-[9px] text-zinc-600 font-mono">— Fade-in page wrapper</span>
+                <span className="text-xs text-zinc-400 font-mono">— Fade-in page wrapper</span>
               </h3>
               <p className="font-mono text-[12px] text-zinc-400 mb-4 leading-relaxed">
                 Wraps page content with a fade-in animation on mount. Single prop: children.
@@ -211,13 +211,13 @@ export default function ComponentsPage() {
             {/* ── Data Display ── */}
             <section id="data-display" className="mb-16 scroll-mt-24" onMouseEnter={() => setActiveSection('data-display')}>
               <div className="flex items-center gap-3 mb-6">
-                <span className="material-symbols-outlined text-emerald-400/60 text-[20px]">bar_chart</span>
+                <span className="material-symbols-outlined text-emerald-400/80 text-[20px]">bar_chart</span>
                 <h2 className="font-display-lg text-[24px] text-white font-bold">Data Display</h2>
                 <span className="h-px flex-1 bg-zinc-800" />
               </div>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 ProfileCard
               </h3>
               <p className="font-mono text-[12px] text-zinc-400 mb-4 leading-relaxed">
@@ -227,7 +227,7 @@ export default function ComponentsPage() {
               <Code>{`<ProfileCard />`}</Code>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 IntroSection
               </h3>
               <p className="font-mono text-[12px] text-zinc-400 mb-4 leading-relaxed">
@@ -236,7 +236,7 @@ export default function ComponentsPage() {
               <Code>{`<IntroSection />`}</Code>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 SkillsSection
               </h3>
               <p className="font-mono text-[12px] text-zinc-400 mb-4 leading-relaxed">
@@ -246,7 +246,7 @@ export default function ComponentsPage() {
               <Code>{`<SkillsSection />`}</Code>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 ExperienceSection
               </h3>
               <p className="font-mono text-[12px] text-zinc-400 mb-4 leading-relaxed">
@@ -256,7 +256,7 @@ export default function ComponentsPage() {
               <Code>{`<ExperienceSection />`}</Code>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 ProjectsSection
               </h3>
               <p className="font-mono text-[12px] text-zinc-400 mb-4 leading-relaxed">
@@ -269,13 +269,13 @@ export default function ComponentsPage() {
             {/* ── Navigation ── */}
             <section id="navigation" className="mb-16 scroll-mt-24" onMouseEnter={() => setActiveSection('navigation')}>
               <div className="flex items-center gap-3 mb-6">
-                <span className="material-symbols-outlined text-emerald-400/60 text-[20px]">explore</span>
+                <span className="material-symbols-outlined text-emerald-400/80 text-[20px]">explore</span>
                 <h2 className="font-display-lg text-[24px] text-white font-bold">Navigation</h2>
                 <span className="h-px flex-1 bg-zinc-800" />
               </div>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Breadcrumbs
               </h3>
               <p className="font-mono text-[12px] text-zinc-400 mb-4 leading-relaxed">
@@ -284,7 +284,7 @@ export default function ComponentsPage() {
               <Code>{`<Breadcrumbs />`}</Code>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 TableOfContents
               </h3>
               <p className="font-mono text-[12px] text-zinc-400 mb-4 leading-relaxed">
@@ -294,7 +294,7 @@ export default function ComponentsPage() {
               <Code>{`<TableOfContents headings={post.headings} />`}</Code>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 ReadingProgress
               </h3>
               <p className="font-mono text-[12px] text-zinc-400 mb-4 leading-relaxed">
@@ -306,13 +306,13 @@ export default function ComponentsPage() {
             {/* ── Feedback ── */}
             <section id="feedback" className="mb-16 scroll-mt-24" onMouseEnter={() => setActiveSection('feedback')}>
               <div className="flex items-center gap-3 mb-6">
-                <span className="material-symbols-outlined text-emerald-400/60 text-[20px]">feedback</span>
+                <span className="material-symbols-outlined text-emerald-400/80 text-[20px]">feedback</span>
                 <h2 className="font-display-lg text-[24px] text-white font-bold">Feedback</h2>
                 <span className="h-px flex-1 bg-zinc-800" />
               </div>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 CodeCopyBtn
               </h3>
               <p className="font-mono text-[12px] text-zinc-400 mb-4 leading-relaxed">
@@ -324,7 +324,7 @@ export default function ComponentsPage() {
 </CodeCopyHandler>`}</Code>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 CollapsibleSummary
               </h3>
               <p className="font-mono text-[12px] text-zinc-400 mb-4 leading-relaxed">
@@ -339,20 +339,20 @@ export default function ComponentsPage() {
             {/* ── MDX Content ── */}
             <section id="mdx-content" className="mb-16 scroll-mt-24" onMouseEnter={() => setActiveSection('mdx-content')}>
               <div className="flex items-center gap-3 mb-6">
-                <span className="material-symbols-outlined text-emerald-400/60 text-[20px]">code</span>
+                <span className="material-symbols-outlined text-emerald-400/80 text-[20px]">code</span>
                 <h2 className="font-display-lg text-[24px] text-white font-bold">MDX Content</h2>
                 <span className="h-px flex-1 bg-zinc-800" />
               </div>
-              <p className="font-mono text-[12px] text-zinc-500 mb-6 leading-relaxed">
+              <p className="font-mono text-[12px] text-zinc-400 mb-6 leading-relaxed">
                 These components are registered in <code className="text-emerald-300">lib/mdx-components.tsx</code> and
                 usable directly in blog MDX posts via the <code className="text-emerald-300">next-mdx-remote</code> runtime.
               </p>
 
               {/* Callout */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Callout
-                <span className="text-[9px] text-zinc-600 font-mono">— Note / Info / Warn / Error</span>
+                <span className="text-xs text-zinc-400 font-mono">— Note / Info / Warn / Error</span>
               </h3>
               <PropTable props={[
                 { name: 'type', type: "'note' | 'info' | 'warn' | 'error'", default: 'note', description: 'Callout variant' },
@@ -382,9 +382,9 @@ export default function ComponentsPage() {
 
               {/* Banner */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Banner
-                <span className="text-[9px] text-zinc-600 font-mono">— Full-width highlight</span>
+                <span className="text-xs text-zinc-400 font-mono">— Full-width highlight</span>
               </h3>
               <PropTable props={[
                 { name: 'type', type: "'info' | 'success' | 'warning' | 'danger'", default: 'info', description: 'Banner variant' },
@@ -404,7 +404,7 @@ export default function ComponentsPage() {
 
               {/* IconButton */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 IconButton
               </h3>
               <PropTable props={[
@@ -429,9 +429,9 @@ export default function ComponentsPage() {
 
               {/* Grid */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Grid / GridItem
-                <span className="text-[9px] text-zinc-600 font-mono">— Multi-column layout</span>
+                <span className="text-xs text-zinc-400 font-mono">— Multi-column layout</span>
               </h3>
               <PropTable props={[
                 { name: 'cols', type: '2 | 3', description: 'Number of grid columns' },
@@ -456,9 +456,9 @@ export default function ComponentsPage() {
 
               {/* Columns */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Columns
-                <span className="text-[9px] text-zinc-600 font-mono">— Minimal two-column layout</span>
+                <span className="text-xs text-zinc-400 font-mono">— Minimal two-column layout</span>
               </h3>
               <PropTable props={[
                 { name: 'children', type: 'ReactNode', description: 'Column content (each direct child is a column)' },
@@ -491,7 +491,7 @@ export default function ComponentsPage() {
 
               {/* HoverCard */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 HoverCard
               </h3>
               <PropTable props={[
@@ -504,7 +504,7 @@ export default function ComponentsPage() {
                   <div className="space-y-1">
                     <div className="text-emerald-400 text-[11px] font-bold">&gt; Hover Card</div>
                     <div className="text-zinc-400">Rich content inside the popover.</div>
-                    <div className="text-zinc-600 text-[10px]">Supports any React children.</div>
+                    <div className="text-zinc-400 text-xs">Supports any React children.</div>
                   </div>
                 </HoverCard> to see the hover card.
               </p>
@@ -515,9 +515,9 @@ export default function ComponentsPage() {
 
               {/* Quote */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Quote
-                <span className="text-[9px] text-zinc-600 font-mono">— Blockquote with attribution</span>
+                <span className="text-xs text-zinc-400 font-mono">— Blockquote with attribution</span>
               </h3>
               <PropTable props={[
                 { name: 'from', type: 'string', description: 'Attribution (required)' },
@@ -535,9 +535,9 @@ export default function ComponentsPage() {
 
               {/* Tip */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Tip
-                <span className="text-[9px] text-zinc-600 font-mono">— Inline tooltip</span>
+                <span className="text-xs text-zinc-400 font-mono">— Inline tooltip</span>
               </h3>
               <PropTable props={[
                 { name: 'tip', type: 'string', description: 'Description text (required)' },
@@ -556,9 +556,9 @@ export default function ComponentsPage() {
 
               {/* Popup */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Popup
-                <span className="text-[9px] text-zinc-600 font-mono">— Dialog or Popover</span>
+                <span className="text-xs text-zinc-400 font-mono">— Dialog or Popover</span>
               </h3>
               <PropTable props={[
                 { name: 'trigger', type: 'ReactNode', description: 'Click target' },
@@ -584,7 +584,7 @@ export default function ComponentsPage() {
 
               {/* Tooltip */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Tooltip
               </h3>
               <PropTable props={[
@@ -601,7 +601,7 @@ export default function ComponentsPage() {
 
               {/* ColorPalette */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 ColorPalette
               </h3>
               <PropTable props={[
@@ -622,9 +622,9 @@ export default function ComponentsPage() {
 
               {/* Table */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Table
-                <span className="text-[9px] text-zinc-600 font-mono">— Terminal-styled data table</span>
+                <span className="text-xs text-zinc-400 font-mono">— Terminal-styled data table</span>
               </h3>
               <PropTable props={[
                 { name: 'columns', type: '{ key: string; header: string }[]', description: 'Column definitions' },
@@ -659,9 +659,9 @@ const rows = [
 
               {/* TreeTable */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 TreeTable
-                <span className="text-[9px] text-zinc-600 font-mono">— Hierarchical tree view</span>
+                <span className="text-xs text-zinc-400 font-mono">— Hierarchical tree view</span>
               </h3>
               <PropTable props={[
                 { name: 'nodes', type: 'TreeNode[]', description: 'Tree data with optional children' },
@@ -716,9 +716,9 @@ const rows = [
 
               {/* StatusPill */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 StatusPill
-                <span className="text-[9px] text-zinc-600 font-mono">— Inline status badges</span>
+                <span className="text-xs text-zinc-400 font-mono">— Inline status badges</span>
               </h3>
               <PropTable props={[
                 { name: 'status', type: "'todo' | 'progress' | 'done' | 'cancelled' | 'review' | 'hold'", description: 'Status variant' },
@@ -732,9 +732,9 @@ const rows = [
 
               {/* Highlight */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Highlight
-                <span className="text-[9px] text-zinc-600 font-mono">— Inline colored span</span>
+                <span className="text-xs text-zinc-400 font-mono">— Inline colored span</span>
               </h3>
               <PropTable props={[
                 { name: 'type', type: "'success' | 'info' | 'warn' | 'error'", default: 'success', description: 'Highlight colour; defaults to terminal green' },
@@ -754,9 +754,9 @@ Error:   <Highlight type="error">error text</Highlight>`}</Code>
 
               {/* TableCSV */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 TableCSV
-                <span className="text-[9px] text-zinc-600 font-mono">— String-prop table with icon mapping</span>
+                <span className="text-xs text-zinc-400 font-mono">— String-prop table with icon mapping</span>
               </h3>
               <PropTable props={[
                 { name: 'children', type: 'string', description: 'Pipe-delimited table data (first line = headers, rest = rows)' },
@@ -772,7 +772,7 @@ Error:   <Highlight type="error">error text</Highlight>`}</Code>
               </p>
               <TableCSV
                 iconMap="UP,check_circle,text-emerald-400;DEGRADED,warning,text-amber-400;DOWN,error,text-red-400"
-                columnColors="text-zinc-300,text-zinc-300,text-zinc-300,text-zinc-500"
+                columnColors="text-zinc-300,text-zinc-300,text-zinc-300,text-zinc-400"
                 highlightCol="Status"
                 striped
                 source={`Service | Status | Uptime | Region
@@ -797,70 +797,70 @@ auth-service|DEGRADED|98.50" />`}</Code>
             {/* ── Typography ── */}
             <section id="typography" className="mb-16 scroll-mt-24" onMouseEnter={() => setActiveSection('typography')}>
               <div className="flex items-center gap-3 mb-6">
-                <span className="material-symbols-outlined text-emerald-400/60 text-[20px]">text_fields</span>
+                <span className="material-symbols-outlined text-emerald-400/80 text-[20px]">text_fields</span>
                 <h2 className="font-display-lg text-[24px] text-white font-bold">Typography</h2>
                 <span className="h-px flex-1 bg-zinc-800" />
               </div>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Font Family
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="border border-zinc-800 rounded-lg p-4" style={{ fontFamily: 'var(--font-sora)' }}>
-                  <div className="text-[9px] text-zinc-600 font-mono mb-2">// Sora (Headings)</div>
+                  <div className="text-xs text-zinc-400 font-mono mb-2">// Sora (Headings)</div>
                   <div className="text-[18px] text-white font-semibold">The quick brown fox</div>
                   <div className="text-[14px] text-zinc-400">Sora 600 / 700 / 800</div>
                 </div>
                 <div className="border border-zinc-800 rounded-lg p-4" style={{ fontFamily: 'var(--font-inter)' }}>
-                  <div className="text-[9px] text-zinc-600 font-mono mb-2">// Inter (Body)</div>
+                  <div className="text-xs text-zinc-400 font-mono mb-2">// Inter (Body)</div>
                   <div className="text-[18px] text-white">The quick brown fox</div>
                   <div className="text-[14px] text-zinc-400">Inter variable 400–700</div>
                 </div>
                 <div className="border border-zinc-800 rounded-lg p-4 font-mono">
-                  <div className="text-[9px] text-zinc-600 mb-2">// Monospace (Terminal)</div>
+                  <div className="text-xs text-zinc-400 mb-2">// Monospace (Terminal)</div>
                   <div className="text-[18px] text-white">&gt; The quick brown fox</div>
                   <div className="text-[14px] text-zinc-400">Browser default monospace</div>
                 </div>
               </div>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Terminal Patterns
               </h3>
               <div className="font-mono text-[12px] space-y-3 border border-zinc-800 rounded-lg p-5">
                 <div><span className="text-emerald-400">&gt;</span> <span className="text-zinc-300">prompt prefix — command prefix</span></div>
                 <div><span className="text-emerald-400 font-bold">$</span> <span className="text-zinc-300">dollar prompt — shell command</span></div>
-                <div><span className="text-emerald-500/60">//</span> <span className="text-zinc-500">double slash — comment</span></div>
-                <div><span className="text-zinc-500">[</span><span className="text-amber-400/80">CATEGORY</span><span className="text-zinc-500">]</span> <span className="text-zinc-500">brackets — category label</span></div>
-                <div><span className="text-emerald-500/50">a1b2c3d</span> <span className="text-zinc-500">— hash ID — short identifier</span></div>
-                <div><span className="text-zinc-500">[</span><span className="text-zinc-400">1</span><span className="text-zinc-600">/</span><span className="text-zinc-400">3</span><span className="text-zinc-500">]</span> <span className="text-zinc-500">— count — item counter</span></div>
+                <div><span className="text-emerald-400/70">//</span> <span className="text-zinc-400">double slash — comment</span></div>
+                <div><span className="text-zinc-400">[</span><span className="text-amber-400/80">CATEGORY</span><span className="text-zinc-400">]</span> <span className="text-zinc-400">brackets — category label</span></div>
+                <div><span className="text-emerald-400/70">a1b2c3d</span> <span className="text-zinc-400">— hash ID — short identifier</span></div>
+                <div><span className="text-zinc-400">[</span><span className="text-zinc-400">1</span><span className="text-zinc-400">/</span><span className="text-zinc-400">3</span><span className="text-zinc-400">]</span> <span className="text-zinc-400">— count — item counter</span></div>
               </div>
 
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Type Scale
               </h3>
               <div className="space-y-4 border border-zinc-800 rounded-lg p-5">
-                <div><span className="text-[9px] text-zinc-600 font-mono">// Display XL (42px)</span>
+                <div><span className="text-xs text-zinc-400 font-mono">// Display XL (42px)</span>
                   <div className="font-display-lg text-[42px] text-white font-bold leading-tight">Display XL</div>
                 </div>
-                <div><span className="text-[9px] text-zinc-600 font-mono">// Display LG (32px)</span>
+                <div><span className="text-xs text-zinc-400 font-mono">// Display LG (32px)</span>
                   <div className="font-display-lg text-[32px] text-white font-bold">Display LG</div>
                 </div>
-                <div><span className="text-[9px] text-zinc-600 font-mono">// Heading 2 (24px)</span>
+                <div><span className="text-xs text-zinc-400 font-mono">// Heading 2 (24px)</span>
                   <div className="text-2xl text-white font-bold flex items-center gap-2">
-                    <span className="text-emerald-500/40">#</span> Heading 2
+                    <span className="text-emerald-400/70">#</span> Heading 2
                   </div>
                 </div>
-                <div><span className="text-[9px] text-zinc-600 font-mono">// Body (16px)</span>
+                <div><span className="text-xs text-zinc-400 font-mono">// Body (16px)</span>
                   <div className="text-[16px] text-zinc-300">Body text using Inter.</div>
                 </div>
-                <div><span className="text-[9px] text-zinc-600 font-mono">// Terminal MD (12px)</span>
+                <div><span className="text-xs text-zinc-400 font-mono">// Terminal MD (12px)</span>
                   <div className="font-mono text-[12px] text-zinc-400">&gt; Standard terminal content size</div>
                 </div>
-                <div><span className="text-[9px] text-zinc-600 font-mono">// Terminal SM (10px)</span>
-                  <div className="font-mono text-[10px] text-zinc-500">// Labels, metadata, headers</div>
+                <div><span className="text-xs text-zinc-400 font-mono">// Terminal SM (10px)</span>
+                  <div className="font-mono text-xs text-zinc-400">// Labels, metadata, headers</div>
                 </div>
               </div>
             </section>
@@ -868,16 +868,16 @@ auth-service|DEGRADED|98.50" />`}</Code>
             {/* ── Charts ── */}
             <section id="charts" className="mb-16 scroll-mt-24" onMouseEnter={() => setActiveSection('charts')}>
               <div className="flex items-center gap-3 mb-6">
-                <span className="material-symbols-outlined text-emerald-400/60 text-[20px]">monitoring</span>
+                <span className="material-symbols-outlined text-emerald-400/80 text-[20px]">monitoring</span>
                 <h2 className="font-display-lg text-[24px] text-white font-bold">Charts</h2>
                 <span className="h-px flex-1 bg-zinc-800" />
               </div>
 
               {/* Sparkline */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 Sparkline
-                <span className="text-[9px] text-zinc-600 font-mono">— SVG polyline chart</span>
+                <span className="text-xs text-zinc-400 font-mono">— SVG polyline chart</span>
               </h3>
               <PropTable props={[
                 { name: 'data', type: 'number[]', description: 'Data points to plot' },
@@ -888,13 +888,13 @@ auth-service|DEGRADED|98.50" />`}</Code>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <TerminalCard title="Traffic.sh" icon="show_chart">
                   <div className="p-4 font-mono flex flex-col gap-2">
-                    <p className="text-emerald-500/60 text-[9px] uppercase tracking-widest font-bold">[ NETWORK_THROUGHPUT ]</p>
+                    <p className="text-emerald-400/70 text-xs uppercase tracking-widest font-bold">[ NETWORK_THROUGHPUT ]</p>
                     <Sparkline data={[12, 48, 35, 62, 58, 81, 74, 93, 67, 85, 72, 91, 88, 96, 78]} />
                   </div>
                 </TerminalCard>
                 <TerminalCard title="Latency.sh" icon="pulse" variant="secondary">
                   <div className="p-4 font-mono flex flex-col gap-2">
-                    <p className="text-secondary/60 text-[9px] uppercase tracking-widest font-bold">[ RESPONSE_TIME_MS ]</p>
+                    <p className="text-secondary/60 text-xs uppercase tracking-widest font-bold">[ RESPONSE_TIME_MS ]</p>
                     <Sparkline data={[42, 38, 55, 48, 32, 29, 45, 41, 36, 28, 25, 22, 30, 27, 24]} color="#e9c349" />
                   </div>
                 </TerminalCard>
@@ -908,9 +908,9 @@ auth-service|DEGRADED|98.50" />`}</Code>
 
               {/* ASCII Bar Chart */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 AsciiBarChart
-                <span className="text-[9px] text-zinc-600 font-mono">— Block-character bars</span>
+                <span className="text-xs text-zinc-400 font-mono">— Block-character bars</span>
               </h3>
               <PropTable props={[
                 { name: 'bars', type: '{ label: string; value: number }[]', description: 'Bar data (value 0–100)' },
@@ -943,9 +943,9 @@ auth-service|DEGRADED|98.50" />`}</Code>
 
               {/* Circular Gauge */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 CircularGauge
-                <span className="text-[9px] text-zinc-600 font-mono">— SVG arc gauge</span>
+                <span className="text-xs text-zinc-400 font-mono">— SVG arc gauge</span>
               </h3>
               <PropTable props={[
                 { name: 'value', type: 'number', description: 'Value 0–100' },
@@ -972,9 +972,9 @@ auth-service|DEGRADED|98.50" />`}</Code>
 
               {/* Frequency Bars */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 FrequencyBars
-                <span className="text-[9px] text-zinc-600 font-mono">— Animated spectrum analyzer</span>
+                <span className="text-xs text-zinc-400 font-mono">— Animated spectrum analyzer</span>
               </h3>
               <PropTable props={[
                 { name: 'barCount', type: 'number', default: '20', description: 'Number of bars' },
@@ -982,7 +982,7 @@ auth-service|DEGRADED|98.50" />`}</Code>
               ]} />
               <TerminalCard title="Audio Spectrum" icon="equalizer">
                 <div className="p-4 font-mono">
-                  <p className="text-emerald-500/60 text-[9px] uppercase tracking-widest mb-3 font-bold">[ FREQUENCY_ANALYSIS ]</p>
+                  <p className="text-emerald-400/70 text-xs uppercase tracking-widest mb-3 font-bold">[ FREQUENCY_ANALYSIS ]</p>
                   <FrequencyBars />
                 </div>
               </TerminalCard>
@@ -990,9 +990,9 @@ auth-service|DEGRADED|98.50" />`}</Code>
 
               {/* Network Activity */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 NetworkActivity
-                <span className="text-[9px] text-zinc-600 font-mono">— Animated node pulses</span>
+                <span className="text-xs text-zinc-400 font-mono">— Animated node pulses</span>
               </h3>
               <PropTable props={[
                 { name: 'nodeCount', type: 'number', default: '7', description: 'Number of nodes' },
@@ -1000,7 +1000,7 @@ auth-service|DEGRADED|98.50" />`}</Code>
               ]} />
               <TerminalCard title="Network Nodes" icon="hub" variant="secondary">
                 <div className="p-4 font-mono">
-                  <p className="text-secondary/60 text-[9px] uppercase tracking-widest mb-3 font-bold">[ ACTIVE_CONNECTIONS ]</p>
+                  <p className="text-secondary/60 text-xs uppercase tracking-widest mb-3 font-bold">[ ACTIVE_CONNECTIONS ]</p>
                   <NetworkActivity />
                 </div>
               </TerminalCard>
@@ -1016,9 +1016,9 @@ auth-service|DEGRADED|98.50" />`}</Code>
 
               {/* Matrix Rain */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 MatrixRain
-                <span className="text-[9px] text-zinc-600 font-mono">— Canvas katakana rain</span>
+                <span className="text-xs text-zinc-400 font-mono">— Canvas katakana rain</span>
               </h3>
               <PropTable props={[
                 { name: 'speed', type: 'number', default: '1', description: 'Fall speed multiplier' },
@@ -1031,9 +1031,9 @@ auth-service|DEGRADED|98.50" />`}</Code>
 
               {/* Typewriter Text */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 TypewriterText
-                <span className="text-[9px] text-zinc-600 font-mono">— Character-by-character reveal</span>
+                <span className="text-xs text-zinc-400 font-mono">— Character-by-character reveal</span>
               </h3>
               <PropTable props={[
                 { name: 'phrases', type: 'string[]', description: 'Array of phrases to cycle' },
@@ -1055,9 +1055,9 @@ auth-service|DEGRADED|98.50" />`}</Code>
 
               {/* Glitch Text */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 GlitchText
-                <span className="text-[9px] text-zinc-600 font-mono">— Random character glitch</span>
+                <span className="text-xs text-zinc-400 font-mono">— Random character glitch</span>
               </h3>
               <PropTable props={[
                 { name: 'text', type: 'string', default: 'SYSTEM_ONLINE', description: 'Base text' },
@@ -1080,16 +1080,16 @@ auth-service|DEGRADED|98.50" />`}</Code>
             {/* ── Interactive Demos ── */}
             <section id="demos" className="mb-16 scroll-mt-24" onMouseEnter={() => setActiveSection('demos')}>
               <div className="flex items-center gap-3 mb-6">
-                <span className="material-symbols-outlined text-emerald-400/60 text-[20px]">play_circle</span>
+                <span className="material-symbols-outlined text-emerald-400/80 text-[20px]">play_circle</span>
                 <h2 className="font-display-lg text-[24px] text-white font-bold">Interactive Demos</h2>
                 <span className="h-px flex-1 bg-zinc-800" />
               </div>
 
               {/* Terminal Chat */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 TerminalChat
-                <span className="text-[9px] text-zinc-600 font-mono">— Simulated TTY chat</span>
+                <span className="text-xs text-zinc-400 font-mono">— Simulated TTY chat</span>
               </h3>
               <PropTable props={[
                 { name: 'messages', type: 'ChatMessage[]', default: '—', description: 'Array of { user, text, delay }' },
@@ -1109,9 +1109,9 @@ auth-service|DEGRADED|98.50" />`}</Code>
 
               {/* Terminal Table */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 TerminalTable
-                <span className="text-[9px] text-zinc-600 font-mono">— Process data table</span>
+                <span className="text-xs text-zinc-400 font-mono">— Process data table</span>
               </h3>
               <PropTable props={[
                 { name: 'rows', type: 'ProcessRow[]', default: '—', description: 'Array of { pid, user, cpu, mem, cmd }' },
@@ -1129,9 +1129,9 @@ auth-service|DEGRADED|98.50" />`}</Code>
 
               {/* Changelog View */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 ChangelogView
-                <span className="text-[9px] text-zinc-600 font-mono">— Unified / split git log</span>
+                <span className="text-xs text-zinc-400 font-mono">— Unified / split git log</span>
               </h3>
               <PropTable props={[
                 { name: 'commits', type: 'Commit[]', default: '—', description: 'Array of commit objects with hash, author, date, message, stats' },
@@ -1149,9 +1149,9 @@ auth-service|DEGRADED|98.50" />`}</Code>
 
               {/* Code Diff View */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 CodeDiffView
-                <span className="text-[9px] text-zinc-600 font-mono">— Expandable file diff</span>
+                <span className="text-xs text-zinc-400 font-mono">— Expandable file diff</span>
               </h3>
               <PropTable props={[
                 { name: 'files', type: 'DiffFile[]', default: '—', description: 'Array of diff files with hunks' },
@@ -1178,16 +1178,16 @@ auth-service|DEGRADED|98.50" />`}</Code>
             {/* Quests Section */}
             <section id="quests" className="mb-16 scroll-mt-24" onMouseEnter={() => setActiveSection('quests')}>
               <div className="flex items-center gap-3 mb-6">
-                <span className="material-symbols-outlined text-emerald-400/60 text-[20px]">flag</span>
+                <span className="material-symbols-outlined text-emerald-400/80 text-[20px]">flag</span>
                 <h2 className="font-display-lg text-[24px] text-white font-bold">Quests</h2>
                 <span className="h-px flex-1 bg-zinc-800" />
               </div>
 
               {/* XpBar */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 XpBar
-                <span className="text-[9px] text-zinc-600 font-mono">— ASCII progress bar for XP</span>
+                <span className="text-xs text-zinc-400 font-mono">— ASCII progress bar for XP</span>
               </h3>
               <PropTable props={[
                 { name: 'current', type: 'number', description: 'Current XP value' },
@@ -1210,9 +1210,9 @@ auth-service|DEGRADED|98.50" />`}</Code>
 
               {/* DifficultyBadge */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 DifficultyBadge
-                <span className="text-[9px] text-zinc-600 font-mono">— Color-coded difficulty level</span>
+                <span className="text-xs text-zinc-400 font-mono">— Color-coded difficulty level</span>
               </h3>
               <PropTable props={[
                 { name: 'difficulty', type: "'easy' | 'medium' | 'hard' | 'legendary'", description: 'Quest difficulty' },
@@ -1234,9 +1234,9 @@ auth-service|DEGRADED|98.50" />`}</Code>
 
               {/* SkillTag */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 SkillTag
-                <span className="text-[9px] text-zinc-600 font-mono">— Skill pill badge</span>
+                <span className="text-xs text-zinc-400 font-mono">— Skill pill badge</span>
               </h3>
               <PropTable props={[
                 { name: 'skill', type: 'string', description: 'Skill label' },
@@ -1256,9 +1256,9 @@ auth-service|DEGRADED|98.50" />`}</Code>
 
               {/* StreakBadge */}
               <h3 className="font-mono text-[15px] text-emerald-400 font-bold mb-3 mt-8 flex items-center gap-2">
-                <span className="text-emerald-500/60">&gt;</span>
+                <span className="text-emerald-400/70">&gt;</span>
                 StreakBadge
-                <span className="text-[9px] text-zinc-600 font-mono">— Daily streak counter</span>
+                <span className="text-xs text-zinc-400 font-mono">— Daily streak counter</span>
               </h3>
               <PropTable props={[
                 { name: 'current', type: 'number', description: 'Current streak count' },

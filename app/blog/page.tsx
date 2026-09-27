@@ -33,35 +33,35 @@ export default function BlogPage() {
       <BackgroundCanvas />
       <Header />
       <PageTransition>
-      <div className="min-h-screen bg-background p-6 md:p-10 max-w-[900px] mx-auto pt-24">
+      <div className="min-h-screen bg-background px-6 md:px-10 max-w-[900px] mx-auto pt-24 pb-6 md:pb-10">
         <header className="mb-12">
-          <div className="font-mono text-[10px] text-emerald-500/60 mb-2">// SYSLOG v2.0</div>
+          <div className="font-mono text-xs text-emerald-400/70 mb-2">// SYSLOG v2.0</div>
           <h1 className="font-display-lg text-[32px] md:text-[42px] text-white font-bold mb-2">
             <span className="text-emerald-400">_logs</span>
           </h1>
-          <p className="font-mono text-[13px] text-white/40 max-w-2xl">
+          <p className="font-mono text-[13px] text-white/50 max-w-2xl">
             Technical writings, thoughts, and explorations.
           </p>
         </header>
 
         {visible.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="font-mono text-[9px] text-zinc-800 mb-3 tracking-widest">
+            <div className="font-mono text-xs text-zinc-400 mb-3 tracking-widest">
               // EMPTY
             </div>
-            <div className="font-mono text-zinc-600 text-[12px] leading-relaxed space-y-3">
-              <p className="text-[10px] text-zinc-700">{'> cat /var/log/blog.log'}</p>
-              <p className="text-[10px] text-zinc-700">{'> '}</p>
+            <div className="font-mono text-zinc-400 text-[12px] leading-relaxed space-y-3">
+              <p className="text-xs text-zinc-400">{'> cat /var/log/blog.log'}</p>
+              <p className="text-xs text-zinc-400">{'> '}</p>
               <p className="text-base font-bold text-red-500/30 py-3">{'[WARN]  No entries found'}</p>
               <p className="text-sm text-zinc-600/60 pb-3">{'> Coming soon...'}</p>
-              <p className="text-[10px] text-zinc-700">{'> '}</p>
-              <p className="text-[11px] text-zinc-700 animate-pulse">{'_'}</p>
+              <p className="text-xs text-zinc-400">{'> '}</p>
+              <p className="text-[11px] text-zinc-400 animate-pulse">{'_'}</p>
             </div>
           </div>
         ) : years.map(year => (
           <div key={year} className="mb-10">
-            <div className="flex items-center gap-2 mb-5 font-mono text-[13px] text-emerald-400/60">
-              <span className="text-emerald-500/30">//</span>
+            <div className="flex items-center gap-2 mb-5 font-mono text-[13px] text-emerald-400/80">
+              <span className="text-emerald-400/70">//</span>
               <span>{year}</span>
               <span className="h-px flex-1 bg-emerald-500/10"></span>
             </div>
@@ -71,11 +71,11 @@ export default function BlogPage() {
                   <TerminalCard variant="primary" className="!bg-black">
                     <div className="p-6 font-mono flex flex-col gap-3">
                       <div className="flex items-center gap-3 text-[11px]">
-                        <span className="text-emerald-500/60">&gt;</span>
-                        <span className="text-white/30">{post.date}</span>
+                        <span className="text-emerald-400/70">&gt;</span>
+                        <span className="text-white/55">{post.date}</span>
                         <div className="flex gap-1.5 flex-wrap">
                           {post.tags?.map((tag) => (
-                            <span key={tag} className={`px-2 py-0.5 rounded text-[9px] font-medium uppercase tracking-wider border ${tagClass(tag)}`}>
+                            <span key={tag} className={`px-2 py-0.5 rounded text-xs font-medium uppercase tracking-wider border ${tagClass(tag)}`}>
                               {tag}
                             </span>
                           ))}
@@ -84,7 +84,7 @@ export default function BlogPage() {
                       <h2 className="text-[18px] md:text-[20px] text-white font-bold leading-snug group-hover:text-emerald-300 transition-colors">
                         {post.title}
                       </h2>
-                      <p className="text-white/40 text-[13px] leading-relaxed">
+                      <p className="text-white/50 text-[13px] leading-relaxed">
                         {post.excerpt}
                       </p>
                     </div>

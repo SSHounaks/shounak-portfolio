@@ -45,9 +45,9 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-md border-b border-white/10 h-9">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-md h-11 shadow-[inset_0_-1px_0_rgba(255,255,255,0.1)]">
       <div className="flex items-center px-4 gap-0 h-full">
-        <a href="/" className="flex items-center px-3 h-full text-[13px] font-mono font-bold text-black bg-emerald-400 hover:bg-emerald-300 transition-colors whitespace-nowrap">
+        <a href="/" className="flex items-center justify-center min-w-11 px-3 h-full text-[13px] font-mono font-bold text-black bg-emerald-400 hover:bg-emerald-300 transition-colors whitespace-nowrap">
           <span>$</span>
         </a>
         <div className="flex items-center gap-0 flex-1 h-full">
@@ -60,7 +60,7 @@ export function Header() {
                 <a
                   key={item.label}
                   href={item.href}
-                  className={`flex items-center px-3 text-[10px] font-mono font-bold uppercase tracking-widest transition-all ${
+                  className={`flex items-center px-3 text-xs font-mono font-bold uppercase tracking-widest transition-all ${
                     isActive ? colors.active : colors.inactive
                   }`}
                 >

@@ -41,10 +41,10 @@ export function ChangelogView({
         <button
           onClick={() => setView('unified')}
           className={cn(
-            'text-[10px] px-2.5 py-1 rounded border transition-colors cursor-pointer',
+            'text-xs px-2.5 py-1 rounded border transition-colors cursor-pointer',
             view === 'unified'
               ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
-              : 'bg-white/5 border-white/10 text-white/40 hover:text-white/60',
+              : 'bg-white/5 border-white/10 text-white/50 hover:text-white/60',
           )}
         >
           unified
@@ -52,15 +52,15 @@ export function ChangelogView({
         <button
           onClick={() => setView('split')}
           className={cn(
-            'text-[10px] px-2.5 py-1 rounded border transition-colors cursor-pointer',
+            'text-xs px-2.5 py-1 rounded border transition-colors cursor-pointer',
             view === 'split'
               ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
-              : 'bg-white/5 border-white/10 text-white/40 hover:text-white/60',
+              : 'bg-white/5 border-white/10 text-white/50 hover:text-white/60',
           )}
         >
           split
         </button>
-        <span className="text-white/20 text-[10px] ml-auto">
+        <span className="text-white/55 text-xs ml-auto">
           {commits.length} commits
         </span>
       </div>
@@ -78,16 +78,16 @@ export function ChangelogView({
                   <div className="w-px h-full min-h-[28px] bg-white/5" />
                 )}
               </div>
-              <span className="text-emerald-400/60 text-[10px] w-16 shrink-0 font-bold">
+              <span className="text-emerald-400/80 text-xs w-16 shrink-0 font-bold">
                 {c.hash}
               </span>
-              <span className="text-white/30 text-[10px] w-20 shrink-0">{c.date}</span>
-              <span className="text-white/50 text-[10px] w-12 shrink-0">{c.author}</span>
+              <span className="text-white/55 text-xs w-20 shrink-0">{c.date}</span>
+              <span className="text-white/50 text-xs w-12 shrink-0">{c.author}</span>
               <span className="text-white/70 text-[11px] flex-1">{c.message}</span>
-              <div className="flex items-center gap-2 text-[9px] shrink-0">
+              <div className="flex items-center gap-2 text-xs shrink-0">
                 <span className="text-cyan-400/60">+{c.added}</span>
-                <span className="text-red-400/60">-{c.deleted}</span>
-                <span className="text-white/20">{c.files} files</span>
+                <span className="text-red-400/80">-{c.deleted}</span>
+                <span className="text-white/55">{c.files} files</span>
               </div>
             </div>
           ))}
@@ -95,7 +95,7 @@ export function ChangelogView({
       ) : (
         <div className="flex gap-0 border border-white/5 rounded overflow-hidden">
           <div className="flex-1 min-w-0">
-            <div className="text-[9px] text-white/30 font-bold uppercase tracking-wider px-3 py-1.5 bg-white/[0.02] border-b border-white/5">
+            <div className="text-xs text-white/55 font-bold uppercase tracking-wider px-3 py-1.5 bg-white/[0.02] border-b border-white/5">
               main
             </div>
             <div className="divide-y divide-white/[0.02]">
@@ -105,20 +105,20 @@ export function ChangelogView({
                   className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/[0.02] transition-colors"
                 >
                   <span className="w-1 h-1 rounded-full bg-emerald-500/60 shrink-0" />
-                  <span className="text-emerald-400/60 text-[9px] w-12 shrink-0">
+                  <span className="text-emerald-400/80 text-xs w-12 shrink-0">
                     {c.hash}
                   </span>
-                  <span className="text-white/70 text-[10px] flex-1 truncate">
+                  <span className="text-white/70 text-xs flex-1 truncate">
                     {c.message}
                   </span>
-                  <span className="text-white/20 text-[8px] shrink-0">{c.date}</span>
+                  <span className="text-white/55 text-xs shrink-0">{c.date}</span>
                 </div>
               ))}
             </div>
           </div>
           <div className="w-px bg-white/5" />
           <div className="flex-1 min-w-0">
-            <div className="text-[9px] text-white/30 font-bold uppercase tracking-wider px-3 py-1.5 bg-white/[0.02] border-b border-white/5">
+            <div className="text-xs text-white/55 font-bold uppercase tracking-wider px-3 py-1.5 bg-white/[0.02] border-b border-white/5">
               feature/blog
             </div>
             <div className="divide-y divide-white/[0.02]">
@@ -133,9 +133,9 @@ export function ChangelogView({
                   className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/[0.02] transition-colors"
                 >
                   <span className="w-1 h-1 rounded-full bg-cyan-500/60 shrink-0" />
-                  <span className="text-cyan-400/60 text-[9px] w-12 shrink-0">{c.hash}</span>
-                  <span className="text-white/70 text-[10px] flex-1 truncate">{c.message}</span>
-                  <span className="text-white/20 text-[8px] shrink-0">{c.date}</span>
+                  <span className="text-cyan-400/60 text-xs w-12 shrink-0">{c.hash}</span>
+                  <span className="text-white/70 text-xs flex-1 truncate">{c.message}</span>
+                  <span className="text-white/55 text-xs shrink-0">{c.date}</span>
                 </div>
               ))}
             </div>

@@ -3,8 +3,8 @@ import type { Root, Element } from 'hast';
 
 export function rehypeCodeHeader() {
   return (tree: Root) => {
-    visit(tree, 'element', (node: Element, index: number | null, parent: Root | Element | null) => {
-      if (node.tagName !== 'pre' || parent === null || index === null) return;
+    visit(tree, 'element', (node: Element, index, parent) => {
+      if (node.tagName !== 'pre' || parent == null || index == null) return;
 
       const code = node.children.find((c): c is Element => c.type === 'element' && c.tagName === 'code');
       if (!code) return;
@@ -16,7 +16,7 @@ export function rehypeCodeHeader() {
         type: 'element',
         tagName: 'div',
         properties: {
-          className: 'flex items-center justify-between px-4 py-2 border-b border-zinc-900 bg-zinc-900/40 text-xs text-zinc-500 select-none',
+          className: 'flex items-center justify-between px-4 py-2 border-b border-zinc-900 bg-zinc-900/40 text-xs text-zinc-400 select-none',
         },
         children: [
           {

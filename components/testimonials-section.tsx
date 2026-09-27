@@ -9,7 +9,6 @@ export function TestimonialsSection() {
   const [isPaused, setIsPaused] = useState(false);
   const [showPauseIndicator, setShowPauseIndicator] = useState<'enter' | 'exit' | null>(null);
   const [isBlurred, setIsBlurred] = useState(false);
-  const totalRef = useRef(0);
   const blurTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const testimonials = [
@@ -65,24 +64,24 @@ export function TestimonialsSection() {
     }
   ];
 
-  totalRef.current = testimonials.length;
+  const total = testimonials.length;
 
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % totalRef.current);
+      setCurrentIndex((prev) => (prev + 1) % total);
     }, 5000);
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, total]);
 
   const current = testimonials[currentIndex];
 
   function goNext() {
-    setCurrentIndex((prev) => (prev + 1) % totalRef.current);
+    setCurrentIndex((prev) => (prev + 1) % total);
   }
 
   function goPrev() {
-    setCurrentIndex((prev) => (prev - 1 + totalRef.current) % totalRef.current);
+    setCurrentIndex((prev) => (prev - 1 + total) % total);
   }
 
   function togglePause() {
@@ -113,8 +112,8 @@ export function TestimonialsSection() {
     { base: 'yellow', hex: 'ca8a04' },
   ];
   const c = colors[currentIndex % colors.length];
-  const prevColor = colors[(currentIndex - 1 + totalRef.current) % totalRef.current];
-  const nextColor = colors[(currentIndex + 1) % totalRef.current];
+  const prevColor = colors[(currentIndex - 1 + total) % total];
+  const nextColor = colors[(currentIndex + 1) % total];
 
   return (
     <>
@@ -132,16 +131,16 @@ export function TestimonialsSection() {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-sm font-bold font-mono" style={{ color: `#${c.hex}` }}>{current.name}</span>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">{current.title}</span>
+                  <span className="text-xs font-mono uppercase tracking-widest text-white/50">{current.title}</span>
                 </div>
               </div>
               <div className="flex items-start gap-2 pt-4">
                 <span className="text-emerald-400 mt-0.5 flex-shrink-0">&gt;</span>
                 <div className="max-h-[120px] overflow-y-auto flex-1">
                   <p className="text-sm md:text-base text-on-surface-variant leading-relaxed font-mono text-justify">
-                    <span className="text-emerald-400/60">&ldquo;</span>
+                    <span className="text-emerald-400/80">&ldquo;</span>
                     {current.quote}
-                    <span className="text-emerald-400/60">&rdquo;</span>
+                    <span className="text-emerald-400/80">&rdquo;</span>
                   </p>
                 </div>
               </div>
@@ -167,7 +166,7 @@ export function TestimonialsSection() {
             <div className="flex items-center gap-4 justify-center">
               <button
                 onClick={(e) => { e.stopPropagation(); goPrev(); }}
-                className="flex items-center justify-center w-7 h-7 rounded border transition-all cursor-pointer"
+                className="shrink-0 flex items-center justify-center w-11 h-11 rounded border transition-all cursor-pointer"
                 style={{
                   borderColor: `#${prevColor.hex}33`,
                   backgroundColor: `#${prevColor.hex}1a`,
@@ -176,7 +175,7 @@ export function TestimonialsSection() {
               >
                 <span className="material-symbols-outlined text-lg">chevron_left</span>
               </button>
-              <div className="flex gap-2 w-40 justify-center">
+              <div className="flex gap-2 w-40 min-w-0 justify-center">
                 {testimonials.map((_, i) => (
                   <div
                     key={i}
@@ -189,7 +188,7 @@ export function TestimonialsSection() {
               </div>
               <button
                 onClick={(e) => { e.stopPropagation(); goNext(); }}
-                className="flex items-center justify-center w-7 h-7 rounded border transition-all cursor-pointer"
+                className="shrink-0 flex items-center justify-center w-11 h-11 rounded border transition-all cursor-pointer"
                 style={{
                   borderColor: `#${nextColor.hex}33`,
                   backgroundColor: `#${nextColor.hex}1a`,
@@ -200,7 +199,7 @@ export function TestimonialsSection() {
               </button>
             </div>
             <div className="flex justify-center mt-2">
-              <span className="text-[9px] font-mono uppercase tracking-widest text-white/20">{isPaused ? 'click to resume' : 'click to pause'}</span>
+              <span className="text-xs font-mono uppercase tracking-widest text-white/55">{isPaused ? 'click to resume' : 'click to pause'}</span>
             </div>
           </div>
           </div>

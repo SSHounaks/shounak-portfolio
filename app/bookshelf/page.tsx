@@ -23,7 +23,7 @@ const categoryColorMap: Record<string, string> = {
 };
 
 function catPill(cat: string) {
-  const base = categoryColorMap[cat] || 'text-white/40 border-white/10';
+  const base = categoryColorMap[cat] || 'text-white/50 border-white/10';
   return base + ' shadow-[inset_0_0_0_1px_currentColor]';
 }
 
@@ -38,25 +38,25 @@ function BookshelfTable({ entries }: { entries: BookEntry[] }) {
     <Table>
       <TableHeader>
         <TableRow className="border-white/[0.04]">
-          <TableHead className="font-mono text-[9px] uppercase tracking-widest text-white/20 w-[60px]">type</TableHead>
-          <TableHead className="font-mono text-[9px] uppercase tracking-widest text-white/20">title</TableHead>
-          <TableHead className="font-mono text-[9px] uppercase tracking-widest text-white/20 hidden sm:table-cell w-[140px]">author</TableHead>
-          <TableHead className="font-mono text-[9px] uppercase tracking-widest text-white/20 hidden md:table-cell w-[130px]">category</TableHead>
-          <TableHead className="font-mono text-[9px] uppercase tracking-widest text-white/20 hidden lg:table-cell w-[80px]">status</TableHead>
+          <TableHead className="font-mono text-xs uppercase tracking-widest text-white/55 w-[60px]">type</TableHead>
+          <TableHead className="font-mono text-xs uppercase tracking-widest text-white/55">title</TableHead>
+          <TableHead className="font-mono text-xs uppercase tracking-widest text-white/55 hidden sm:table-cell w-[140px]">author</TableHead>
+          <TableHead className="font-mono text-xs uppercase tracking-widest text-white/55 hidden md:table-cell w-[130px]">category</TableHead>
+          <TableHead className="font-mono text-xs uppercase tracking-widest text-white/55 hidden lg:table-cell w-[80px]">status</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {entries.map((entry, i) => (
           <TableRow key={`${entry.title}-${i}`} className="border-white/[0.03] hover:bg-white/[0.01] font-mono text-[11px]">
             <TableCell>
-              <span className={cn('px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider border', typeStyles[entry.type] || typeStyles.book)}>
+              <span className={cn('px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider border', typeStyles[entry.type] || typeStyles.book)}>
                 {entry.type}
               </span>
             </TableCell>
             <TableCell className="text-white/80 font-bold">{entry.title}</TableCell>
-            <TableCell className="text-white/30 truncate hidden sm:table-cell max-w-[140px]">{entry.author}</TableCell>
+            <TableCell className="text-white/55 truncate hidden sm:table-cell max-w-[140px]">{entry.author}</TableCell>
             <TableCell className="hidden md:table-cell">
-              <span className={cn('px-2 py-0.5 rounded text-[8px] uppercase tracking-wider border', catPill(entry.category))}>
+              <span className={cn('px-2 py-0.5 rounded text-xs uppercase tracking-wider border', catPill(entry.category))}>
                 {entry.category}
               </span>
             </TableCell>
@@ -66,30 +66,30 @@ function BookshelfTable({ entries }: { entries: BookEntry[] }) {
                   {entry.status === 'READ' && (
                     <>
                       <span className="material-symbols-outlined text-[11px] text-emerald-400" style={{ fontVariationSettings: "'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 20" }}>check_circle</span>
-                      <span className="text-[9px] text-emerald-400/60">Read</span>
+                      <span className="text-xs text-emerald-400/80">Read</span>
                     </>
                   )}
                   {entry.status === 'READING' && (
                     <>
                       <span className="material-symbols-outlined text-[11px] text-amber-400" style={{ fontVariationSettings: "'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 20" }}>auto_stories</span>
-                      <span className="text-[9px] text-amber-400/60">Reading</span>
+                      <span className="text-xs text-amber-400/60">Reading</span>
                     </>
                   )}
                   {entry.status === 'PLANNED' && (
                     <>
                       <span className="material-symbols-outlined text-[11px] text-sky-400" style={{ fontVariationSettings: "'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 20" }}>radio_button_unchecked</span>
-                      <span className="text-[9px] text-sky-400/60">Planned</span>
+                      <span className="text-xs text-sky-400/60">Planned</span>
                     </>
                   )}
                   {entry.status === 'RECOMMENDED' && (
                     <>
                       <span className="material-symbols-outlined text-[11px] text-purple-400" style={{ fontVariationSettings: "'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 20" }}>lightbulb</span>
-                      <span className="text-[9px] text-purple-400/60">Recommended</span>
+                      <span className="text-xs text-purple-400/60">Recommended</span>
                     </>
                   )}
                 </div>
               ) : (
-                <span className="text-white/10 text-[9px]">—</span>
+                <span className="text-white/10 text-xs">—</span>
               )}
             </TableCell>
           </TableRow>
@@ -150,13 +150,13 @@ export default function BookshelfPage() {
       <BackgroundCanvas />
       <Header />
       <PageTransition>
-      <div className="min-h-screen bg-background p-6 md:p-10 max-w-6xl mx-auto pt-24">
+      <div className="min-h-screen bg-background px-6 md:px-10 max-w-6xl mx-auto pt-24 pb-6 md:pb-10">
         <header className="mb-10">
-          <div className="font-mono text-[10px] text-emerald-500/50 mb-2">// COLLECTION v1.0</div>
+          <div className="font-mono text-xs text-emerald-400/70 mb-2">// COLLECTION v1.0</div>
           <h1 className="font-display-lg text-[32px] md:text-[42px] text-white font-bold mb-1 tracking-tight">
             _<span className="text-sky-400">books</span>
           </h1>
-          <p className="font-mono text-[13px] text-white/30 max-w-xl">
+          <p className="font-mono text-[13px] text-white/55 max-w-xl">
             Books and papers that shaped how I build.
           </p>
         </header>
@@ -166,14 +166,14 @@ export default function BookshelfPage() {
           {/* Row 1: filter + view toggle */}
           <div className="flex flex-wrap items-center justify-between gap-3 bg-black/40 backdrop-blur-sm border border-white/[0.06] rounded-lg p-2.5">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-[9px] uppercase tracking-widest text-white/30 mr-1">filter</span>
+              <span className="font-mono text-xs uppercase tracking-widest text-white/55 mr-1">filter</span>
               <button
                 onClick={() => setShowRecommended(!showRecommended)}
                 className={cn(
-                  'cursor-pointer px-3 py-1 rounded text-[9px] font-mono uppercase tracking-wider border transition-all duration-200',
+                  'cursor-pointer min-h-11 min-w-11 px-3 py-2.5 rounded text-xs font-mono uppercase tracking-wider border transition-all duration-200',
                   showRecommended
                     ? 'text-purple-400 bg-purple-950/30 border-purple-500/40 shadow-[inset_0_0_0_1px_rgba(168,85,247,0.4)]'
-                    : 'text-white/40 border-white/10 hover:text-purple-400 hover:border-purple-500/30',
+                    : 'text-white/50 border-white/10 hover:text-purple-400 hover:border-purple-500/30',
                 )}
               >
                 recommended{statusCounts['RECOMMENDED'] ? ` (${statusCounts['RECOMMENDED']})` : ''}
@@ -182,10 +182,10 @@ export default function BookshelfPage() {
               <button
                 onClick={() => setActiveCategory(null)}
                 className={cn(
-                  'cursor-pointer px-3 py-1 rounded text-[9px] font-mono uppercase tracking-wider border transition-all duration-200',
+                  'cursor-pointer min-h-11 min-w-11 px-3 py-2.5 rounded text-xs font-mono uppercase tracking-wider border transition-all duration-200',
                   activeCategory === null
                     ? 'text-white bg-white/15 border-white/30 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.3)]'
-                    : 'text-white/40 border-white/10 hover:text-white/70 hover:bg-white/[0.04] hover:border-white/20',
+                    : 'text-white/50 border-white/10 hover:text-white/70 hover:bg-white/[0.04] hover:border-white/20',
                 )}
               >
                 all
@@ -195,10 +195,10 @@ export default function BookshelfPage() {
                   key={cat}
                   onClick={() => setActiveCategory(cat === activeCategory ? null : cat)}
                   className={cn(
-                    'cursor-pointer px-3 py-1 rounded text-[9px] font-mono uppercase tracking-wider border transition-all duration-200',
+                    'cursor-pointer min-h-11 min-w-11 px-3 py-2.5 rounded text-xs font-mono uppercase tracking-wider border transition-all duration-200',
                     activeCategory === cat
                       ? catPill(cat)
-                      : 'text-white/40 border-white/10 hover:text-white/70 hover:bg-white/[0.04] hover:border-white/20',
+                      : 'text-white/50 border-white/10 hover:text-white/70 hover:bg-white/[0.04] hover:border-white/20',
                   )}
                 >
                   {cat} ({categoryCounts[cat]})
@@ -207,60 +207,66 @@ export default function BookshelfPage() {
               {activeCategory && (
                 <button
                   onClick={() => setActiveCategory(null)}
-                  className="cursor-pointer ml-1 px-2 py-1 rounded text-[9px] font-mono text-white/40 hover:text-white/80 transition-colors"
+                  className="cursor-pointer ml-1 px-2 py-1 rounded text-xs font-mono text-white/50 hover:text-white/80 transition-colors"
                 >
                   <span className="material-symbols-outlined text-[12px] align-middle">close</span>
                 </button>
               )}
             </div>
+          </div>
 
-            <div className="flex items-center gap-1 border border-white/[0.06] rounded p-0.5">
+          {/* Row 2: search + view toggle */}
+          <div className="flex items-center gap-2">
+            <div className="flex-1 min-w-0 flex items-center gap-2 bg-black/40 backdrop-blur-sm border border-white/[0.06] rounded-lg px-2.5 py-0.5">
+              <span className="font-mono text-xs uppercase tracking-widest text-white/55">--search</span>
+              <div className="flex-1 flex items-center min-w-0">
+                <input
+                  ref={searchRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="title, author, tag..."
+                  className="flex-1 min-w-0 h-11 bg-transparent border-none outline-none text-xs font-mono text-emerald-400 placeholder-emerald-800/30"
+                  style={{ caretColor: '#34d399', caretShape: 'block' } as React.CSSProperties}
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => { setSearchQuery(''); searchRef.current?.focus(); }}
+                    aria-label="Clear search"
+                    className="cursor-pointer h-11 w-11 shrink-0 flex items-center justify-center text-white/55 hover:text-white/60 transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[12px] align-middle">close</span>
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="self-stretch flex items-center gap-1 border border-white/[0.06] rounded p-0.5">
               <button
                 onClick={() => setViewMode('card')}
+                aria-label="Card view"
+                aria-pressed={viewMode === 'card'}
                 className={cn(
-                  'cursor-pointer px-2 py-1 rounded text-[10px] transition-all duration-200',
+                  'cursor-pointer w-11 h-11 shrink-0 flex items-center justify-center rounded transition-all duration-200',
                   viewMode === 'card'
                     ? 'text-white bg-white/10'
-                    : 'text-white/30 hover:text-white/60',
+                    : 'text-white/55 hover:text-white/60',
                 )}
               >
                 <span className="material-symbols-outlined text-[14px] align-middle">grid_view</span>
               </button>
               <button
                 onClick={() => setViewMode('list')}
+                aria-label="List view"
+                aria-pressed={viewMode === 'list'}
                 className={cn(
-                  'cursor-pointer px-2 py-1 rounded text-[10px] transition-all duration-200',
+                  'cursor-pointer w-11 h-11 shrink-0 flex items-center justify-center rounded transition-all duration-200',
                   viewMode === 'list'
                     ? 'text-white bg-white/10'
-                    : 'text-white/30 hover:text-white/60',
+                    : 'text-white/55 hover:text-white/60',
                 )}
               >
                 <span className="material-symbols-outlined text-[14px] align-middle">view_list</span>
               </button>
-            </div>
-          </div>
-
-          {/* Row 2: search */}
-          <div className="flex items-center gap-2 bg-black/40 backdrop-blur-sm border border-white/[0.06] rounded-lg p-2.5">
-            <span className="font-mono text-[9px] uppercase tracking-widest text-white/20">--search</span>
-            <div className="flex-1 flex items-center gap-1">
-              <input
-                ref={searchRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="title, author, tag..."
-                className="flex-1 min-w-[100px] bg-transparent border-none outline-none p-0 text-[10px] font-mono text-emerald-400 placeholder-emerald-800/30"
-                style={{ caretColor: '#34d399', caretShape: 'block' } as React.CSSProperties}
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => { setSearchQuery(''); searchRef.current?.focus(); }}
-                  className="cursor-pointer text-white/20 hover:text-white/60 transition-colors"
-                >
-                  <span className="material-symbols-outlined text-[12px] align-middle">close</span>
-                </button>
-              )}
             </div>
           </div>
 
@@ -269,39 +275,39 @@ export default function BookshelfPage() {
 
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="font-mono text-[9px] text-zinc-800 mb-4 tracking-widest uppercase">
+            <div className="font-mono text-xs text-zinc-400 mb-4 tracking-widest uppercase">
               // EMPTY SHELF
             </div>
-            <div className="font-mono text-zinc-600 text-[12px] leading-relaxed space-y-2">
+            <div className="font-mono text-zinc-400 text-[12px] leading-relaxed space-y-2">
               {emptyReason === 'empty' && (
                 <>
-                  <p className="text-[10px] text-zinc-700">{'> ls ~/bookshelf/'}</p>
-                  <p className="text-[10px] text-zinc-700">{'> '}</p>
+                  <p className="text-xs text-zinc-400">{'> ls ~/bookshelf/'}</p>
+                  <p className="text-xs text-zinc-400">{'> '}</p>
                   <p className="text-sm font-bold text-sky-500/40 py-2">{'ls: cannot access \'~/bookshelf/\': No such file'}</p>
                 </>
               )}
               {emptyReason === 'search' && (
                 <>
-                  <p className="text-[10px] text-zinc-700">{'> ls ~/bookshelf/ | grep '}<span className="text-zinc-500">{searchQuery}</span></p>
-                  <p className="text-[10px] text-zinc-700">{'> '}</p>
+                  <p className="text-xs text-zinc-400">{'> ls ~/bookshelf/ | grep '}<span className="text-zinc-400">{searchQuery}</span></p>
+                  <p className="text-xs text-zinc-400">{'> '}</p>
                   <p className="text-sm font-bold text-sky-500/40 py-2">{'no entries matching "'}{searchQuery}{'"'}</p>
                 </>
               )}
               {emptyReason === 'search+category' && (
                 <>
-                  <p className="text-[10px] text-zinc-700">{'> ls ~/bookshelf/'}{activeCategory}{' | grep '}<span className="text-zinc-500">{searchQuery}</span></p>
-                  <p className="text-[10px] text-zinc-700">{'> '}</p>
+                  <p className="text-xs text-zinc-400">{'> ls ~/bookshelf/'}{activeCategory}{' | grep '}<span className="text-zinc-400">{searchQuery}</span></p>
+                  <p className="text-xs text-zinc-400">{'> '}</p>
                   <p className="text-sm font-bold text-sky-500/40 py-2">{'no entries matching "'}{searchQuery}{'" in '}{activeCategory}</p>
                 </>
               )}
               {emptyReason === 'category' && (
                 <>
-                  <p className="text-[10px] text-zinc-700">{'> ls ~/bookshelf/'}{activeCategory}</p>
-                  <p className="text-[10px] text-zinc-700">{'> '}</p>
+                  <p className="text-xs text-zinc-400">{'> ls ~/bookshelf/'}{activeCategory}</p>
+                  <p className="text-xs text-zinc-400">{'> '}</p>
                   <p className="text-sm font-bold text-sky-500/40 py-2">{'no '}{activeCategory}{' entries found'}</p>
                 </>
               )}
-              <p className="text-[10px] text-zinc-700 animate-pulse">{'_'}</p>
+              <p className="text-xs text-zinc-400 animate-pulse">{'_'}</p>
             </div>
           </div>
         ) : viewMode === 'card' ? (
@@ -316,8 +322,8 @@ export default function BookshelfPage() {
 
         <div className="mt-16 border-t border-white/[0.04] pt-8">
           <TerminalCard variant="secondary">
-            <div className="p-5 font-mono text-[10px] text-white/25 space-y-1.5">
-              <p className="text-white/40">{'$ cat bookshelf.stats'}</p>
+            <div className="p-5 font-mono text-xs text-white/55 space-y-1.5">
+              <p className="text-white/50">{'$ cat bookshelf.stats'}</p>
               <p><span className="text-white/50">entries</span> <span className="text-white/70">{books.length}</span></p>
               <p><span className="text-white/50">filtered</span> <span className="text-white/70">{filtered.length}</span></p>
               <p>

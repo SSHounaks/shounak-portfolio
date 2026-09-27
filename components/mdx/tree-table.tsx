@@ -49,24 +49,24 @@ function TreeNodeRow({
         <td className="px-3 py-1.5 text-[12px]">
           <div className="flex items-center gap-1">
             {Array.from({ length: depth }).map((_, i) => (
-              <span key={i} className="text-zinc-700 select-none" style={{ width: indentSize }}>
+              <span key={i} className="text-zinc-400 select-none" style={{ width: indentSize }}>
                 {showConnectors ? childConnector : ''}
               </span>
             ))}
             {depth > 0 && showConnectors && (
-              <span className="text-zinc-600 select-none">{connector}</span>
+              <span className="text-zinc-400 select-none">{connector}</span>
             )}
             {hasChildren && (
               <button
                 onClick={() => setExpanded(!expanded)}
-                className="text-zinc-500 hover:text-zinc-300 transition-colors mr-0.5"
+                className="text-zinc-400 hover:text-zinc-300 transition-colors mr-0.5"
               >
-                <span className="material-symbols-outlined text-[10px]">
+                <span className="material-symbols-outlined text-xs">
                   {expanded ? 'expand_more' : 'chevron_right'}
                 </span>
               </button>
             )}
-            <span className="text-emerald-400/60 mr-1">&gt;</span>
+            <span className="text-emerald-400/80 mr-1">&gt;</span>
             <span className="text-zinc-300">{node.label}</span>
           </div>
         </td>
@@ -76,7 +76,7 @@ function TreeNodeRow({
           </td>
         ))}
         {node.value !== undefined && (
-          <td className="px-3 py-1.5 text-[12px] text-zinc-500 text-right">
+          <td className="px-3 py-1.5 text-[12px] text-zinc-400 text-right">
             {node.value}
           </td>
         )}
@@ -106,8 +106,8 @@ export function TreeTable({
 }: TreeTableProps) {
   return (
     <div className={cn('font-mono my-6 overflow-x-auto', className)}>
-      <div className="flex items-center gap-2 mb-3 text-[10px] text-zinc-500 uppercase tracking-widest">
-        <span className="text-emerald-500/60">//</span>
+      <div className="flex items-center gap-2 mb-3 text-xs text-zinc-400 uppercase tracking-widest">
+        <span className="text-emerald-400/70">//</span>
         <span>TREE</span>
       </div>
       <table className="w-full text-left border-collapse">
@@ -117,7 +117,7 @@ export function TreeTable({
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="px-3 py-2 text-zinc-400 font-bold text-[10px] uppercase tracking-wider"
+                  className="px-3 py-2 text-zinc-400 font-bold text-xs uppercase tracking-wider"
                 >
                   # {col.header}
                 </th>

@@ -74,37 +74,37 @@ export function ExperienceSection() {
                     <div className="flex items-center gap-2">
                       <span className={`${exp.isCurrent ? 'text-secondary' : 'text-emerald-400'}`}>&gt;</span>
                       <span className={`text-[11px] font-bold ${exp.isCurrent ? 'text-secondary' : 'text-white/80'}`}>
-                        {exp.title} <span className="text-white/40 font-normal">@ {exp.company.replace('@ ', '')}</span>
+                        {exp.title} <span className="text-white/50 font-normal">@ {exp.company.replace('@ ', '')}</span>
                       </span>
                       {exp.isCurrent && (
-                        <span className="text-[9px] bg-secondary/20 text-secondary px-1.5 py-0.5 rounded border border-secondary/30 uppercase tracking-wider">
+                        <span className="text-xs bg-secondary/20 text-secondary px-1.5 py-0.5 rounded border border-secondary/30 uppercase tracking-wider">
                           ACTIVE
                         </span>
                       )}
-                      <span className="text-[10px] ml-auto transition-transform duration-200 group-open:rotate-90">
-                        <span className="material-symbols-outlined text-emerald-400/60 text-[12px]">chevron_right</span>
+                      <span className="text-xs ml-auto transition-transform duration-200 group-open:rotate-90">
+                        <span className="material-symbols-outlined text-emerald-400/80 text-[12px]">chevron_right</span>
                       </span>
                     </div>
-                    <p className="text-white/40 text-[9px] ml-5 mt-0.5 font-mono">
-                      <span className={`${exp.isCurrent ? 'text-secondary/60' : 'text-emerald-500/60'}`}>//</span> {exp.years}
+                    <p className="text-white/50 text-xs ml-5 mt-0.5 font-mono">
+                      <span className={`${exp.isCurrent ? 'text-secondary/60' : 'text-emerald-400/70'}`}>//</span> {exp.years}
                     </p>
                   </div>
                 </div>
               </summary>
               <div className={`px-3 pb-4 pt-0 border-t ${exp.isCurrent ? 'border-secondary/10' : 'border-emerald-500/10'} mx-3`}>
-                <div className="pt-3 space-y-2 text-[10px]">
+                <div className="pt-3 space-y-2 text-xs">
                   <div className="flex items-center gap-2 px-1 py-1 bg-white/[0.02] rounded border border-white/5">
-                    <span className="text-emerald-400/60 text-[9px] flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[10px]">deployed_code</span>
+                    <span className="text-emerald-400/80 text-xs flex items-center gap-1">
+                      <span className="material-symbols-outlined text-xs">deployed_code</span>
                     </span>
-                    <span className="text-white/40 text-[9px]">stack:</span>
-                    <span className="text-amber-400/80 text-[10px] font-medium">{exp.tech}</span>
+                    <span className="text-white/50 text-xs">stack:</span>
+                    <span className="text-amber-400/80 text-xs font-medium">{exp.tech}</span>
                   </div>
                   <div className="space-y-0">
                     {exp.highlights.map((h, i) => (
                       <div key={i} className="flex items-start gap-2 py-1 px-1 border-b border-white/[0.02] last:border-b-0 hover:bg-white/[0.02] transition-colors">
-                        <span className="text-emerald-500/50 text-[9px] font-mono w-16 shrink-0 leading-relaxed">{hash(h)}</span>
-                        <span className="text-white/50 text-[10px] leading-relaxed flex-1">{h}</span>
+                        <span className="text-emerald-400/70 text-xs font-mono w-16 shrink-0 leading-relaxed">{hash(h)}</span>
+                        <span className="text-white/50 text-xs leading-relaxed flex-1">{h}</span>
                       </div>
                     ))}
                   </div>

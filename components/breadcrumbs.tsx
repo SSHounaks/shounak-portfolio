@@ -68,14 +68,14 @@ export function Breadcrumbs() {
         const extraProps = crumb.href ? { href: crumb.href } : {};
         return (
           <Tag key={crumb.label} {...extraProps}
-            className={`relative flex items-center text-white/50 hover:text-white transition-colors ${crumb.href ? 'cursor-pointer' : ''} ${crumb.label === '~/' ? 'px-2' : 'pl-4 pr-2'}`}
+            className={`relative flex items-center min-w-11 text-white/50 hover:text-white transition-colors ${crumb.href ? 'cursor-pointer' : ''} ${crumb.label === '~/' ? 'px-2 justify-center' : 'pl-4 pr-2'}`}
             style={{ background: crumb.bg, zIndex: crumbs.length - i }}
             onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.background = crumb.hoverBg; const ch = el.lastElementChild as HTMLElement; if (ch) ch.style.borderLeftColor = crumb.hoverChevron; }}
             onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.background = crumb.bg; const ch = el.lastElementChild as HTMLElement; if (ch) ch.style.borderLeftColor = crumb.chevronColor; }}
           >
             {crumb.label}
             {i < crumbs.length - 1 && (
-              <span className="absolute -right-[8px] top-0 h-0 w-0 border-y-[18px] border-l-[8px] border-y-transparent border-solid transition-colors" style={{ borderLeftColor: crumb.chevronColor }}></span>
+              <span className="absolute -right-[8px] top-0 h-0 w-0 border-y-[22px] border-l-[8px] border-y-transparent border-solid transition-colors" style={{ borderLeftColor: crumb.chevronColor }}></span>
             )}
           </Tag>
         );

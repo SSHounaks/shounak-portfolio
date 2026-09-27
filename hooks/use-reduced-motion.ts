@@ -1,8 +1,6 @@
 import * as React from 'react'
 
-const MOBILE_BREAKPOINT = 768
-
-const query = `(max-width: ${MOBILE_BREAKPOINT - 1}px)`
+const query = '(prefers-reduced-motion: reduce)'
 
 function subscribe(onStoreChange: () => void) {
   const mql = window.matchMedia(query)
@@ -10,9 +8,7 @@ function subscribe(onStoreChange: () => void) {
   return () => mql.removeEventListener('change', onStoreChange)
 }
 
-export function useIsMobile() {
-  // useSyncExternalStore instead of setState-in-effect: no cascading render on
-  // mount, and the third argument gives a deterministic SSR snapshot.
+export function useReducedMotion() {
   return React.useSyncExternalStore(
     subscribe,
     () => window.matchMedia(query).matches,

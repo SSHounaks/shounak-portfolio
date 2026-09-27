@@ -25,8 +25,8 @@ export function TerminalTable({
   className,
 }: TerminalTableProps) {
   return (
-    <div className={cn('font-mono text-[9px] overflow-x-auto', className)}>
-      <div className="flex items-center gap-2 text-white/30 border-b border-white/5 pb-1.5 mb-1">
+    <div className={cn('font-mono text-xs overflow-x-auto', className)}>
+      <div className="flex items-center gap-2 text-white/55 border-b border-white/5 pb-1.5 mb-1">
         <span className="w-10">PID</span>
         <span className="w-8">USER</span>
         <span className="w-6">CPU%</span>
@@ -40,9 +40,9 @@ export function TerminalTable({
         >
           <span className="w-10 text-white/60">{r.pid}</span>
           <span className="w-8 text-emerald-400/80">{r.user}</span>
-          <span className="w-6 text-white/40">{r.cpu}</span>
+          <span className="w-6 text-white/50">{r.cpu}</span>
           <span className="w-6 text-amber-400/60">{r.mem}</span>
-          <span className="flex-1 text-white/40 truncate">{r.cmd}</span>
+          <span className="flex-1 text-white/50 truncate">{r.cmd}</span>
         </div>
       ))}
     </div>

@@ -74,12 +74,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <Header />
       <ReadingProgress />
       <JsonLd data={jsonLdBlogPosting(post)} />
-      <div className="min-h-screen bg-background p-6 md:p-10 max-w-[1100px] mx-auto pt-24">
+      <div className="min-h-screen bg-background px-6 md:px-10 max-w-[1100px] mx-auto pt-24 pb-6 md:pb-10">
         <article className="lg:flex lg:gap-10">
           <div className="flex-1 min-w-0 max-w-[800px]">
             <header className="mb-12">
-              <div className="font-mono text-xs text-zinc-600 tracking-wider mb-4">
-                // PUBLISHED: {post.date.toUpperCase()} {post.readTime ? `• READ_TIME: ${post.readTime}` : ''}
+              <div className="font-mono text-xs text-zinc-400 tracking-wider mb-4">
+                // PUBLISHED: {post.date.toUpperCase()}
               </div>
               <h1 className="text-4xl sm:text-5xl font-black text-emerald-400 tracking-tight drop-shadow-[0_0_15px_rgba(52,211,153,0.15)] mb-4">
                 {post.title}
@@ -113,7 +113,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             </CollapsibleSummary>
 
             <CodeCopyHandler>
-              <div className="max-w-none font-mono text-base leading-relaxed space-y-8 [&_p]:text-zinc-300 [&_p]:leading-relaxed [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:text-emerald-400 [&_h1]:tracking-tight [&_h1]:pt-6 [&_h1]:pb-2 [&_h1]:mb-6 [&_h1]:border-b [&_h1]:border-zinc-900 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-zinc-100 [&_h2]:tracking-tight [&_h2]:pt-4 [&_h2]:border-b [&_h2]:border-zinc-900 [&_h2]:pb-2 [&_h2]:mb-6 [&_h2]:flex [&_h2]:items-center [&_h2]:gap-2 [&_h2]:before:content-['#'] [&_h2]:before:text-emerald-500/40 [&_h2]:before:select-none [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-emerald-400 [&_h3]:tracking-tight [&_h3]:pt-2 [&_h3]:mb-3 [&_a]:text-emerald-400 [&_a]:underline [&_a]:underline-offset-4 [&_a]:decoration-zinc-700 [&_a]:hover:decoration-emerald-400 [&_a]:transition-colors [&_pre]:overflow-x-auto [&_pre]:text-sm [&_pre]:leading-relaxed [&_pre]:p-5 [&_pre]:m-0 [&_pre]:bg-transparent [&_pre]:border-0 [&_code]:text-emerald-300 [&_img]:rounded-lg [&_img]:border [&_img]:border-zinc-800 [&_ul]:text-zinc-300 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:ml-1 [&_ol]:text-zinc-300 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:ml-1 [&_li]:mb-1">
+              <div className="max-w-none font-mono text-base leading-relaxed space-y-8 [&_p]:text-zinc-300 [&_p]:leading-relaxed [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:text-emerald-400 [&_h1]:tracking-tight [&_h1]:pt-6 [&_h1]:pb-2 [&_h1]:mb-6 [&_h1]:scroll-mt-24 [&_h1]:border-b [&_h1]:border-zinc-900 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-zinc-100 [&_h2]:tracking-tight [&_h2]:pt-4 [&_h2]:border-b [&_h2]:border-zinc-900 [&_h2]:pb-2 [&_h2]:mb-6 [&_h2]:scroll-mt-24 [&_h2]:flex [&_h2]:items-center [&_h2]:gap-2 [&_h2]:before:content-['#'] [&_h2]:before:text-emerald-400/70 [&_h2]:before:select-none [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-emerald-400 [&_h3]:tracking-tight [&_h3]:pt-2 [&_h3]:mb-3 [&_h3]:scroll-mt-24 [&_h4]:text-base [&_h4]:font-bold [&_h4]:text-zinc-200 [&_h4]:pt-2 [&_h4]:mb-2 [&_h4]:scroll-mt-24 [&_a]:text-emerald-400 [&_a]:underline [&_a]:underline-offset-4 [&_a]:decoration-zinc-700 [&_a]:hover:decoration-emerald-400 [&_a]:transition-colors [&_pre]:overflow-x-auto [&_pre]:text-sm [&_pre]:leading-relaxed [&_pre]:p-5 [&_pre]:m-0 [&_pre]:bg-transparent [&_pre]:border-0 [&_code]:text-emerald-300 [&_img]:rounded-lg [&_img]:border [&_img]:border-zinc-800 [&_ul]:text-zinc-300 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:ml-1 [&_ol]:text-zinc-300 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:ml-1 [&_li]:mb-1">
                 <MDXRemote
                   source={rawMDX}
                   components={mdxComponents}

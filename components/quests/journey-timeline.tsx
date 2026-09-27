@@ -51,25 +51,25 @@ export function JourneyTimeline({ milestones }: JourneyTimelineProps) {
 
             <div className="flex-1 min-w-0 pt-0.5">
               <div className="flex items-baseline gap-2 flex-wrap">
-                <span className="font-mono text-[8px] text-white/30 tabular-nums">{dateLabel}</span>
+                <span className="font-mono text-xs text-white/55 tabular-nums">{dateLabel}</span>
                 <span className="font-mono text-[11px] text-white/80 font-bold group-hover:text-white transition-colors">
                   {milestone.title}
                 </span>
                 {milestone.xpEarned > 0 && (
-                  <span className="font-mono text-[9px] text-amber-400/60 tabular-nums font-bold">
+                  <span className="font-mono text-xs text-amber-400/60 tabular-nums font-bold">
                     +{milestone.xpEarned.toLocaleString()}
                   </span>
                 )}
               </div>
 
               {milestone.skillsGained.length > 0 && (
-                <p className="font-mono text-[9px] text-white/35 mt-0.5">
+                <p className="font-mono text-xs text-white/50 mt-0.5">
                   {milestone.skillsGained.join(', ')}
                 </p>
               )}
 
               {milestone.reflection && (
-                <p className="font-mono text-[10px] text-white/30 mt-1.5 leading-relaxed">
+                <p className="font-mono text-xs text-white/55 mt-1.5 leading-relaxed">
                   <span className="text-amber-500/40">//</span> {milestone.reflection}
                 </p>
               )}

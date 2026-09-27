@@ -41,15 +41,35 @@ export function TableOfContents({ headings }: { headings: TocEntry[] }) {
 
   useEffect(() => {
     const ids = headings.flatMap(h => [h.url.slice(1), ...h.items.map(c => c.url.slice(1))]);
+    // Headings rest at scroll-mt-24 (96px) below the top edge because the navbar
+    // is fixed. Track the topmost heading inside the band rather than the last
+    // one the observer reports, otherwise the section AFTER the one you jumped
+    // to wins and the highlight looks wrong.
+    const visible = new Set<string>();
+    const pick = () => {
+      let bestId = '';
+      let bestTop = Infinity;
+      for (const id of ids) {
+        if (!visible.has(id)) continue;
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top;
+        if (top < bestTop) {
+          bestTop = top;
+          bestId = id;
+        }
+      }
+      if (bestId) setActiveId(bestId);
+    };
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
+          if (entry.isIntersecting) visible.add(entry.target.id);
+          else visible.delete(entry.target.id);
         }
+        pick();
       },
-      { rootMargin: '-80px 0px -60% 0px' }
+      { rootMargin: '-96px 0px -55% 0px' }
     );
     for (const id of ids) {
       const el = document.getElementById(id);
@@ -62,7 +82,7 @@ export function TableOfContents({ headings }: { headings: TocEntry[] }) {
 
   return (
     <aside className="sticky top-24 w-full max-w-[220px]">
-      <div className="font-mono text-[10px] text-emerald-500/60 mb-3 tracking-wider uppercase">// sections</div>
+      <div className="font-mono text-xs text-emerald-400/70 mb-3 tracking-wider uppercase">// sections</div>
       <div className="relative">
         <nav
           ref={navRef as React.RefObject<HTMLElement>}
@@ -76,7 +96,7 @@ export function TableOfContents({ headings }: { headings: TocEntry[] }) {
               className={`block text-[11px] font-mono transition-colors py-0.5 ${
                 activeId === h.url.slice(1)
                   ? 'text-emerald-400 font-bold'
-                  : 'text-white/30 hover:text-white/60'
+                  : 'text-white/55 hover:text-white/60'
               }`}
             >
               {h.title}
@@ -87,10 +107,10 @@ export function TableOfContents({ headings }: { headings: TocEntry[] }) {
                   <a
                     key={c.url}
                     href={c.url}
-                    className={`block text-[10px] font-mono transition-colors py-0.5 ${
+                    className={`block text-xs font-mono transition-colors py-0.5 ${
                       activeId === c.url.slice(1)
                         ? 'text-emerald-400/80 font-bold'
-                        : 'text-white/20 hover:text-white/50'
+                        : 'text-white/55 hover:text-white/50'
                     }`}
                   >
                     {c.title}

@@ -86,7 +86,7 @@ export function TerminalCard({
         <div ref={headerRef} className="terminal-header px-4 py-2 flex justify-between items-center">
           <div className="flex items-center gap-2">
             {icon && <span className="material-symbols-outlined text-[14px] opacity-30 group-hover:opacity-70 transition-opacity duration-200">{icon}</span>}
-            {title && <span className="text-[10px] font-mono uppercase tracking-widest opacity-30 group-hover:opacity-100 transition-opacity duration-200">{title}</span>}
+            {title && <span className="text-xs font-mono uppercase tracking-widest opacity-30 group-hover:opacity-100 transition-opacity duration-200">{title}</span>}
           </div>
           <div className="flex gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-white/10 group-hover:bg-red-500/60 transition-colors duration-200"></div>

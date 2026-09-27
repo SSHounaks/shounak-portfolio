@@ -67,7 +67,7 @@ export function Figure({ src, alt, caption, children, className, size = 'large',
           </div>
         </div>
         {caption && (
-          <figcaption className="mt-2 text-center text-xs text-zinc-500 font-mono">
+          <figcaption className="mt-2 text-center text-xs text-zinc-400 font-mono">
             // {caption}
           </figcaption>
         )}

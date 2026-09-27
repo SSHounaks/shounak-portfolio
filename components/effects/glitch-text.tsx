@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 interface GlitchTextProps {
   text?: string;
@@ -21,8 +22,10 @@ export function GlitchText({
   glitchChars = '!@#$%^&*<>/\\|',
 }: GlitchTextProps) {
   const [display, setDisplay] = useState(text);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
+    if (reducedMotion) return;
     let timeoutId: ReturnType<typeof setTimeout>;
     const t = setInterval(() => {
       if (Math.random() > glitchProbability) return;
@@ -41,7 +44,7 @@ export function GlitchText({
       clearInterval(t);
       clearTimeout(timeoutId);
     };
-  }, [text, interval, glitchProbability, glitchDuration, glitchChars]);
+  }, [text, interval, glitchProbability, glitchDuration, glitchChars, reducedMotion]);
 
   return (
     <span

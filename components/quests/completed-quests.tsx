@@ -27,8 +27,8 @@ export function CompletedQuestsList({ completedQuests }: CompletedQuestsListProp
   if (allItems.length === 0) {
     return (
       <div className="bg-black/40 backdrop-blur-sm border border-white/[0.07] rounded-lg p-6 font-mono text-[11px] space-y-1.5">
-        <p className="text-white/45">{'> tail cleared.log'}</p>
-        <p className="text-white/25">log is empty. clear a quest to make history.</p>
+        <p className="text-white/50">{'> tail cleared.log'}</p>
+        <p className="text-white/55">log is empty. clear a quest to make history.</p>
         <p className="text-white/15 animate-pulse">_</p>
       </div>
     );
@@ -58,7 +58,7 @@ export function CompletedQuestsList({ completedQuests }: CompletedQuestsListProp
             >
               {'<'}
             </button>
-            <span className="font-mono text-[10px] text-white/45 min-w-[50px] text-center tabular-nums">
+            <span className="font-mono text-xs text-white/50 min-w-[50px] text-center tabular-nums">
               {currentPage + 1} / {totalPages}
             </span>
             <button

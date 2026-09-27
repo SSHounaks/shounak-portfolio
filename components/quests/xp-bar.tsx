@@ -29,8 +29,8 @@ export function XpBar({
         />
       </div>
       <span className={cn(
-        'font-mono text-white/30 shrink-0',
-        size === 'sm' ? 'text-[8px]' : 'text-[9px]',
+        'font-mono text-white/55 shrink-0',
+        size === 'sm' ? 'text-xs' : 'text-xs',
       )}>
         {current.toLocaleString()}/{max.toLocaleString()}
       </span>

@@ -42,12 +42,12 @@ const defaultFiles: DiffFile[] = [
     hunks: [
       { type: 'header', content: '@@ -33,11 +33,8 @@ export default function BlogPage() {' },
       { type: '-', content: "                    <div className='p-5 font-mono flex flex-col gap-3'>" },
-      { type: '-', content: "                      <div className='flex items-center gap-3 text-[10px]'>" },
-      { type: '-', content: "                        <span className='text-emerald-500/60'>&gt;</span>" },
+      { type: '-', content: "                      <div className='flex items-center gap-3 text-xs'>" },
+      { type: '-', content: "                        <span className='text-emerald-400/70'>&gt;</span>" },
       { type: '+', content: "                    <div className='p-6 font-mono flex flex-col gap-3'>" },
       { type: '+', content: "                      <div className='flex items-center gap-3 text-[11px]'>" },
-      { type: '+', content: "                        <span className='text-emerald-500/60'>&gt;</span>" },
-      { type: 'neutral', content: "                        <span className='text-white/30'>{post.date}</span>" },
+      { type: '+', content: "                        <span className='text-emerald-400/70'>&gt;</span>" },
+      { type: 'neutral', content: "                        <span className='text-white/55'>{post.date}</span>" },
       { type: 'neutral', content: '                      </div>' },
     ],
   },
@@ -75,7 +75,7 @@ const fileStatusColors: Record<string, string> = {
 };
 
 const hunkColors: Record<string, string> = {
-  header: 'bg-white/[0.02] text-white/30',
+  header: 'bg-white/[0.02] text-white/55',
   '+': 'bg-emerald-500/8 text-emerald-400/90',
   '-': 'bg-red-500/8 text-red-400/90',
   neutral: 'text-white/50',
@@ -89,13 +89,13 @@ export function CodeDiffView({
 
   return (
     <div className={cn('font-mono space-y-2', className)}>
-      <div className="flex items-center gap-2 mb-3 text-[10px]">
-        <span className="text-white/30">changed files:</span>
+      <div className="flex items-center gap-2 mb-3 text-xs">
+        <span className="text-white/55">changed files:</span>
         <span className="text-cyan-400/60">{files.length}</span>
-        <span className="text-white/20">|</span>
-        <span className="text-emerald-400/60">+42</span>
-        <span className="text-red-400/60">-18</span>
-        <span className="text-white/20 ml-auto">diff --git a/* b/*</span>
+        <span className="text-white/55">|</span>
+        <span className="text-emerald-400/80">+42</span>
+        <span className="text-red-400/80">-18</span>
+        <span className="text-white/55 ml-auto">diff --git a/* b/*</span>
       </div>
       {files.map((file) => {
         const open = expanded === file.name;
@@ -103,18 +103,18 @@ export function CodeDiffView({
           <div key={file.name} className="border border-white/5 rounded overflow-hidden">
             <button
               onClick={() => setExpanded(open ? null : file.name)}
-              className="flex items-center gap-2 w-full text-left px-3 py-2 text-[10px] bg-white/[0.02] hover:bg-white/[0.04] transition-colors border-b border-white/5 cursor-pointer"
+              className="flex items-center gap-2 w-full text-left px-3 py-2 text-xs bg-white/[0.02] hover:bg-white/[0.04] transition-colors border-b border-white/5 cursor-pointer"
             >
               <span
-                className="text-white/30 transition-transform duration-200"
+                className="text-white/55 transition-transform duration-200"
                 style={{ transform: open ? 'rotate(90deg)' : 'rotate(0deg)' }}
               >
                 ▸
               </span>
               <span
                 className={cn(
-                  'px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider border',
-                  fileStatusColors[file.status] || 'text-white/30 border-white/10 bg-white/5',
+                  'px-1.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider border',
+                  fileStatusColors[file.status] || 'text-white/55 border-white/10 bg-white/5',
                 )}
               >
                 {file.status}
@@ -122,7 +122,7 @@ export function CodeDiffView({
               <span className="text-white/60 flex-1 truncate">{file.name}</span>
             </button>
             {open && (
-              <div className="text-[10px] leading-relaxed overflow-x-auto">
+              <div className="text-xs leading-relaxed overflow-x-auto">
                 {file.hunks.map((line, i) => (
                   <div
                     key={i}
@@ -131,7 +131,7 @@ export function CodeDiffView({
                       hunkColors[line.type] || 'text-white/50',
                     )}
                   >
-                    <span className="w-8 text-right text-white/20 shrink-0 py-px select-none border-r border-white/[0.02]">
+                    <span className="w-8 text-right text-white/55 shrink-0 py-px select-none border-r border-white/[0.02]">
                       {line.type === 'header' ? '' : line.type === '+' ? '+' : line.type === '-' ? '-' : ' '}
                     </span>
                     <span className="flex-1 px-3 py-px whitespace-pre">{line.content}</span>

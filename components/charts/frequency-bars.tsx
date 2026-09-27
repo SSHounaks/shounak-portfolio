@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 interface FrequencyBarsProps {
   barCount?: number;
@@ -18,12 +19,15 @@ export function FrequencyBars({
     Array.from({ length: barCount }, () => 50),
   );
 
+  const reducedMotion = useReducedMotion();
+
   useEffect(() => {
+    if (reducedMotion) return;
     const t = setInterval(() => {
       setHeights(Array.from({ length: barCount }, () => Math.random() * 100));
     }, interval);
     return () => clearInterval(t);
-  }, [barCount, interval]);
+  }, [barCount, interval, reducedMotion]);
 
   const colors = [
     'bg-emerald-500/80',

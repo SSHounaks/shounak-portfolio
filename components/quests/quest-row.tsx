@@ -19,10 +19,10 @@ const difficultyColors: Record<string, string> = {
 function DetailRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-baseline gap-3">
-      <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-white/35 w-[68px] shrink-0">
+      <span className="font-mono text-xs uppercase tracking-[0.18em] text-white/50 w-[68px] shrink-0">
         {label}
       </span>
-      <span className="font-mono text-[10px] text-white/70 min-w-0">{children}</span>
+      <span className="font-mono text-xs text-white/70 min-w-0">{children}</span>
     </div>
   );
 }
@@ -36,7 +36,7 @@ export function QuestRow({ quest }: QuestRowProps) {
       <button
         onClick={() => setExpanded(!expanded)}
         aria-expanded={expanded}
-        className="w-full flex items-center py-2 px-3 cursor-pointer text-left hover:bg-white/[0.03] rounded focus-visible:outline-2 focus-visible:outline-emerald-400/60 -outline-offset-2"
+        className="w-full flex items-center py-2.5 px-3 cursor-pointer text-left hover:bg-white/[0.03] rounded focus-visible:outline-2 focus-visible:outline-emerald-400/60 -outline-offset-2"
       >
         <span
           className="w-[5px] h-[5px] rounded-full shrink-0 mr-3 transition-all"
@@ -45,19 +45,19 @@ export function QuestRow({ quest }: QuestRowProps) {
             boxShadow: expanded ? `0 0 6px ${barColor}` : 'none',
           }}
         />
-        <span className="material-symbols-outlined text-[12px] text-emerald-400/50 shrink-0 mr-2">
+        <span className="material-symbols-outlined text-[12px] text-emerald-400/80 shrink-0 mr-2">
           check_circle
         </span>
-        <span className="font-mono text-[10px] text-white/65 flex-1 truncate group-hover:text-white/90 transition-colors">
+        <span className="font-mono text-xs text-white/65 flex-1 truncate group-hover:text-white/90 transition-colors">
           {quest.title}
         </span>
-        <span className="font-mono text-[9px] text-amber-400/60 shrink-0 ml-2 tabular-nums font-bold">
+        <span className="font-mono text-xs text-amber-400/60 shrink-0 ml-2 tabular-nums font-bold">
           +{quest.xpReward ?? 0}
         </span>
         <span
           className={cn(
-            'material-symbols-outlined text-[13px] text-white/20 shrink-0 ml-1 transition-transform duration-200',
-            expanded && 'rotate-180 text-white/45',
+            'material-symbols-outlined text-[13px] text-white/55 shrink-0 ml-1 transition-transform duration-200',
+            expanded && 'rotate-180 text-white/50',
           )}
         >
           expand_more
@@ -76,11 +76,11 @@ export function QuestRow({ quest }: QuestRowProps) {
 
             <div className="px-3.5 pt-3 pb-3 space-y-2.5">
               <div className="flex items-center justify-between gap-3">
-                <span className="inline-flex items-center gap-1.5 font-mono text-[8px] font-bold uppercase tracking-[0.22em] text-emerald-400/80">
+                <span className="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-[0.22em] text-emerald-400/80">
                   <span className="material-symbols-outlined text-[11px]">verified</span>
                   quest complete
                 </span>
-                <span className="font-mono text-[9px] font-bold tabular-nums" style={{ color: barColor }}>
+                <span className="font-mono text-xs font-bold tabular-nums" style={{ color: barColor }}>
                   +{quest.xpReward ?? 0} xp
                 </span>
               </div>
@@ -92,7 +92,7 @@ export function QuestRow({ quest }: QuestRowProps) {
                 </DetailRow>
                 <DetailRow label="difficulty">
                   <span
-                    className="inline-flex items-center px-1.5 py-px rounded-sm border font-mono text-[8px] font-bold uppercase tracking-wider"
+                    className="inline-flex items-center px-1.5 py-px rounded-sm border font-mono text-xs font-bold uppercase tracking-wider"
                     style={{ color: barColor, borderColor: `${barColor}44`, backgroundColor: `${barColor}12` }}
                   >
                     {quest.difficulty}
@@ -102,7 +102,7 @@ export function QuestRow({ quest }: QuestRowProps) {
 
               {quest.skills && quest.skills.length > 0 && (
                 <div className="pt-2 border-t border-white/[0.05]">
-                  <div className="font-mono text-[8px] uppercase tracking-[0.18em] text-white/35 mb-1.5">
+                  <div className="font-mono text-xs uppercase tracking-[0.18em] text-white/50 mb-1.5">
                     skills gained
                   </div>
                   <div className="flex flex-wrap gap-1.5">

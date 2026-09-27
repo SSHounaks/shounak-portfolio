@@ -39,10 +39,10 @@ function StatBlock({
 }) {
   return (
     <div className="flex items-center gap-2.5 min-w-0">
-      <span className="material-symbols-outlined text-[15px] text-white/25 shrink-0">{icon}</span>
+      <span className="material-symbols-outlined text-[15px] text-white/55 shrink-0">{icon}</span>
       <div className="min-w-0">
         <div className={`font-mono text-[13px] font-bold tabular-nums leading-tight ${accent}`}>{value}</div>
-        <div className="font-mono text-[8px] uppercase tracking-[0.18em] text-white/40 leading-tight">{label}</div>
+        <div className="font-mono text-xs uppercase tracking-[0.18em] text-white/50 leading-tight">{label}</div>
       </div>
     </div>
   );
@@ -84,13 +84,13 @@ export function CharacterSheet({
 
       <div className="relative p-5 md:p-7">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-          <div className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.25em] text-white/45">
+          <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-white/50">
             <span className="material-symbols-outlined text-[13px] text-emerald-400/70">save</span>
             save_slot_01
             <span className="text-white/15">·</span>
             <span className="text-white/60">shounak.bhalerao</span>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-amber-300 border border-amber-400/30 bg-amber-500/[0.07] rounded">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 font-mono text-xs font-bold uppercase tracking-[0.2em] text-amber-300 border border-amber-400/30 bg-amber-500/[0.07] rounded">
             <span className="material-symbols-outlined text-[12px]">military_tech</span>
             {profile.title}
           </span>
@@ -99,7 +99,7 @@ export function CharacterSheet({
         <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-10">
           <div className="flex items-end gap-4 shrink-0">
             <div className="text-right">
-              <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-white/40 mb-1">lv</div>
+              <div className="font-mono text-xs uppercase tracking-[0.3em] text-white/50 mb-1">lv</div>
               <div className="font-mono text-[11px] text-emerald-400/70 font-bold -mb-1 tabular-nums">
                 {String(profile.level).padStart(2, '0')}
               </div>
@@ -114,13 +114,13 @@ export function CharacterSheet({
 
           <div className="flex-1 min-w-0 pb-2">
             <div className="flex items-baseline justify-between gap-3 mb-2">
-              <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/45">
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-white/50">
                 exp to next level
               </span>
               <span className="font-mono text-[11px] tabular-nums text-emerald-300/90 font-bold">
                 {profile.currentXP.toLocaleString()}
-                <span className="text-white/30 font-normal"> / {profile.xpToNextLevel.toLocaleString()}</span>
-                <span className="text-white/35 ml-2">{Math.round(pct)}%</span>
+                <span className="text-white/55 font-normal"> / {profile.xpToNextLevel.toLocaleString()}</span>
+                <span className="text-white/50 ml-2">{Math.round(pct)}%</span>
               </span>
             </div>
 
@@ -150,15 +150,15 @@ export function CharacterSheet({
               <div className="flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[15px] text-amber-400/80">local_fire_department</span>
                 <span className="font-mono text-[12px] font-bold text-white/85 tabular-nums">{streak.current}</span>
-                <span className="font-mono text-[9px] text-white/40">day streak</span>
-                <span className="font-mono text-[9px] text-white/25 tabular-nums">best {streak.longest}</span>
+                <span className="font-mono text-xs text-white/50">day streak</span>
+                <span className="font-mono text-xs text-white/55 tabular-nums">best {streak.longest}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[15px] text-emerald-400/70">shield</span>
                 <span className="font-mono text-[12px] font-bold text-white/85 tabular-nums">
                   {profile.questsCompleted}
                 </span>
-                <span className="font-mono text-[9px] text-white/40">quests cleared</span>
+                <span className="font-mono text-xs text-white/50">quests cleared</span>
               </div>
             </div>
           </div>

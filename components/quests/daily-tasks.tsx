@@ -20,17 +20,17 @@ export function DailyTasks({ tasks, streaks }: DailyTasksProps) {
                 i > 0 ? 'border-t border-white/[0.03]' : ''
               }`}
             >
-              <span className="material-symbols-outlined text-[13px] text-white/15 group-hover/task:text-emerald-400/50 transition-colors">
+              <span className="material-symbols-outlined text-[13px] text-white/15 group-hover/task:text-emerald-400/80 transition-colors">
                 check_box_outline_blank
               </span>
-              <span className="font-mono text-[10px] text-white/65 flex-1 group-hover/task:text-white/90 transition-colors">
+              <span className="font-mono text-xs text-white/65 flex-1 group-hover/task:text-white/90 transition-colors">
                 {task.title}
               </span>
-              <span className="font-mono text-[9px] text-emerald-400/45 tabular-nums">
+              <span className="font-mono text-xs text-emerald-400/80 tabular-nums">
                 +{task.xpReward}
               </span>
               {streak > 0 && (
-                <span className="inline-flex items-center gap-0.5 font-mono text-[9px] text-amber-400/70 tabular-nums">
+                <span className="inline-flex items-center gap-0.5 font-mono text-xs text-amber-400/70 tabular-nums">
                   <span className="material-symbols-outlined text-[11px] leading-none">local_fire_department</span>
                   {streak}
                 </span>

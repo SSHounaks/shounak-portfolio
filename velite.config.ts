@@ -17,12 +17,15 @@ export const posts = defineCollection({
     tags: s.array(s.string()).optional(),
     hidden: s.boolean().optional(),
     content: s.markdown({
+      // `velite` resolves its own copy of `unified`, so plugin types coming from
+      // rehype-slug / @shikijs/rehype are structurally identical but nominally
+      // incompatible. Align them to velite's expected type once, here.
       rehypePlugins: [
         rehypeSlug,
         [rehypeAutolinkHeadings, { behavior: 'wrap' }],
         [rehypeShiki, { theme: 'github-dark' }],
         rehypeCodeHeader,
-      ],
+      ] as unknown as NonNullable<Parameters<typeof s.markdown>[0]>['rehypePlugins'],
     }),
     headings: s.toc({ maxDepth: 3 }),
   }),

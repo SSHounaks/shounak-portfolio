@@ -75,8 +75,8 @@ export function TableCSV({
 
   return (
     <div className={cn('font-mono my-6 overflow-x-auto', className)}>
-      <div className="flex items-center gap-2 mb-3 text-[10px] text-zinc-500 uppercase tracking-widest">
-        <span className="text-emerald-500/60">//</span>
+      <div className="flex items-center gap-2 mb-3 text-xs text-zinc-400 uppercase tracking-widest">
+        <span className="text-emerald-400/70">//</span>
         <span>TABLE</span>
       </div>
       <table className="w-full text-left border-collapse">
@@ -86,7 +86,7 @@ export function TableCSV({
               <th
                 key={i}
                 className={cn(
-                  'text-zinc-200 font-bold text-[10px] uppercase tracking-wider bg-zinc-800/60',
+                  'text-zinc-200 font-bold text-xs uppercase tracking-wider bg-zinc-800/60',
                   compact ? 'px-2 py-1.5' : 'px-3 py-2',
                 )}
               >

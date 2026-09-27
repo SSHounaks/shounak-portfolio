@@ -34,7 +34,7 @@ function SectionLabel({
       <h2 className="font-mono text-[12px] text-white/75 font-bold uppercase tracking-[0.2em]">
         {label}
       </h2>
-      <span className="font-mono text-[10px] text-white/30 tabular-nums">{count}</span>
+      <span className="font-mono text-xs text-white/55 tabular-nums">{count}</span>
       <span className="h-px flex-1 bg-white/[0.07]" />
     </div>
   );
@@ -52,12 +52,12 @@ export default function QuestsPage() {
       <BackgroundCanvas />
       <Header />
       <PageTransition>
-        <div className="min-h-screen bg-background p-6 md:p-10 max-w-6xl mx-auto pt-24 pb-16">
+        <div className="min-h-screen bg-background px-6 md:px-10 max-w-6xl mx-auto pt-24 pb-16">
           <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
             <h1 className="font-display-lg text-[36px] md:text-[46px] text-white font-bold tracking-tight">
               _<span className="text-rose-400">quests</span>
             </h1>
-            <p className="font-mono text-[11px] text-white/40 pb-1.5">
+            <p className="font-mono text-[11px] text-white/50 pb-1.5">
               {'>'} save file loaded · fresh run · {data.activeQuests.length} active quest{data.activeQuests.length === 1 ? '' : 's'}
             </p>
           </header>
@@ -117,8 +117,8 @@ export default function QuestsPage() {
                 <JourneyTimeline milestones={data.milestones} />
               ) : (
                 <div className="bg-black/40 border border-white/[0.07] rounded-lg p-6 font-mono text-[11px] space-y-1.5">
-                  <p className="text-white/45">{'> cat milestones.log'}</p>
-                  <p className="text-white/25">no milestones yet — the run just started.</p>
+                  <p className="text-white/50">{'> cat milestones.log'}</p>
+                  <p className="text-white/55">no milestones yet — the run just started.</p>
                   <p className="text-white/15 animate-pulse">_</p>
                 </div>
               )}

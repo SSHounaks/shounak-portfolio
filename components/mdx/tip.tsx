@@ -33,7 +33,7 @@ export function Tip({ head, tip, link, children, className }: TipProps) {
       >
         <div className="space-y-1.5">
           <div className="text-emerald-400 text-[11px] font-bold flex items-center gap-2">
-            <span className="text-emerald-500/60">&gt;</span>
+            <span className="text-emerald-400/70">&gt;</span>
             {head || children}
           </div>
           <div className="text-zinc-400 text-[12px] leading-relaxed">

@@ -43,15 +43,15 @@ export function TerminalChat({
 
   return (
     <div className={cn('font-mono space-y-1.5 min-h-[180px]', className)}>
-      <div className="flex items-center gap-2 text-[9px] text-white/30 border-b border-white/5 pb-2 mb-2">
+      <div className="flex items-center gap-2 text-xs text-white/55 border-b border-white/5 pb-2 mb-2">
         <span className="text-emerald-400">●</span> connection_established — tty1
-        <span className="text-white/20 ml-auto">session: active</span>
+        <span className="text-white/55 ml-auto">session: active</span>
       </div>
       {messages.slice(0, visible).map((msg, i) => (
         <div key={i} className="flex items-start gap-2 animate-in fade-in duration-300">
           <span
             className={cn(
-              'text-[10px] font-bold w-10 flex-shrink-0',
+              'text-xs font-bold w-10 flex-shrink-0',
               isHost(msg.user) ? 'text-emerald-400' : 'text-cyan-400',
             )}
           >
@@ -62,12 +62,12 @@ export function TerminalChat({
       ))}
       {visible <= messages.length && (
         <div className="flex items-center gap-1 mt-1">
-          <span className="text-emerald-400 text-[10px]">&gt;</span>
+          <span className="text-emerald-400 text-xs">&gt;</span>
           <span className="w-1.5 h-3 bg-emerald-400 animate-pulse" />
         </div>
       )}
       {visible > messages.length && (
-        <div className="text-[10px] text-white/30 mt-2 italic">
+        <div className="text-xs text-white/55 mt-2 italic">
           // conversation_logged
         </div>
       )}

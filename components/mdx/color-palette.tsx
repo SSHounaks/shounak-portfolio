@@ -13,8 +13,8 @@ interface ColorPaletteProps {
 export function ColorPalette({ colors, className }: ColorPaletteProps) {
   return (
     <div className={cn('font-mono my-6', className)}>
-      <div className="flex items-center gap-2 mb-3 text-[10px] text-zinc-500 uppercase tracking-widest">
-        <span className="text-emerald-500/60">//</span>
+      <div className="flex items-center gap-2 mb-3 text-xs text-zinc-400 uppercase tracking-widest">
+        <span className="text-emerald-400/70">//</span>
         <span>Color Palette</span>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
@@ -28,8 +28,8 @@ export function ColorPalette({ colors, className }: ColorPaletteProps) {
               style={{ backgroundColor: hex }}
             />
             <div className="min-w-0">
-              <div className="text-[10px] text-zinc-400 truncate">{name}</div>
-              <div className="text-[9px] text-zinc-600">{hex}</div>
+              <div className="text-xs text-zinc-400 truncate">{name}</div>
+              <div className="text-xs text-zinc-400">{hex}</div>
             </div>
           </div>
         ))}

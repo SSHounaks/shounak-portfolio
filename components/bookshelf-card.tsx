@@ -70,8 +70,8 @@ function catStyle(cat: string) {
   return categoryColors[cat] || {
     border: 'border-white/10 hover:border-white/20',
     bg: 'bg-white/[0.01]',
-    text: 'text-white/40',
-    badge: 'text-white/40 border-white/10 bg-white/[0.03]',
+    text: 'text-white/50',
+    badge: 'text-white/50 border-white/10 bg-white/[0.03]',
   };
 }
 
@@ -167,8 +167,8 @@ export function BookshelfCard({ entry }: { entry: BookEntry }) {
               entry.status === 'RECOMMENDED' && 'bg-purple-500/40',
             )} />
             <span className={cn(
-              'text-[7px] font-mono uppercase tracking-widest shrink-0 flex items-center gap-1',
-              entry.status === 'READ' && 'text-emerald-400/60',
+              'text-xs font-mono uppercase tracking-widest shrink-0 flex items-center gap-1',
+              entry.status === 'READ' && 'text-emerald-400/80',
               entry.status === 'READING' && 'text-amber-400/60',
               entry.status === 'PLANNED' && 'text-sky-400/60',
               entry.status === 'RECOMMENDED' && 'text-purple-400/60',
@@ -187,17 +187,17 @@ export function BookshelfCard({ entry }: { entry: BookEntry }) {
         <h3 className="text-[12px] font-bold text-white/80 leading-snug group-hover/card:text-emerald-300 transition-colors line-clamp-2">
           {entry.title}
         </h3>
-        <p className="text-[10px] text-white/40 font-mono truncate">{entry.author}</p>
+        <p className="text-xs text-white/50 font-mono truncate">{entry.author}</p>
 
         {entry.description && (
-          <p className="text-[9px] text-white/30 leading-relaxed line-clamp-2 mt-0.5">{entry.description}</p>
+          <p className="text-xs text-white/55 leading-relaxed line-clamp-2 mt-0.5">{entry.description}</p>
         )}
 
         <div className="flex flex-wrap items-center gap-1.5 mt-auto pt-2">
-          <span className={cn('px-2 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider border', typeBadge[entry.type] || typeBadge.book)}>
+          <span className={cn('px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider border', typeBadge[entry.type] || typeBadge.book)}>
             {entry.type}
           </span>
-          <span className={cn('px-2 py-0.5 rounded text-[7px] font-mono tracking-wider border', cc.badge)}>
+          <span className={cn('px-2 py-0.5 rounded text-xs font-mono tracking-wider border', cc.badge)}>
             {entry.category}
           </span>
         </div>

@@ -71,11 +71,11 @@ export function ProjectsSection() {
                           <span className="text-emerald-300/90 font-bold text-[11px] truncate group-hover:text-emerald-200 transition-colors">
                             {project.title}
                           </span>
-                          <span className="ml-auto text-[10px] transition-transform duration-200 group-open:rotate-90 shrink-0">
-                            <span className="material-symbols-outlined text-emerald-400/60 text-[12px]">chevron_right</span>
+                          <span className="ml-auto text-xs transition-transform duration-200 group-open:rotate-90 shrink-0">
+                            <span className="material-symbols-outlined text-emerald-400/80 text-[12px]">chevron_right</span>
                           </span>
                         </div>
-                        <div className="text-white/30 text-[9px] font-normal truncate mt-0.5">
+                        <div className="text-white/55 text-xs font-normal truncate mt-0.5">
                           — {project.description}
                         </div>
                       </div>
@@ -83,23 +83,23 @@ export function ProjectsSection() {
                   </div>
                 </summary>
                 <div className="px-3 pb-3 pt-0 border-t border-emerald-500/10 ml-[33px] mr-3">
-                  <div className="pt-3 space-y-2 text-[10px]">
+                  <div className="pt-3 space-y-2 text-xs">
                     <div className="flex items-center gap-2 px-1 py-1 bg-white/[0.02] rounded border border-white/5">
                       <span className="text-cyan-400/60 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[10px]">deployed_code</span>
+                        <span className="material-symbols-outlined text-xs">deployed_code</span>
                       </span>
-                      <span className="text-white/40">tech:</span>
-                      <span className="text-cyan-400/80 text-[10px] font-medium">{project.tech}</span>
+                      <span className="text-white/50">tech:</span>
+                      <span className="text-cyan-400/80 text-xs font-medium">{project.tech}</span>
                     </div>
                     <div className="flex items-center gap-2 px-1 py-1 bg-white/[0.02] rounded border border-white/5">
                       <span className="text-amber-400/60 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[10px]">link</span>
+                        <span className="material-symbols-outlined text-xs">link</span>
                       </span>
-                      <span className="text-white/40">repo:</span>
-                      <a href={`https://${project.link}`} target="_blank" rel="noopener noreferrer" className="text-amber-400/80 text-[10px] underline underline-offset-2 hover:text-amber-300 transition-colors">{project.link}</a>
+                      <span className="text-white/50">repo:</span>
+                      <a href={`https://${project.link}`} target="_blank" rel="noopener noreferrer" className="inline-block min-h-11 content-center text-amber-400/80 text-xs underline underline-offset-2 hover:text-amber-300 transition-colors">{project.link}</a>
                     </div>
                     <div className="px-1 py-1">
-                      <span className="text-white/40 block mb-1">description:</span>
+                      <span className="text-white/50 block mb-1">description:</span>
                       <span className="text-white/50 leading-relaxed block">{project.details}</span>
                     </div>
                   </div>
@@ -122,26 +122,26 @@ export function ProjectsSection() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-secondary font-bold text-[13px] leading-tight">{edu.degree}</div>
-                    <div className="text-white/40 text-[10px] mt-0.5">{edu.school}</div>
+                    <div className="text-white/50 text-xs mt-0.5">{edu.school}</div>
                   </div>
                   <div className="shrink-0 text-right">
                     <div className="text-amber-400/90 text-[11px] font-mono font-bold">{edu.year}</div>
-                    <div className="text-white/20 text-[8px] uppercase tracking-wider">Completed</div>
+                    <div className="text-white/55 text-xs uppercase tracking-wider">Completed</div>
                   </div>
                 </div>
 
                 <div className="mb-3 w-full">
                   <div className="flex items-center gap-1.5 mb-2">
-                    <span className="text-white/30 text-[9px]">[</span>
-                    <span className="text-white/40 text-[9px] uppercase tracking-wider font-bold">
+                    <span className="text-white/55 text-xs">[</span>
+                    <span className="text-white/50 text-xs uppercase tracking-wider font-bold">
                       {isMasters ? 'KEY FOCUS AREAS' : 'FOUNDATION SKILLS'}
                     </span>
-                    <span className="text-white/30 text-[9px]">]</span>
+                    <span className="text-white/55 text-xs">]</span>
                   </div>
-                  <div className="text-white/50 text-[10px] leading-relaxed">
+                  <div className="text-white/50 text-xs leading-relaxed">
                     {edu.focus?.map((f, j) => (
                       <span key={j}>
-                        {j > 0 && <span className="text-white/20 mx-1">•</span>}
+                        {j > 0 && <span className="text-white/55 mx-1">•</span>}
                         <span className="group-hover/card:text-white/70 transition-colors duration-75">{f}</span>
                       </span>
                     ))}
@@ -149,8 +149,8 @@ export function ProjectsSection() {
                 </div>
 
                   <div className="flex items-center gap-3 pt-2 border-t border-white/[0.04]">
-                  <span className="text-white/30 text-[9px]">Performance Metric:</span>
-                  <span className="text-amber-400/90 text-[10px] font-mono font-bold">{edu.metric}</span>
+                  <span className="text-white/55 text-xs">Performance Metric:</span>
+                  <span className="text-amber-400/90 text-xs font-mono font-bold">{edu.metric}</span>
                 </div>
               </div>
             );

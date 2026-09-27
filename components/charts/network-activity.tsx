@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 interface NetworkActivityProps {
   nodeCount?: number;
@@ -16,10 +17,13 @@ export function NetworkActivity({
 }: NetworkActivityProps) {
   const [active, setActive] = useState(0);
 
+  const reducedMotion = useReducedMotion();
+
   useEffect(() => {
+    if (reducedMotion) return;
     const t = setInterval(() => setActive((p) => (p + 1) % (nodeCount * 2)), interval);
     return () => clearInterval(t);
-  }, [nodeCount, interval]);
+  }, [nodeCount, interval, reducedMotion]);
 
   return (
     <div className={cn('flex items-center justify-center gap-1.5 py-4', className)}>

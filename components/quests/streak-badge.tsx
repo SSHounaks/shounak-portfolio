@@ -14,18 +14,18 @@ export function StreakBadge({ current, longest, className }: StreakBadgeProps) {
         <span
           className={cn(
             'material-symbols-outlined text-[15px] leading-none',
-            active ? 'text-amber-400' : 'text-white/25',
+            active ? 'text-amber-400' : 'text-white/55',
           )}
         >
           {active ? 'local_fire_department' : 'hourglass_bottom'}
         </span>
-        <span className={cn('text-[12px] font-bold tabular-nums', active ? 'text-white/85' : 'text-white/45')}>
+        <span className={cn('text-[12px] font-bold tabular-nums', active ? 'text-white/85' : 'text-white/50')}>
           {current}
         </span>
-        <span className="text-[9px] text-white/45">day streak</span>
+        <span className="text-xs text-white/50">day streak</span>
       </div>
       {longest > current && (
-        <div className="flex items-center gap-1 text-[9px] text-white/30 tabular-nums">
+        <div className="flex items-center gap-1 text-xs text-white/55 tabular-nums">
           <span>best {longest}</span>
         </div>
       )}
