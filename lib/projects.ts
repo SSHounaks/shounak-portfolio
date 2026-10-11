@@ -61,6 +61,14 @@ export const projects: Project[] = [
     image: '/ollama-harness.png',
     joke: 'Took 8 minutes to write 60 tokens. Not as good as Opus. 😂🤣',
   },
+  {
+    name: 'SSHounaks/vn-engine',
+    description:
+      'A Kotlin Multiplatform visual novel engine on Compose Multiplatform. Stories are written as real Kotlin — a type-safe scene DSL with compile-time checks and full IDE support, no custom parser. Typed mood variables drive branching, layered effects play on declarative timelines, sprites animate from frame packs, and saves serialize via kotlinx.serialization.',
+    technologies: ['Kotlin', 'Kotlin Multiplatform', 'Compose Multiplatform', 'Gradle', 'kotlinx.serialization'],
+    image: '/vn-engine.png',
+    github: 'https://github.com/SSHounaks/vn-engine',
+  },
 ];
 
 export function techList(technologies: string[] | string): string[] {
