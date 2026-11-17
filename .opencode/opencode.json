@@ -5,7 +5,7 @@
     "bash": {
       "*": "ask",
       "git *": "allow",
-      "npm *": "allow",
+      "deno *": "allow",
       "rm *": "ask",
       "grep *": "allow"
     }
@@ -13,18 +13,18 @@
   "mcp": {
     "next-devtools-mcp": {
       "type": "local",
-      "command": ["npx", "-y", "next-devtools-mcp@latest"],
+      "command": ["deno", "run", "-A", "npm:next-devtools-mcp@latest"],
       "enabled": true
     },
-	"tailwind-mcp": {
+    "tailwind-mcp": {
       "type": "local",
-      "command": ["npx", "-y", "tailwindcss-mcp-server"],
+      "command": ["deno", "run", "-A", "npm:tailwindcss-mcp-server"],
       "enabled": true
     },
-	"shadcn": {
-	  "type": "local",
-      "command": ["npx", "shadcn@latest", "mcp"],
-	  "enabled": true
+    "shadcn": {
+      "type": "local",
+      "command": ["deno", "run", "-A", "npm:shadcn@latest", "mcp"],
+      "enabled": true
     }
   }
 }

@@ -13,6 +13,7 @@ export const posts = defineCollection({
     date: s.isodate(),
     excerpt: s.string().max(399).optional(),
     image: s.string().optional(),
+    icon: s.string().optional(),
     video: s.string().optional(),
     tags: s.array(s.string()).optional(),
     hidden: s.boolean().optional(),

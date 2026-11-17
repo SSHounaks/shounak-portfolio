@@ -1,0 +1,361 @@
+---
+title: "Installing Caelestia On Ubuntu"
+date: 2026-05-24
+excerpt: "A guide to Save your Base Gnome Config yet experiment with Hyprland"
+tags: [linux]
+icon: ubuntu
+hidden: false
+---
+
+<Figure size="large" src="/static/calestia/shots/final-launcher.png" alt="Standard three-tier architecture with ALB and Auto Scaling Group" caption="Working Caelestia" />
+
+Read that screenshot carefully, because almost everything in it is a lie.
+
+The pink calendar says **3 October 2026** and highlights today. The weather says
+**93 °F, Clear** and it is *live*, fetched over the network. The music widget says
+**"Hyprland…"** — that is the actual MPRIS player from my real desktop, one
+layer up. The CPU, RAM and disk arcs are reading real numbers. The quick
+toggles at the bottom right are wired to real things. The launcher at the bottom
+has indexed my `.desktop` files. The black rectangle behind it all is a `foot`
+terminal, running a real shell, at a real prompt.
+
+And the *entire thing* — compositor, shell, bar, launcher, dashboard, terminal —
+is one Docker container. My actual GNOME desktop is still running, untouched,
+one level above it. I could `docker rm -f` it and nothing would be left behind
+except some disk in `/var`.
+
+This is the story of how I found one of the cleanest ways to switch Desktop Environments, without ever touching my base.
+
+
+## The beautiful Era of New Desktop Environments
+
+A few months ago while talking to @Sudarshan, I came across [Hyprland](https://hypr.land/)! A really beautiful compositor
+easy to customize and share. The genius of Hyprland is not just its customisablity but the ecosystem and artistic freedom.
+
+For the un-initiated, like me, few months before:
+
+<TableCSV source="Project | Unique Selling Point |
+HyDE | Can try different desktop look everyday (BIG AMOUNT OF PRESETS) |
+Omarchy | Developer Focus / Agentic OS (the newer version!) |
+Caelestia | Looks Cool that is all |
+End 4 | I havent tried this one, but people say its a bit complex yet rewarding|" />
+
+I wanted to try out [Caelestia](https://github.com/caelestia-dots), but there was a problem.
+
+<Banner type="warning" title="Incompatible Protocols" action={{ label: "Changelog", href: "#" }}>
+    The shell draws itself using `wlr-layer-shell` and `wlr-screencopy`. Those are
+    wlroots protocols. My desktop is GNOME, whose compositor is called **mutter**,
+    and mutter implements neither of them.
+
+    Caelestia cannot run on GNOME at all. It is not a session and not a compositor; it is a guest that needs to be hosted by a wlroots-based compositor.
+</Banner>
+
+Which turns "run Caelestia" into a two-part problem:
+
+1. Run **Hyprland** nested inside GNOME.
+2. Run the **Caelestia shell** inside that Hyprland.
+
+Its not that [people have not tried it](https://www.github.com/IshmamDC217/caelestia-shell-ubuntu), but there was a problem.
+
+## Rule zero: don't touch my system
+
+I had tried installing hyprland before, and I know what amount of garbage a Desktop Environmnet can get, especially if you
+just wanted to "Try it out". The easy way out was just to "PUT IT IN A VM" and call it a day. But problem with that would
+be that I wouldnt know how it interacted with my base system.
+
+Hence the hard constraint was **not to modify the host.** No `sudo apt install`, no new login session, no dotfiles rewritten, no systemd units, no `pip --break-system-packages`.
+If it breaks, `docker rm -f` and nothing is left over.
+
+There were three ways to get an isolated Linux:
+
+<TableCSV source="Route | Idea | Verdict |
+Docker | disposable container on the real kernel | Fast, real GPU access, deletes cleanly |
+nix-portable | one static binary, store in `$HOME`, bubblewrap | Nothing lands outside `$HOME` but it is fiddly and Caelestia's Nix path was untested |
+KVM/QEMU VM | a whole virtual machine | best isolation, but slow |" />
+
+Hence, docker was selected, it provided me with a clean way to delete the whole thing without breaking my system, and also
+reproduce the whole thing and re-iterate until we found a way out.
+
+---
+
+## Getting a real GPU into a box
+
+I will skip the first few attempts of making this run. But after a bit of fiddling:
+```bash
+docker run -d --name caelestia \
+--device /dev/dri --group-add 44 --group-add 990 \
+-v /run/user/1000:/run/user/1000 \
+-e XDG_RUNTIME_DIR=/run/user/1000 -e WAYLAND_DISPLAY=wayland-0 \
+ubuntu:26.04 sleep infinity
+```
+
+Container up. `/dev/dri/card1` and `/dev/dri/renderD128` visible. The host's
+Wayland socket visible. Two attach gates passed. Time to ask the real question:
+**is this actually using the GPU?**
+
+(OpenCode Space Bunny found a way out) I used Mesa's tools and asked it to show whats going on:
+
+```
+_amdgpu_device_initialize: amdgpu_query_info(ACCEL_WORKING) failed (-13)
+OpenGL core profile renderer: llvmpipe (LLVM 21.1.8, 256 bits)
+```
+
+`llvmpipe` means **software rendering** — the CPU pretending to be a graphics
+card. `-13` is `EACCES`, permission denied.
+
+On an integrated GPU, with the compositor compositing twice (GNOME drawing the
+nested window, Hyprland drawing inside it), software rendering is not slow. It
+is a brick. So this was my abort condition: if this says `llvmpipe`, the whole
+route is dead.
+
+By this point using the flag: `--cap-add SYS_ADMIN` I was able to get access to my
+**AMD Radeon 610M (radeonsi, raphael_mendocino, DRM 3.64)** inside my Docker Container.
+
+## The compositor that died in 0.4 seconds
+
+Now the fun part. Hyprland installed (`0.53.3+ds-4`). First launch:
+
+```
+terminate called after throwing an instance of 'std::runtime_error'
+what():  CBackend::create() failed!
+```
+
+Dead instantly. No log. This consumed more time than everything else combined,
+so here is the whole detective story, including the parts where I chased the
+wrong thing.
+
+**Wrong turn: `WLR_BACKENDS=wayland`.** Every forum post says set this to nest
+a compositor. It did nothing — because modern Hyprland **does not use wlroots
+anymore**. It uses a library called *aquamarine*:
+
+```bash
+$ dpkg -s hyprland | grep -E "^(Version|Depends)"
+Version: 0.53.3+ds-4
+Depends: libaquamarine9 (>= 0.10.0)
+```
+**Then, the real breakthrough — two reasons the log was empty:**
+
+1. Hyprland disables stdout logging by default, and says so in a friendly
+little message about it. Real logs go to
+`/run/user/1000/hypr/<signature>/hyprland.log`.
+2. It wants a **pty**. A plain `docker exec` pipe swallows everything.
+
+```bash
+docker exec -d -u ubuntu -e HOME=/home/ubuntu -e XDG_RUNTIME_DIR=/run/user/1000 \
+-e WAYLAND_DISPLAY=wayland-0 -e HYPRLAND_NO_CRASHREPORTER=1 \
+caelestia bash -lc 'script -qec "hyprland" /tmp/hypr_tty.log'
+```
+
+Now it finally talked:
+
+```
+[libseat] Backend 'seatd' failed to open seat, skipping
+[libseat] Backend 'logind' failed to open seat, skipping
+libseat: Couldn't open device at /dev/dri/card1
+drm: Found no gpus to use, cannot continue
+DRM Backend failed
+```
+
+and then, in aquamarine's own source:
+
+```cpp
+if (!primaryAllocator) {
+    log(AQ_LOG_CRITICAL, "Cannot open backend: no allocator available");
+    return false;
+}
+```
+
+No GBM allocator. Which means it could not open the render node. Which brings me
+to the punchline:
+
+```
+crw-rw---- 1 root 990 226, 128 /dev/dri/renderD128
+```
+
+gid **990**. And the container's user had groups
+`{1000,4,20,24,25,27,29,30,44,46}` — **no 990**.
+
+I had dropped `--group-add 990` two hours earlier, when I rebuilt the container
+to add `SYS_ADMIN`. Nothing in the world was broken. The crash message was pointing at the GPU rather than at my
+own history. Verify the fix the boring, obvious way:
+
+```bash
+docker exec -u ubuntu caelestia bash -c '
+test -r /dev/dri/renderD128 && echo "readable"
+head -c 0 /dev/dri/renderD128 && echo "openable"'
+```
+
+And with `SYS_ADMIN` and both GIDs together, Hyprland came up:
+
+```
+Monitor WAYLAND-1 (ID 0):
+1280x720@60.00000 at 0x0
+scale: 2.00
+focused: yes
+```
+
+A live compositor, as a window on my desktop, on the real Radeon. Then a
+terminal inside it, and a screenshot via `grim` — a real shell prompt rendered
+by a real compositor inside a container. Phase 1 done.
+
+## When your desktop writes the word "terminal" on purpose
+
+Now the shell itself. Caelestia's shell is a **C++ QML module tree** plus QML,
+and Ubuntu 26.04 ships **Qt 6.10.2**. Current Caelestia needs **Qt 6.11**.
+Three things break, all of them Qt 6.11 features:
+
+```
+ERROR:   caused by @components/controls/StyledSpinBox.qml[7:1]: DoubleSpinBox is not a type
+ERROR:   caused by @modules/lock/center/InputField.qml[135:9]: Unexpected token 'reserved word'
+ERROR:   caused by @modules/nexus/common/ListEditor.qml[240:17]: Cannot assign to non-existent property "topRightRadius"
+```
+
+I confirmed this properly rather than assuming: `DoubleSpinBox` appears in
+**zero** of the `libQt6*.so` binaries, while `SpinBox` appears in three. And
+`qt6-declarative-dev` had exactly one candidate. Building all of Qt 6.11 to get
+one widget was not on the table; replacing Quickshell with a Qt 6.11 build would
+have broken the tool I installed five minutes ago.
+
+## Three ghost desktops
+
+<Figure size="large" src="/static/calestia/shots/final-launcher.png" alt="Standard three-tier architecture with ALB and Auto Scaling Group" caption="Working Caelestia" />
+
+With the shell alive, one number kept looking wrong:
+
+```
+$ hyprctl monitors
+reserved: 180 30 30 30
+```
+
+A 180-pixel bar. That is not a bar; Caelestia's bar is a **vertical** strip on
+the left edge, 60 pixels wide. `180 = 3 × 60` and `30 = 3 × 10`.
+
+I checked the token file. Nothing. I checked for config drift. Nothing. So I
+listed the processes:
+
+```
+--- 6841 ppid=6835   qs -c caelestia
+--- 6999 ppid=4536   qs -c caelestia
+--- 7001 ppid=5687   qs -c caelestia
+
+4534    1  /bin/sh -c .../caelestia-shell-supervisor.sh
+5685    1  /bin/sh -c .../caelestia-shell-supervisor.sh
+6833 6778  /bin/sh -c .../caelestia-shell-supervisor.sh
+```
+
+Three shells. Three supervisors. And look at the parents: **two have parent PID
+1.**
+
+That is the whole bug. Caelestia normally autostarts its shell once at login
+and relies on systemd to keep it alive. This container has no systemd user
+manager, so I wrote a `while true` restart loop instead. But Hyprland's
+`exec-once` children get **reparented to PID 1** when the compositor dies —
+they outlive it. So each dead compositor left behind a supervisor that happily
+kept spawning `qs` against a dead display, forever. Their exclusive zones
+stacked.
+
+`reserved` is now my free health check: **if it is a multiple of 60, instances
+have leaked.** Healthy is `60 10 10 10`.
+
+### The lifetime systemd gives you for free
+
+Reproducing `Restart=on-failure` plus a burst limit is the easy half. The hard
+half is *knowing when to stop*. My first supervisor checked whether Hyprland's
+IPC socket still existed:
+
+```bash
+[ -S "$XDG_RUNTIME_DIR/hypr/$SIG/.socket.sock" ]   # this lies
+```
+
+It lies because a `SIGKILL`ed compositor leaves the socket **inode** on disk,
+so `-S` returns true forever. The reliable signal is Hyprland's own lock file,
+whose first line is the compositor's PID:
+
+```bash
+lock="$XDG_RUNTIME_DIR/hypr/$SIG/hyprland.lock"
+hyprland_pid=$(sed -n 1p "$lock" | tr -cd '0-9')
+alive() { kill -0 "$hyprland_pid" 2>/dev/null; }
+```
+
+The full supervisor (burst limit of 5 starts per 300 seconds, per-instance
+logging, and a refusal to start at all if it cannot find the lock file) is in
+the repo —
+
+[`conf/caelestia-shell-supervisor.sh`](https://www.github.com/SSHounak/nested/conf/caelestia-shell-supervisor.sh).
+Verified behaviour: kill Hyprland, and within seconds both the supervisor and
+`qs` are gone, with `hyprland pid <n> is gone, supervisor exiting` in the log.
+
+### One more wrapper trap
+
+`start-hyprland` is the official wrapper, and using it silences an annoying
+warning. It also **unsets `WAYLAND_DISPLAY`** — which is the only way the
+backend finds my outer GNOME socket. Trading a cosmetic warning for a session
+that cannot start at all is a bad deal, so the warning stays.
+
+---
+
+## Proof
+
+The part I care about most, because it is the difference between a screenshot of
+a picture and an actual desktop: **the compositor is participating in layout.**
+
+Hyprland's layer list shows the shell's own surfaces, including four 1×1
+"exclusive zone" markers where the bar is:
+
+```
+Layer 5f53aa7dabc40: xywh: 0 0 1280 720, namespace: caelestia-drawers, pid: 112
+Layer 5f53aa7d18c0: xywh: 0 360 1 1,   namespace: caelestia-border-exclusion
+Layer 5f53aa7d4140: xywh: 670 0 1 1,   namespace: caelestia-border-exclusion
+Layer 5f53aa7d6d30: xywh: 1279 365 1 1, namespace: caelestia-border-exclusion
+```
+
+And windows open *next to* the bar rather than under it, because the bar told
+the compositor to reserve that space:
+
+```
+reserved: 60 10 10 10      →  clients open at 70,20
+```
+
+Everything on screen is live, from real sources, no mocks:
+
+<TableCSV source="Surface | Evidence it is real |
+Bar | workspace dots with per-window indicators, live clock, tray, power |
+Dashboard | live weather, calendar with today highlighted, CPU/RAM/disk gauges, uptime |
+Media | the host's real MPRIS player title and artist, working transport controls |
+Launcher | resolves installed `.desktop` entries, `Type '>' for commands` |
+Utilities | quick toggles, screen recording, keep-awake |
+IPC | workspace and window tracking through `hyprctl` |
+Notifications | correctly defers to the host's GNOME notification server |
+GPU | `AMD Radeon 610M (radeonsi, raphael_mendocino)` - not llvmpipe |" />
+
+
+<Figure size="large" src="/static/calestia/shots/alive.png" alt="" caption="desktip view" />
+<Figure size="large" src="/static/calestia/shots/final-desktop.png" alt="" caption="desktop view with terminal" />
+Health check, in one line, which should print nothing:
+
+```bash
+grep -a 'caelestia.settings' /tmp/caelestia-shell-*.log | sort -u
+```
+
+That one exists because of a nastier little failure mode. Caelestia's config
+parser **does not reject unknown keys.** It logs a warning and carries on:
+
+```
+WARN caelestia.settings: Unknown option "services.useFahrenheit"
+WARN caelestia.settings: Unknown option "services.useTwelveHourClock"
+```
+
+No error, no non-zero exit, nothing crashes. The setting simply does nothing,
+forever. A config that looks right and is silently half-applied is worse than
+one that fails loudly, so that grep is now a gate.
+
+---
+
+## Commands to run
+
+```bash
+export DOCKER_HOST=unix:///var/run/docker.sock   # the native daemon, not Docker Desktop's VM
+./nested/cleanup.sh                              # always run this first
+./nested/build-image.sh                          # ends by printing the renderer string
+./nested/start.sh                                # launches nested Hyprland as uid 1000
+```
