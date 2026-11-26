@@ -25,8 +25,8 @@ export function ContactSection() {
           </p>
           <p className="text-cyan-500/80">
             <span className="text-cyan-400">&gt;</span> REPO_HOST:{' '}
-            <a href="https://github.com/Shounaks" target="_blank" rel="noopener noreferrer" className="text-cyan-300 hover:underline underline-offset-4">
-              github.com/Shounaks
+            <a href="https://github.com/SSHounaks" target="_blank" rel="noopener noreferrer" className="text-cyan-300 hover:underline underline-offset-4">
+              github.com/SSHounaks
             </a>
           </p>
           <p className="text-purple-500/80">

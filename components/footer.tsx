@@ -13,7 +13,7 @@ export function Footer() {
         </a>
         <a
           className="inline-block py-3.5 -my-3.5 px-1 -mx-1 font-mono text-xs text-on-surface-variant hover:text-secondary transition-colors uppercase tracking-widest"
-          href="https://github.com/Shounaks"
+          href="https://github.com/SSHounaks"
           target="_blank"
           rel="noopener noreferrer"
         >
